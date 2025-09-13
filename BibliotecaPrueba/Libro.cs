@@ -4,25 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinFormsApp2
+namespace BibliotecaPrueba
 {
     public class Libro
     {
-        private string titulo;
-        private string autor;
-        private string editorial;
+        public string Titulo;
+        private string Autor;
+        private string Editorial;
 
         public Libro(string titulo, string autor, string editorial)
         {
-            this.titulo = titulo;
-            this.autor = autor;
-            this.editorial = editorial;
+            this.Titulo = titulo;
+            this.Autor = autor;
+            this.Editorial = editorial;
         }
-        public string getTitulo() { return titulo; }
+        public string GetTitulo() { return Titulo; } 
 
         public override string ToString()
         {
-            return $"Título: {titulo}, Autor: {autor}, Editorial: {editorial}";
+            return $"Título: {Titulo}, Autor: {Autor}, Editorial: {Editorial}";
         }
     }
 }

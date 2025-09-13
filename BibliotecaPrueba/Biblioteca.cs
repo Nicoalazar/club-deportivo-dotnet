@@ -5,98 +5,70 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinFormsApp2
+namespace BibliotecaPrueba
 {
     internal class Biblioteca
     {
         private List<Libro> libros;
-        private List<Libro> librosPrestados;
         private List<Lector> lectores;
-        
 
         public Biblioteca()
         {
-            string editorial = null;
-            string autor = null;
-            string titulo = null;
-            Libro libro = new Libro(titulo,autor,editorial);
             libros = new List<Libro>();
             lectores = new List<Lector>();
-            
+        }
 
-        }
-        private Libro buscarLibro(string titulo)
-        { 
-            Libro libroBuscado = null;
-            int i = 0;
-            while (i < libros.Count &&!libros[i].getTitulo().Equals(titulo))
-            i++;
-            if (i != libros.Count)
-                libroBuscado = libros[i];
-            return libroBuscado;
-        }
-        public bool agregarLibro(string titulo, string autor, string editorial)
+        public Libro BuscarLibro(string titulo)
         {
-            bool resultado = false;
-            Libro libro;
-            libro = buscarLibro(titulo);
-            if (libro == null)
+            foreach (Libro libro in libros)
             {
-                libro = new Libro(titulo, autor, editorial);
-                libros.Add(libro);
-                resultado = true;
+                if (libro.Titulo.Equals(titulo, StringComparison.OrdinalIgnoreCase))
+                {
+                    return libro;
+                }
             }
-            return resultado;
+            return null; 
         }
-        public void listarLibros()
+
+        public bool AgregarLibro(string titulo, string autor, string editorial)
         {
-            foreach (var libro in libros)
-                Console.WriteLine(libro);
+            if (BuscarLibro(titulo) != null)
+            {
+                return false;
+            }
+
+            libros.Add(new Libro(titulo, autor, editorial));
+            return true;
         }
-        public bool eliminarLibro(string titulo)
+
+        public bool EliminarLibro(string titulo)
         {
-            bool resultado = false;
-            Libro libro;
-            libro = buscarLibro(titulo);
+            Libro libro = BuscarLibro(titulo);
             if (libro != null)
             {
                 libros.Remove(libro);
-                resultado = true;
+                return true;
             }
-            return resultado;
+            return false;
         }
-        public string prestarLibro(string titulo, string dni)
+
+        public void ListarLibros()
         {
-            // 1. Busca si el libro existe en la biblioteca.
-            Libro libroAPrestar = buscarLibro(titulo);
-            if (libroAPrestar == null)
+            if (libros.Count == 0)
             {
-                return "LIBRO INEXISTENTE";
+                Console.WriteLine("La biblioteca está vacía.");
             }
-
-            // 2. Busca si el lector existe en la biblioteca.
-            Lector lectorSolicitante = BuscarLectorPorDni(dni);
-            if (lectorSolicitante == null)
+            else
             {
-                return "LECTOR INEXISTENTE";
+                Console.WriteLine("Libros en la biblioteca:");
+                foreach (Libro libro in libros)
+                {
+                    Console.WriteLine(libro);
+                }
             }
-
-            // 3. Verifica si el lector ya tiene 3 libros en préstamo.
-            if (!lectorSolicitante.agregarPrestamo(dni))
-            {
-                return "TOPE DE PRESTAMO ALCAZADO";
-            }
-
-            // 4. Si todas las condiciones se cumplen, realiza el préstamo.
-            // Elimina el libro de la colección de la biblioteca.
-            //libros.Remove(libroAPrestar);
-
-            // Agrega el libro a la colección de libros prestados del lector.
-            //lectorSolicitante.agregarPrestamo(libroAPrestar);
-
-            return "PRESTAMO EXITOSO";
         }
-        public Lector BuscarLectorPorDni(string dni)
+
+        private Lector BuscarLectorPorDni(string dni)
         {
             foreach (var lector in lectores)
             {
@@ -107,5 +79,38 @@ namespace WinFormsApp2
             }
             return null;
         }
+        public bool AltaLector(string nombre, string dni)
+        {
+            Lector lectorExistente = BuscarLectorPorDni(dni);
+
+            if (lectorExistente == null)
+            {
+                Lector nuevoLector = new Lector(nombre, dni);
+                lectores.Add(nuevoLector);
+                return true;
+            }
+            else return false;
+        }
+        public string PrestarLibro(string titulo, string dni)
+        {
+            // 1) validar lector
+
+            Lector lector = BuscarLectorPorDni(dni);
+            if (lector == null) return "LECTOR INEXISTENTE";
+
+            // 2) validar libro disponible en biblioteca
+            Libro libro = BuscarLibro(titulo);
+            if (libro == null) return "LIBRO INEXISTENTE";
+
+            // 3) validar tope de préstamos
+            if (!lector.PuedeTomarPrestamo()) return "TOPE DE PRESTAMO ALCAZADO";
+
+            // 4) efectuar el préstamo: quitar de biblioteca y agregar a lector
+            libros.Remove(libro);
+            lector.TomarPrestamo(libro);
+
+            return "PRESTAMO EXITOSO";
+        }
+
     }
 }
