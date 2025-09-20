@@ -1,4 +1,3 @@
-﻿using S4_Interface_De_Usuario;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -7,67 +6,66 @@ namespace S4_Interface_De_Usuario
 {
     public partial class FrmPrimerProyecto : Form
     {
-        // Lista enlazable para el grid
-        private readonly BindingList<Postulante> _postulantes = new BindingList<Postulante>();
+        private readonly BindingList<Postulante> _postulantes = new();
 
         public FrmPrimerProyecto()
         {
             InitializeComponent();
-        }
-
-        private void FrmPrimerProyecto_Load(object sender, EventArgs e)
-        {
-            // Poblar combo (por si no lo dejaste en el diseñador)
-            if (cmbTipo.Items.Count == 0)
-                cmbTipo.Items.AddRange(new object[] { "DNI", "Pasaporte", "Extranjero" });
-
-            cmbTipo.SelectedIndex = 0;
-
-            // Configurar grid
             dgvPostulantes.AutoGenerateColumns = false;
             dgvPostulantes.DataSource = _postulantes;
         }
 
+        private void FrmPrimerProyecto_Load(object sender, EventArgs e)
+        {
+            if (cmbTipo.Items.Count == 0)
+            {
+                cmbTipo.Items.AddRange(new object[] { "DNI", "Pasaporte", "Extranjero" });
+            }
+
+            if (cmbTipo.Items.Count > 0 && cmbTipo.SelectedIndex < 0)
+            {
+                cmbTipo.SelectedIndex = 0;
+            }
+        }
+
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            // Validaciones mínimas
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
-                MessageBox.Show("Ingrese el Nombre.");
+                MessageBox.Show("Ingrese el Nombre.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNombre.Focus();
                 return;
             }
+
             if (string.IsNullOrWhiteSpace(txtApellido.Text))
             {
-                MessageBox.Show("Ingrese el Apellido.");
+                MessageBox.Show("Ingrese el Apellido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtApellido.Focus();
                 return;
             }
-            if (cmbTipo.SelectedItem == null)
+
+            if (cmbTipo.SelectedItem is null)
             {
-                MessageBox.Show("Seleccione el Tipo de documento.");
+                MessageBox.Show("Seleccione el Tipo de documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbTipo.DroppedDown = true;
                 return;
             }
+
             if (string.IsNullOrWhiteSpace(txtDocumento.Text))
             {
-                MessageBox.Show("Ingrese el Documento.");
+                MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDocumento.Focus();
                 return;
             }
 
-            // Crear Postulante usando la clase
-            var p = new Postulante(
+            var postulante = new Postulante(
                 txtNombre.Text.Trim(),
                 txtApellido.Text.Trim(),
-                cmbTipo.SelectedItem.ToString(),
-                txtDocumento.Text.Trim()
-            );
+                cmbTipo.SelectedItem.ToString()!,
+                txtDocumento.Text.Trim());
 
-            // Agregar a la lista (aparece automáticamente en el grid)
-            _postulantes.Add(p);
+            _postulantes.Add(postulante);
 
-            // (Opcional) limpiar entradas luego de agregar
             LimpiarEntradas();
         }
 
@@ -81,7 +79,12 @@ namespace S4_Interface_De_Usuario
             txtNombre.Clear();
             txtApellido.Clear();
             txtDocumento.Clear();
-            cmbTipo.SelectedIndex = 0;
+
+            if (cmbTipo.Items.Count > 0)
+            {
+                cmbTipo.SelectedIndex = 0;
+            }
+
             txtNombre.Focus();
         }
     }
