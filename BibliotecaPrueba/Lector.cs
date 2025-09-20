@@ -1,18 +1,11 @@
-﻿using BibliotecaPrueba;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BibliotecaPrueba
+﻿namespace BibliotecaPrueba
 {
     public class Lector
     {
         private string Nombre;
         public string Dni;
-        private List<Libro> librosPrestados;
+        public List<Libro> librosPrestados;
+        private int LIMITE_LIBROS = 3;
 
         public Lector(string nombre, string dni)
         {
@@ -26,7 +19,7 @@ namespace BibliotecaPrueba
             return Dni;
         }
 
-        public bool PuedeTomarPrestamo() => librosPrestados.Count < 3;
+        public bool PuedeTomarPrestamo() => librosPrestados.Count < LIMITE_LIBROS;
         public void TomarPrestamo(Libro libro)
         {
             if (PuedeTomarPrestamo() && libro != null )
@@ -36,8 +29,18 @@ namespace BibliotecaPrueba
             else Console.WriteLine("Tope de préstamos alcanzado");
         }
 
+        public void MostrarListado(Lector lector)
+        {
+            Console.WriteLine(lector.ToString());
+
+            foreach (Libro libros in librosPrestados)
+            {
+                Console.WriteLine($"- {libros}");
+            }
+        }
+
         public override string ToString()
-            => $"{Nombre} (DNI {Dni}) - Préstamos vigentes: {librosPrestados.Count}";
+           => $"{Nombre} (DNI {Dni}) - Préstamos vigentes: {librosPrestados.Count}";
 
     }
 }
