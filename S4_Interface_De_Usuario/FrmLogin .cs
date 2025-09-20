@@ -1,20 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 using System.Windows.Forms;
 
 namespace S4_Interface_De_Usuario
 {
-    public partial class Form1 : Form
+    public partial class FrmLogin : Form
     {
-        public Form1()
+        public FrmLogin()
         {
             InitializeComponent();
+        }
+
+        private void btnIngresar_Click(object sender, EventArgs e)
+        {
+            if (txtUsuario.Text == "Administrador" && txtClave.Text == "Admin1234")
+            {
+                var frm = new FrmPrimerProyecto();
+                frm.Show();
+                this.Hide();
+                frm.FormClosed += (s, args) => this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Usuario inexistente.", "Acceso denegado",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }
