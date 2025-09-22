@@ -42,7 +42,11 @@
             Console.WriteLine("--------------------------------");
             b.ListarLibros();
             Console.WriteLine("---------Fin de Programa--------");
+            
+            Console.ReadKey();  // Con esto logramos que la terminal no se cierre automaticamente al ejecutarse, se cerraria solamente despues de preionar alguna tecla.
 
+            
         }
     }
 }
+
