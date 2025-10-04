@@ -1,11 +1,4 @@
-﻿using BibliotecaPrueba;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BibliotecaPrueba
+﻿namespace BibliotecaPrueba
 {
     internal class Biblioteca
     {
@@ -57,6 +50,7 @@ namespace BibliotecaPrueba
             if (libros.Count == 0)
             {
                 Console.WriteLine("La biblioteca está vacía.");
+                ListarLibrosPrestados();
             }
             else
             {
@@ -64,6 +58,24 @@ namespace BibliotecaPrueba
                 foreach (Libro libro in libros)
                 {
                     Console.WriteLine(libro);
+                }
+                ListarLibrosPrestados();
+            }
+        }
+
+        public void ListarLibrosPrestados()
+        {
+            bool hayPrestamos = false;
+            foreach (Lector lector in lectores)
+            {
+                if (lector?.librosPrestados?.Count > 0)
+                {
+                    if (!hayPrestamos)
+                    {
+                        Console.WriteLine("Libros prestados:");
+                        hayPrestamos = true;
+                    }
+                    lector.MostrarListado(lector);
                 }
             }
         }
