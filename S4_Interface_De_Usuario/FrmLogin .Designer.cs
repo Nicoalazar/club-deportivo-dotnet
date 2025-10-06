@@ -28,87 +28,101 @@ namespace S4_Interface_De_Usuario
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblTitulo = new System.Windows.Forms.Label();
-            this.lblUsuario = new System.Windows.Forms.Label();
-            this.lblClave = new System.Windows.Forms.Label();
-            this.txtUsuario = new System.Windows.Forms.TextBox();
-            this.txtClave = new System.Windows.Forms.TextBox();
-            this.btnIngresar = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            lblTitulo = new Label();
+            lblUsuario = new Label();
+            lblClave = new Label();
+            txtUsuario = new TextBox();
+            txtClave = new TextBox();
+            btnIngresar = new Button();
+            pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
             // 
             // lblTitulo
             // 
-            this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblTitulo.Location = new System.Drawing.Point(24, 24);
-            this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(209, 30);
-            this.lblTitulo.TabIndex = 0;
-            this.lblTitulo.Text = "Ingreso al sistema";
+            lblTitulo.AutoSize = true;
+            lblTitulo.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            lblTitulo.Location = new Point(73, 9);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(200, 30);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "Ingreso al sistema";
             // 
             // lblUsuario
             // 
-            this.lblUsuario.AutoSize = true;
-            this.lblUsuario.Location = new System.Drawing.Point(24, 86);
-            this.lblUsuario.Name = "lblUsuario";
-            this.lblUsuario.Size = new System.Drawing.Size(50, 15);
-            this.lblUsuario.TabIndex = 1;
-            this.lblUsuario.Text = "Usuario";
+            lblUsuario.AutoSize = true;
+            lblUsuario.Location = new Point(141, 119);
+            lblUsuario.Name = "lblUsuario";
+            lblUsuario.Size = new Size(47, 15);
+            lblUsuario.TabIndex = 1;
+            lblUsuario.Text = "Usuario";
             // 
             // lblClave
             // 
-            this.lblClave.AutoSize = true;
-            this.lblClave.Location = new System.Drawing.Point(24, 132);
-            this.lblClave.Name = "lblClave";
-            this.lblClave.Size = new System.Drawing.Size(37, 15);
-            this.lblClave.TabIndex = 3;
-            this.lblClave.Text = "Clave";
+            lblClave.AutoSize = true;
+            lblClave.Location = new Point(141, 169);
+            lblClave.Name = "lblClave";
+            lblClave.Size = new Size(36, 15);
+            lblClave.TabIndex = 3;
+            lblClave.Text = "Clave";
             // 
             // txtUsuario
             // 
-            this.txtUsuario.Location = new System.Drawing.Point(110, 83);
-            this.txtUsuario.Name = "txtUsuario";
-            this.txtUsuario.Size = new System.Drawing.Size(214, 23);
-            this.txtUsuario.TabIndex = 2;
+            txtUsuario.Location = new Point(24, 137);
+            txtUsuario.Name = "txtUsuario";
+            txtUsuario.Size = new Size(296, 23);
+            txtUsuario.TabIndex = 2;
             // 
             // txtClave
             // 
-            this.txtClave.Location = new System.Drawing.Point(110, 129);
-            this.txtClave.Name = "txtClave";
-            this.txtClave.Size = new System.Drawing.Size(214, 23);
-            this.txtClave.TabIndex = 4;
-            this.txtClave.UseSystemPasswordChar = true;
+            txtClave.Location = new Point(24, 187);
+            txtClave.Name = "txtClave";
+            txtClave.Size = new Size(296, 23);
+            txtClave.TabIndex = 4;
+            txtClave.UseSystemPasswordChar = true;
             // 
             // btnIngresar
             // 
-            this.btnIngresar.Location = new System.Drawing.Point(110, 178);
-            this.btnIngresar.Name = "btnIngresar";
-            this.btnIngresar.Size = new System.Drawing.Size(214, 33);
-            this.btnIngresar.TabIndex = 5;
-            this.btnIngresar.Text = "Ingresar";
-            this.btnIngresar.UseVisualStyleBackColor = true;
-            this.btnIngresar.Click += new System.EventHandler(this.btnIngresar_Click);
+            btnIngresar.Location = new Point(59, 216);
+            btnIngresar.Name = "btnIngresar";
+            btnIngresar.Size = new Size(214, 33);
+            btnIngresar.TabIndex = 5;
+            btnIngresar.Text = "Ingresar";
+            btnIngresar.UseVisualStyleBackColor = true;
+            btnIngresar.Click += btnIngresar_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.shield_locked_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24;
+            pictureBox1.Location = new Point(115, 42);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(110, 65);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 6;
+            pictureBox1.TabStop = false;
             // 
             // FrmLogin
             // 
-            this.AcceptButton = this.btnIngresar;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 251);
-            this.Controls.Add(this.btnIngresar);
-            this.Controls.Add(this.txtClave);
-            this.Controls.Add(this.txtUsuario);
-            this.Controls.Add(this.lblClave);
-            this.Controls.Add(this.lblUsuario);
-            this.Controls.Add(this.lblTitulo);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "FrmLogin";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Inicio de sesión";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AcceptButton = btnIngresar;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(364, 251);
+            Controls.Add(pictureBox1);
+            Controls.Add(btnIngresar);
+            Controls.Add(txtClave);
+            Controls.Add(txtUsuario);
+            Controls.Add(lblClave);
+            Controls.Add(lblUsuario);
+            Controls.Add(lblTitulo);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "FrmLogin";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Inicio de sesión";
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -119,5 +133,6 @@ namespace S4_Interface_De_Usuario
         private System.Windows.Forms.TextBox txtUsuario;
         private System.Windows.Forms.TextBox txtClave;
         private System.Windows.Forms.Button btnIngresar;
+        private PictureBox pictureBox1;
     }
 }
