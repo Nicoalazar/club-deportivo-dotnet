@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S1_Escribir_En _C#", "S1_Es
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S2_A_Jugar_Con_Superheroes", "S2_A_Jugar_Con_Superheroes\S2_A_Jugar_Con_Superheroes.csproj", "{8B07171F-7515-0978-CF21-B1F905F48CAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S6_Repaso", "S6_Repaso\S6_Repaso.csproj", "{5AC76EF9-729A-4B3B-8BB5-AE40BB31A9C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S8_Herencia_Y_UML", "S8_Herencia_Y_UML\S8_Herencia_Y_UML.csproj", "{1E0F7B86-B533-4D8C-AE7E-82BA76C7607A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{8B07171F-7515-0978-CF21-B1F905F48CAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B07171F-7515-0978-CF21-B1F905F48CAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B07171F-7515-0978-CF21-B1F905F48CAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC76EF9-729A-4B3B-8BB5-AE40BB31A9C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC76EF9-729A-4B3B-8BB5-AE40BB31A9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC76EF9-729A-4B3B-8BB5-AE40BB31A9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC76EF9-729A-4B3B-8BB5-AE40BB31A9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0F7B86-B533-4D8C-AE7E-82BA76C7607A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0F7B86-B533-4D8C-AE7E-82BA76C7607A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0F7B86-B533-4D8C-AE7E-82BA76C7607A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0F7B86-B533-4D8C-AE7E-82BA76C7607A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
