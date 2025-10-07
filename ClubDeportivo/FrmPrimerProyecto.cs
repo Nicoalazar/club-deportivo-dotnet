@@ -6,13 +6,13 @@ namespace ClubDeportivo
 {
     public partial class FrmPrimerProyecto : Form
     {
-        private readonly BindingList<Postulante> _postulantes = new();
+        private readonly BindingList<Persona> _persona= new();
 
         public FrmPrimerProyecto()
         {
             InitializeComponent();
-            dgvPostulantes.AutoGenerateColumns = false;
-            dgvPostulantes.DataSource = _postulantes;
+            dgvPersona.AutoGenerateColumns = false;
+            dgvPersona.DataSource = _persona
         }
 
         private void FrmPrimerProyecto_Load(object sender, EventArgs e)
@@ -58,13 +58,13 @@ namespace ClubDeportivo
                 return;
             }
 
-            var postulante = new Postulante(
+            var persona= new Persona(
                 txtNombre.Text.Trim(),
                 txtApellido.Text.Trim(),
                 cmbTipo.SelectedItem.ToString()!,
                 txtDocumento.Text.Trim());
 
-            _postulantes.Add(postulante);
+            _persona.Add(persona);
 
             LimpiarEntradas();
         }
