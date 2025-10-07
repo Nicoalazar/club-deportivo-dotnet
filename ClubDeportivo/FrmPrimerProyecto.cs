@@ -11,8 +11,8 @@ namespace ClubDeportivo
         public FrmPrimerProyecto()
         {
             InitializeComponent();
-            dgvPersona.AutoGenerateColumns = false;
-            dgvPersona.DataSource = _Persona;
+            dgvPostulantes.AutoGenerateColumns = false;
+            dgvPostulantes.DataSource = _Persona;
         }
 
         private void FrmPrimerProyecto_Load(object sender, EventArgs e)

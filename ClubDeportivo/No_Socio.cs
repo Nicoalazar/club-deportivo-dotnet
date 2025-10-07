@@ -17,27 +17,16 @@ namespace ClubDeportivo
         public string CarnetNoSocio { get; set; }
 
         // Constructor que llama al constructor de la clase base (Persona)
-        public NoSocio(string nombre, string apellido, string dni, string email, string telefono,
-                       string apto, string carnetNoSocio)
-            : base(nombre, apellido, dni, email, telefono)
+        public NoSocio(string nombre, string apellido, string tipoDocumento,string dni, string apto, string carnetNoSocio)
+            : base(nombre, apellido,tipoDocumento, dni)
         {
             this.AptoFisico = apto;
             this.CarnetNoSocio = carnetNoSocio;
         }
 
-        // Constructor vacío
-        public NoSocio() { }
-
+     
         
-        public override void Inscribir()
-        {
-            // 1. Ejecutar la inscripción de los datos básicos en la tabla Persona
-            base.Inscribir();
-
-            // 2. Lógica específica del no socio (insertar en tabla No_Socio).
-            Console.WriteLine($"Registrando apto y carnet en tabla NO_SOCIO.");
-
-            // Aquí iría el INSERT INTO No_Socio (id_persona, apto_fisico, carnet_noSocio) VALUES (...)
-        }
+        
+       
     }//solo es comentario de prueba
 }
