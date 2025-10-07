@@ -28,188 +28,252 @@ namespace ClubDeportivo
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.lblApellido = new System.Windows.Forms.Label();
-            this.lblTipo = new System.Windows.Forms.Label();
-            this.lblDocumento = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.txtApellido = new System.Windows.Forms.TextBox();
-            this.cmbTipo = new System.Windows.Forms.ComboBox();
-            this.txtDocumento = new System.Windows.Forms.TextBox();
-            this.btnIngresar = new System.Windows.Forms.Button();
-            this.btnLimpiar = new System.Windows.Forms.Button();
-            this.dgvPersona = new System.Windows.Forms.DataGridView();
-            this.colNombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colApellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDocumento = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPersona)).BeginInit();
-            this.SuspendLayout();
+            lblNombre = new Label();
+            lblApellido = new Label();
+            lblTipo = new Label();
+            lblDocumento = new Label();
+            txtNombre = new TextBox();
+            txtApellido = new TextBox();
+            cmbTipo = new ComboBox();
+            txtDocumento = new TextBox();
+            btnIngresar = new Button();
+            btnLimpiar = new Button();
+            dgvPersona = new DataGridView();
+            lblTelefono = new Label();
+            txtTelefono = new TextBox();
+            txtEmail = new TextBox();
+            lblEmail = new Label();
+            colNombre = new DataGridViewTextBoxColumn();
+            colApellido = new DataGridViewTextBoxColumn();
+            colTipo = new DataGridViewTextBoxColumn();
+            colDocumento = new DataGridViewTextBoxColumn();
+            colTelefono = new DataGridViewTextBoxColumn();
+            colEmail = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgvPersona).BeginInit();
+            SuspendLayout();
             // 
             // lblNombre
             // 
-            this.lblNombre.AutoSize = true;
-            this.lblNombre.Location = new System.Drawing.Point(24, 24);
-            this.lblNombre.Name = "lblNombre";
-            this.lblNombre.Size = new System.Drawing.Size(64, 20);
-            this.lblNombre.TabIndex = 0;
-            this.lblNombre.Text = "Nombre";
+            lblNombre.AutoSize = true;
+            lblNombre.Location = new Point(21, 18);
+            lblNombre.Name = "lblNombre";
+            lblNombre.Size = new Size(51, 15);
+            lblNombre.TabIndex = 0;
+            lblNombre.Text = "Nombre";
             // 
             // lblApellido
             // 
-            this.lblApellido.AutoSize = true;
-            this.lblApellido.Location = new System.Drawing.Point(24, 64);
-            this.lblApellido.Name = "lblApellido";
-            this.lblApellido.Size = new System.Drawing.Size(65, 20);
-            this.lblApellido.TabIndex = 2;
-            this.lblApellido.Text = "Apellido";
+            lblApellido.AutoSize = true;
+            lblApellido.Location = new Point(21, 48);
+            lblApellido.Name = "lblApellido";
+            lblApellido.Size = new Size(51, 15);
+            lblApellido.TabIndex = 2;
+            lblApellido.Text = "Apellido";
             // 
             // lblTipo
             // 
-            this.lblTipo.AutoSize = true;
-            this.lblTipo.Location = new System.Drawing.Point(24, 104);
-            this.lblTipo.Name = "lblTipo";
-            this.lblTipo.Size = new System.Drawing.Size(121, 20);
-            this.lblTipo.TabIndex = 4;
-            this.lblTipo.Text = "Tipo documento";
+            lblTipo.AutoSize = true;
+            lblTipo.Location = new Point(21, 78);
+            lblTipo.Name = "lblTipo";
+            lblTipo.Size = new Size(96, 15);
+            lblTipo.TabIndex = 4;
+            lblTipo.Text = "Tipo documento";
             // 
             // lblDocumento
             // 
-            this.lblDocumento.AutoSize = true;
-            this.lblDocumento.Location = new System.Drawing.Point(24, 144);
-            this.lblDocumento.Name = "lblDocumento";
-            this.lblDocumento.Size = new System.Drawing.Size(86, 20);
-            this.lblDocumento.TabIndex = 6;
-            this.lblDocumento.Text = "Documento";
+            lblDocumento.AutoSize = true;
+            lblDocumento.Location = new Point(21, 108);
+            lblDocumento.Name = "lblDocumento";
+            lblDocumento.Size = new Size(70, 15);
+            lblDocumento.TabIndex = 6;
+            lblDocumento.Text = "Documento";
             // 
             // txtNombre
             // 
-            this.txtNombre.Location = new System.Drawing.Point(160, 20);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(250, 27);
-            this.txtNombre.TabIndex = 1;
+            txtNombre.Location = new Point(140, 15);
+            txtNombre.Margin = new Padding(3, 2, 3, 2);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(219, 23);
+            txtNombre.TabIndex = 1;
             // 
             // txtApellido
             // 
-            this.txtApellido.Location = new System.Drawing.Point(160, 60);
-            this.txtApellido.Name = "txtApellido";
-            this.txtApellido.Size = new System.Drawing.Size(250, 27);
-            this.txtApellido.TabIndex = 3;
+            txtApellido.Location = new Point(140, 45);
+            txtApellido.Margin = new Padding(3, 2, 3, 2);
+            txtApellido.Name = "txtApellido";
+            txtApellido.Size = new Size(219, 23);
+            txtApellido.TabIndex = 3;
             // 
             // cmbTipo
             // 
-            this.cmbTipo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTipo.FormattingEnabled = true;
-            this.cmbTipo.Location = new System.Drawing.Point(160, 100);
-            this.cmbTipo.Name = "cmbTipo";
-            this.cmbTipo.Size = new System.Drawing.Size(250, 28);
-            this.cmbTipo.TabIndex = 5;
+            cmbTipo.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTipo.FormattingEnabled = true;
+            cmbTipo.Location = new Point(140, 75);
+            cmbTipo.Margin = new Padding(3, 2, 3, 2);
+            cmbTipo.Name = "cmbTipo";
+            cmbTipo.Size = new Size(219, 23);
+            cmbTipo.TabIndex = 5;
             // 
             // txtDocumento
             // 
-            this.txtDocumento.Location = new System.Drawing.Point(160, 140);
-            this.txtDocumento.Name = "txtDocumento";
-            this.txtDocumento.Size = new System.Drawing.Size(250, 27);
-            this.txtDocumento.TabIndex = 7;
+            txtDocumento.Location = new Point(140, 105);
+            txtDocumento.Margin = new Padding(3, 2, 3, 2);
+            txtDocumento.Name = "txtDocumento";
+            txtDocumento.Size = new Size(219, 23);
+            txtDocumento.TabIndex = 7;
             // 
             // btnIngresar
             // 
-            this.btnIngresar.Location = new System.Drawing.Point(440, 20);
-            this.btnIngresar.Name = "btnIngresar";
-            this.btnIngresar.Size = new System.Drawing.Size(112, 40);
-            this.btnIngresar.TabIndex = 8;
-            this.btnIngresar.Text = "Ingresar";
-            this.btnIngresar.UseVisualStyleBackColor = true;
-            this.btnIngresar.Click += new System.EventHandler(this.btnIngresar_Click);
+            btnIngresar.Location = new Point(385, 15);
+            btnIngresar.Margin = new Padding(3, 2, 3, 2);
+            btnIngresar.Name = "btnIngresar";
+            btnIngresar.Size = new Size(98, 30);
+            btnIngresar.TabIndex = 8;
+            btnIngresar.Text = "Ingresar";
+            btnIngresar.UseVisualStyleBackColor = true;
+            btnIngresar.Click += btnIngresar_Click;
             // 
             // btnLimpiar
             // 
-            this.btnLimpiar.Location = new System.Drawing.Point(440, 72);
-            this.btnLimpiar.Name = "btnLimpiar";
-            this.btnLimpiar.Size = new System.Drawing.Size(112, 40);
-            this.btnLimpiar.TabIndex = 9;
-            this.btnLimpiar.Text = "Limpiar";
-            this.btnLimpiar.UseVisualStyleBackColor = true;
-            this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
+            btnLimpiar.Location = new Point(385, 54);
+            btnLimpiar.Margin = new Padding(3, 2, 3, 2);
+            btnLimpiar.Name = "btnLimpiar";
+            btnLimpiar.Size = new Size(98, 30);
+            btnLimpiar.TabIndex = 9;
+            btnLimpiar.Text = "Limpiar";
+            btnLimpiar.UseVisualStyleBackColor = true;
+            btnLimpiar.Click += btnLimpiar_Click;
             // 
-            // dgvPostulantes ahora PERSONA
+            // dgvPersona
             // 
-            this.dgvPersona.AllowUserToAddRows = false;
-            this.dgvPersona.AllowUserToDeleteRows = false;
-            this.dgvPersona.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvPersona.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPersona.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colNombre,
-            this.colApellido,
-            this.colTipo,
-            this.colDocumento});
-            this.dgvPersona.Location = new System.Drawing.Point(24, 196);
-            this.dgvPersona.MultiSelect = false;
-            this.dgvPersona.Name = "dgvPersona";
-            this.dgvPersona.ReadOnly = true;
-            this.dgvPersona.RowHeadersVisible = false;
-            this.dgvPersona.RowTemplate.Height = 29;
-            this.dgvPersona.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPersona.Size = new System.Drawing.Size(528, 220);
-            this.dgvPersona.TabIndex = 10;
+            dgvPersona.AllowUserToAddRows = false;
+            dgvPersona.AllowUserToDeleteRows = false;
+            dgvPersona.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvPersona.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvPersona.Columns.AddRange(new DataGridViewColumn[] { colNombre, colApellido, colTipo, colDocumento, colTelefono, colEmail });
+            dgvPersona.Location = new Point(21, 180);
+            dgvPersona.Margin = new Padding(3, 2, 3, 2);
+            dgvPersona.MultiSelect = false;
+            dgvPersona.Name = "dgvPersona";
+            dgvPersona.ReadOnly = true;
+            dgvPersona.RowHeadersVisible = false;
+            dgvPersona.RowTemplate.Height = 29;
+            dgvPersona.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvPersona.Size = new Size(529, 129);
+            dgvPersona.TabIndex = 10;
+            // 
+            // lblTelefono
+            // 
+            lblTelefono.AutoSize = true;
+            lblTelefono.Location = new Point(21, 142);
+            lblTelefono.Name = "lblTelefono";
+            lblTelefono.Size = new Size(53, 15);
+            lblTelefono.TabIndex = 11;
+            lblTelefono.Text = "Teléfono";
+            // 
+            // txtTelefono
+            // 
+            txtTelefono.Location = new Point(80, 139);
+            txtTelefono.Name = "txtTelefono";
+            txtTelefono.Size = new Size(163, 23);
+            txtTelefono.TabIndex = 12;
+            // 
+            // txtEmail
+            // 
+            txtEmail.Location = new Point(293, 142);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(190, 23);
+            txtEmail.TabIndex = 13;
+            // 
+            // lblEmail
+            // 
+            lblEmail.AutoSize = true;
+            lblEmail.Location = new Point(249, 145);
+            lblEmail.Name = "lblEmail";
+            lblEmail.Size = new Size(41, 15);
+            lblEmail.TabIndex = 14;
+            lblEmail.Text = "E-mail";
             // 
             // colNombre
             // 
-            this.colNombre.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colNombre.DataPropertyName = "Nombre";
-            this.colNombre.HeaderText = "Nombre";
-            this.colNombre.Name = "colNombre";
-            this.colNombre.ReadOnly = true;
+            colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colNombre.DataPropertyName = "Nombre";
+            colNombre.HeaderText = "Nombre";
+            colNombre.Name = "colNombre";
+            colNombre.ReadOnly = true;
+            colNombre.Width = 76;
             // 
             // colApellido
             // 
-            this.colApellido.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colApellido.DataPropertyName = "Apellido";
-            this.colApellido.HeaderText = "Apellido";
-            this.colApellido.Name = "colApellido";
-            this.colApellido.ReadOnly = true;
+            colApellido.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colApellido.DataPropertyName = "Apellido";
+            colApellido.HeaderText = "Apellido";
+            colApellido.Name = "colApellido";
+            colApellido.ReadOnly = true;
+            colApellido.Width = 76;
             // 
             // colTipo
             // 
-            this.colTipo.DataPropertyName = "Tipo";
-            this.colTipo.HeaderText = "Tipo";
-            this.colTipo.Name = "colTipo";
-            this.colTipo.ReadOnly = true;
-            this.colTipo.Width = 120;
+            colTipo.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colTipo.DataPropertyName = "Tipo";
+            colTipo.HeaderText = "Tipo";
+            colTipo.Name = "colTipo";
+            colTipo.ReadOnly = true;
+            colTipo.Width = 56;
             // 
             // colDocumento
             // 
-            this.colDocumento.DataPropertyName = "Documento";
-            this.colDocumento.HeaderText = "Documento";
-            this.colDocumento.Name = "colDocumento";
-            this.colDocumento.ReadOnly = true;
-            this.colDocumento.Width = 150;
+            colDocumento.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colDocumento.DataPropertyName = "Documento";
+            colDocumento.HeaderText = "Documento";
+            colDocumento.Name = "colDocumento";
+            colDocumento.ReadOnly = true;
+            colDocumento.Width = 95;
+            // 
+            // colTelefono
+            // 
+            colTelefono.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colTelefono.DataPropertyName = "Telefono";
+            colTelefono.HeaderText = "Teléfono";
+            colTelefono.Name = "colTelefono";
+            colTelefono.ReadOnly = true;
+            colTelefono.Width = 78;
+            // 
+            // colEmail
+            // 
+            colEmail.DataPropertyName = "Email";
+            colEmail.HeaderText = "E-mail";
+            colEmail.Name = "colEmail";
+            colEmail.ReadOnly = true;
             // 
             // FrmPrimerProyecto
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 440);
-            this.Controls.Add(this.dgvPersona);
-            this.Controls.Add(this.btnLimpiar);
-            this.Controls.Add(this.btnIngresar);
-            this.Controls.Add(this.txtDocumento);
-            this.Controls.Add(this.cmbTipo);
-            this.Controls.Add(this.txtApellido);
-            this.Controls.Add(this.txtNombre);
-            this.Controls.Add(this.lblDocumento);
-            this.Controls.Add(this.lblTipo);
-            this.Controls.Add(this.lblApellido);
-            this.Controls.Add(this.lblNombre);
-            this.Name = "FrmPrimerProyecto";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Registro de persona";
-            this.Load += new System.EventHandler(this.FrmPrimerProyecto_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPersona)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(571, 330);
+            Controls.Add(lblEmail);
+            Controls.Add(txtEmail);
+            Controls.Add(txtTelefono);
+            Controls.Add(lblTelefono);
+            Controls.Add(dgvPersona);
+            Controls.Add(btnLimpiar);
+            Controls.Add(btnIngresar);
+            Controls.Add(txtDocumento);
+            Controls.Add(cmbTipo);
+            Controls.Add(txtApellido);
+            Controls.Add(txtNombre);
+            Controls.Add(lblDocumento);
+            Controls.Add(lblTipo);
+            Controls.Add(lblApellido);
+            Controls.Add(lblNombre);
+            Margin = new Padding(3, 2, 3, 2);
+            Name = "FrmPrimerProyecto";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Registro de persona";
+            Load += FrmPrimerProyecto_Load;
+            ((System.ComponentModel.ISupportInitialize)dgvPersona).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -225,9 +289,15 @@ namespace ClubDeportivo
         private System.Windows.Forms.Button btnIngresar;
         private System.Windows.Forms.Button btnLimpiar;
         private System.Windows.Forms.DataGridView dgvPersona;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colNombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colApellido;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTipo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDocumento;
+        private Label lblTelefono;
+        private TextBox txtTelefono;
+        private TextBox txtEmail;
+        private Label lblEmail;
+        private DataGridViewTextBoxColumn colNombre;
+        private DataGridViewTextBoxColumn colApellido;
+        private DataGridViewTextBoxColumn colTipo;
+        private DataGridViewTextBoxColumn colDocumento;
+        private DataGridViewTextBoxColumn colTelefono;
+        private DataGridViewTextBoxColumn colEmail;
     }
 }

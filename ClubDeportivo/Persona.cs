@@ -14,7 +14,7 @@
 
         public Persona() { }
 
-        public Persona(string nombre, string apellido, string tipo, string documento, int telefono)
+        public Persona(string nombre, string apellido, string tipo, string documento, int telefono, string email)
         {
             Nombre = nombre;
             Apellido = apellido;
