@@ -38,12 +38,12 @@ namespace ClubDeportivo
             this.txtDocumento = new System.Windows.Forms.TextBox();
             this.btnIngresar = new System.Windows.Forms.Button();
             this.btnLimpiar = new System.Windows.Forms.Button();
-            this.dgvPostulantes = new System.Windows.Forms.DataGridView();
+            this.dgvPersona = new System.Windows.Forms.DataGridView();
             this.colNombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colApellido = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTipo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDocumento = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPostulantes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPersona)).BeginInit();
             this.SuspendLayout();
             // 
             // lblNombre
@@ -132,28 +132,28 @@ namespace ClubDeportivo
             this.btnLimpiar.UseVisualStyleBackColor = true;
             this.btnLimpiar.Click += new System.EventHandler(this.btnLimpiar_Click);
             // 
-            // dgvPostulantes
+            // dgvPostulantes ahora PERSONA
             // 
-            this.dgvPostulantes.AllowUserToAddRows = false;
-            this.dgvPostulantes.AllowUserToDeleteRows = false;
-            this.dgvPostulantes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dgvPersona.AllowUserToAddRows = false;
+            this.dgvPersona.AllowUserToDeleteRows = false;
+            this.dgvPersona.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvPostulantes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPostulantes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dgvPersona.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPersona.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colNombre,
             this.colApellido,
             this.colTipo,
             this.colDocumento});
-            this.dgvPostulantes.Location = new System.Drawing.Point(24, 196);
-            this.dgvPostulantes.MultiSelect = false;
-            this.dgvPostulantes.Name = "dgvPostulantes";
-            this.dgvPostulantes.ReadOnly = true;
-            this.dgvPostulantes.RowHeadersVisible = false;
-            this.dgvPostulantes.RowTemplate.Height = 29;
-            this.dgvPostulantes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPostulantes.Size = new System.Drawing.Size(528, 220);
-            this.dgvPostulantes.TabIndex = 10;
+            this.dgvPersona.Location = new System.Drawing.Point(24, 196);
+            this.dgvPersona.MultiSelect = false;
+            this.dgvPersona.Name = "dgvPersona";
+            this.dgvPersona.ReadOnly = true;
+            this.dgvPersona.RowHeadersVisible = false;
+            this.dgvPersona.RowTemplate.Height = 29;
+            this.dgvPersona.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvPersona.Size = new System.Drawing.Size(528, 220);
+            this.dgvPersona.TabIndex = 10;
             // 
             // colNombre
             // 
@@ -192,7 +192,7 @@ namespace ClubDeportivo
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(576, 440);
-            this.Controls.Add(this.dgvPostulantes);
+            this.Controls.Add(this.dgvPersona);
             this.Controls.Add(this.btnLimpiar);
             this.Controls.Add(this.btnIngresar);
             this.Controls.Add(this.txtDocumento);
@@ -205,9 +205,9 @@ namespace ClubDeportivo
             this.Controls.Add(this.lblNombre);
             this.Name = "FrmPrimerProyecto";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Registro de postulantes";
+            this.Text = "Registro de persona";
             this.Load += new System.EventHandler(this.FrmPrimerProyecto_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPostulantes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPersona)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -224,7 +224,7 @@ namespace ClubDeportivo
         private System.Windows.Forms.TextBox txtDocumento;
         private System.Windows.Forms.Button btnIngresar;
         private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.DataGridView dgvPostulantes;
+        private System.Windows.Forms.DataGridView dgvPersona;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn colApellido;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTipo;
