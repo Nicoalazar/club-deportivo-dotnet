@@ -1,12 +1,17 @@
+using MySql.Data.MySqlClient;
 using System;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data;
 using System.Windows.Forms;
+
 
 namespace ClubDeportivo
 {
     public partial class FrmPrimerProyecto : Form
     {
         private readonly BindingList<Postulante> _postulantes = new();
+        private int socio = 0;
 
         public FrmPrimerProyecto()
         {
@@ -62,12 +67,36 @@ namespace ClubDeportivo
                 txtNombre.Text.Trim(),
                 txtApellido.Text.Trim(),
                 cmbTipo.SelectedItem.ToString()!,
-                txtDocumento.Text.Trim());
+                txtDocumento.Text.Trim()
+            );
 
-            _postulantes.Add(postulante);
+            try
+            {
+                int personaId = GuardarPersonaEnDb(postulante);
 
-            LimpiarEntradas();
+                _postulantes.Add(postulante);
+
+                MessageBox.Show(
+                    personaId > 0 ? $"Guardado OK. ID: {personaId}" : "Guardado OK.",
+                    "Información",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                LimpiarEntradas();
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Error de base de datos: " + ex.Message, "DB",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
@@ -86,6 +115,41 @@ namespace ClubDeportivo
             }
 
             txtNombre.Focus();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkSocio.Checked)
+            {
+                socio = 1;
+            }
+        }
+        private int GuardarPersonaEnDb(Postulante p)
+        {
+            // Reutilizamos tu misma conexión del login
+            using var cn = Conexion.getInstancia().CrearConcexion();
+            cn.Open();
+
+            // 1) Llamar al SP de UNA SOLA SENTENCIA (sin DELIMITER)
+            using (var cmd = new MySqlCommand("sp_persona_insert", cn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_nombre", MySqlDbType.VarChar).Value = p.Nombre;
+                cmd.Parameters.Add("p_apellido", MySqlDbType.VarChar).Value = p.Apellido;
+                cmd.Parameters.Add("p_tipo", MySqlDbType.VarChar).Value = p.Tipo;        // 'DNI' | 'Pasaporte' | 'Extranjero'
+                cmd.Parameters.Add("p_documento", MySqlDbType.VarChar).Value = p.Documento;
+                cmd.Parameters.Add("p_socio", MySqlDbType.TinyText).Value = socio;
+                cmd.ExecuteNonQuery();
+            }
+
+            // 2) Recuperar el id (nuevo o existente) por la clave única (tipo, documento)
+            using var cmdId = new MySqlCommand(
+                "SELECT id FROM personas WHERE tipo = @tipo AND documento = @doc LIMIT 1;", cn);
+            cmdId.Parameters.Add("@tipo", MySqlDbType.VarChar).Value = p.Tipo;
+            cmdId.Parameters.Add("@doc", MySqlDbType.VarChar).Value = p.Documento;
+
+            object? obj = cmdId.ExecuteScalar();
+            return (obj != null && int.TryParse(obj.ToString(), out int id)) ? id : 0;
         }
     }
 }
