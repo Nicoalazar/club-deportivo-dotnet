@@ -1,4 +1,4 @@
-namespace S4_Interface_De_Usuario
+namespace ClubDeportivo
 {
     partial class FrmLogin
     {
