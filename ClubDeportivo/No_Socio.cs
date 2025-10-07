@@ -39,5 +39,5 @@ namespace ClubDeportivo
 
             // Aquí iría el INSERT INTO No_Socio (id_persona, apto_fisico, carnet_noSocio) VALUES (...)
         }
-    }
+    }//solo es comentario de prueba
 }
