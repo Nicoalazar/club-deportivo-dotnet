@@ -40,9 +40,9 @@ namespace ClubDeportivo
                 MessageBoxIcon.Information);
         }
 
-        private void btnPrueba_Click(object sender, EventArgs e)
+        private void btnBuscar_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Prueba' - ¡PRÓXIMAMENTE!",
+            MessageBox.Show("Funcionalidad 'Busqueda' - ¡PRÓXIMAMENTE!",
                 "En Desarrollo",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
