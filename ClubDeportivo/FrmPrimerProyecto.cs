@@ -72,6 +72,13 @@ namespace ClubDeportivo
 
             try
             {
+                if (PersonaExiste(postulante.Tipo, postulante.Documento))
+                {
+                    MessageBox.Show("Ya existe una persona con ese Tipo y Documento.",
+                                    "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 int personaId = GuardarPersonaEnDb(postulante);
 
                 _postulantes.Add(postulante);
@@ -150,6 +157,20 @@ namespace ClubDeportivo
 
             object? obj = cmdId.ExecuteScalar();
             return (obj != null && int.TryParse(obj.ToString(), out int id)) ? id : 0;
+        }
+        private bool PersonaExiste(string tipo, string documento)
+        {
+            using var cn = Conexion.getInstancia().CrearConcexion();
+            cn.Open();
+
+            using var cmd = new MySqlCommand(
+                "SELECT COUNT(1) FROM personas WHERE tipo = @t AND documento = @d LIMIT 1;", cn);
+            cmd.Parameters.Add("@t", MySqlDbType.VarChar).Value = tipo;
+            cmd.Parameters.Add("@d", MySqlDbType.VarChar).Value = documento;
+
+            var result = cmd.ExecuteScalar();
+            var count = Convert.ToInt32(result);
+            return count > 0;
         }
     }
 }
