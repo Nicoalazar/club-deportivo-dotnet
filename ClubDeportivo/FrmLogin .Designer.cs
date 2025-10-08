@@ -47,7 +47,6 @@ namespace ClubDeportivo
             lblTitulo.Size = new Size(249, 37);
             lblTitulo.TabIndex = 0;
             lblTitulo.Text = "Ingreso al sistema";
-            lblTitulo.Click += lblTitulo_Click;
             // 
             // lblUsuario
             // 
