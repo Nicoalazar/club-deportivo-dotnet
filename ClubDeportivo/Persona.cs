@@ -2,7 +2,7 @@
 {
     public class Persona
     {
-        // 1. PROPIEDADES (ATRIBUTOS)
+        // 1. PROPIEDADES (ATRIBUTOS)...
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string tipoDocumento { get; set; }
