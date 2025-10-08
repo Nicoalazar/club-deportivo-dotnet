@@ -41,10 +41,15 @@ namespace ClubDeportivo
         {
             if (txtUsuario.Text == "ADMIN" && txtClave.Text == "1234")
             {
-                var frm = new FrmPrimerProyecto();
-                frm.Show();
+                // var frm = new FrmPrimerProyecto();
+                // frm.Show();
+                // this.Hide();
+                // frm.FormClosed += (s, args) => this.Close();
+
+                var frmPrincipal = new FrmPrincipal();     // hago un cambio aca para abrir la ventana principal
+                frmPrincipal.Show();
                 this.Hide();
-                frm.FormClosed += (s, args) => this.Close();
+                frmPrincipal.FormClosed += (s, args) => this.Close();
             }
             else
             {
