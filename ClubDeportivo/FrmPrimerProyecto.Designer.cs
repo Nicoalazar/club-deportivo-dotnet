@@ -38,13 +38,18 @@ namespace ClubDeportivo
             txtDocumento = new TextBox();
             btnIngresar = new Button();
             btnLimpiar = new Button();
-            dgvPostulantes = new DataGridView();
+            dgvPersona = new DataGridView();
+            lblTelefono = new Label();
+            txtTelefono = new TextBox();
+            txtEmail = new TextBox();
+            lblEmail = new Label();
             colNombre = new DataGridViewTextBoxColumn();
             colApellido = new DataGridViewTextBoxColumn();
             colTipo = new DataGridViewTextBoxColumn();
             colDocumento = new DataGridViewTextBoxColumn();
-            checkSocio = new CheckBox();
-            ((System.ComponentModel.ISupportInitialize)dgvPostulantes).BeginInit();
+            colTelefono = new DataGridViewTextBoxColumn();
+            colEmail = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgvPersona).BeginInit();
             SuspendLayout();
             // 
             // lblNombre
@@ -139,74 +144,118 @@ namespace ClubDeportivo
             btnLimpiar.UseVisualStyleBackColor = true;
             btnLimpiar.Click += btnLimpiar_Click;
             // 
-            // dgvPostulantes
+            // dgvPersona
             // 
-            dgvPostulantes.AllowUserToAddRows = false;
-            dgvPostulantes.AllowUserToDeleteRows = false;
-            dgvPostulantes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvPostulantes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvPostulantes.Columns.AddRange(new DataGridViewColumn[] { colNombre, colApellido, colTipo, colDocumento });
-            dgvPostulantes.Location = new Point(21, 147);
-            dgvPostulantes.Margin = new Padding(3, 2, 3, 2);
-            dgvPostulantes.MultiSelect = false;
-            dgvPostulantes.Name = "dgvPostulantes";
-            dgvPostulantes.ReadOnly = true;
-            dgvPostulantes.RowHeadersVisible = false;
-            dgvPostulantes.RowTemplate.Height = 29;
-            dgvPostulantes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPostulantes.Size = new Size(462, 165);
-            dgvPostulantes.TabIndex = 10;
+            dgvPersona.AllowUserToAddRows = false;
+            dgvPersona.AllowUserToDeleteRows = false;
+            dgvPersona.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvPersona.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvPersona.Columns.AddRange(new DataGridViewColumn[] { colNombre, colApellido, colTipo, colDocumento, colTelefono, colEmail });
+            dgvPersona.Location = new Point(21, 180);
+            dgvPersona.Margin = new Padding(3, 2, 3, 2);
+            dgvPersona.MultiSelect = false;
+            dgvPersona.Name = "dgvPersona";
+            dgvPersona.ReadOnly = true;
+            dgvPersona.RowHeadersVisible = false;
+            dgvPersona.RowTemplate.Height = 29;
+            dgvPersona.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvPersona.Size = new Size(529, 129);
+            dgvPersona.TabIndex = 10;
+            // 
+            // lblTelefono
+            // 
+            lblTelefono.AutoSize = true;
+            lblTelefono.Location = new Point(21, 142);
+            lblTelefono.Name = "lblTelefono";
+            lblTelefono.Size = new Size(53, 15);
+            lblTelefono.TabIndex = 11;
+            lblTelefono.Text = "Teléfono";
+            // 
+            // txtTelefono
+            // 
+            txtTelefono.Location = new Point(80, 139);
+            txtTelefono.Name = "txtTelefono";
+            txtTelefono.Size = new Size(163, 23);
+            txtTelefono.TabIndex = 12;
+            // 
+            // txtEmail
+            // 
+            txtEmail.Location = new Point(293, 142);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(190, 23);
+            txtEmail.TabIndex = 13;
+            // 
+            // lblEmail
+            // 
+            lblEmail.AutoSize = true;
+            lblEmail.Location = new Point(249, 145);
+            lblEmail.Name = "lblEmail";
+            lblEmail.Size = new Size(41, 15);
+            lblEmail.TabIndex = 14;
+            lblEmail.Text = "E-mail";
             // 
             // colNombre
             // 
-            colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             colNombre.DataPropertyName = "Nombre";
             colNombre.HeaderText = "Nombre";
             colNombre.Name = "colNombre";
             colNombre.ReadOnly = true;
+            colNombre.Width = 76;
             // 
             // colApellido
             // 
-            colApellido.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colApellido.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             colApellido.DataPropertyName = "Apellido";
             colApellido.HeaderText = "Apellido";
             colApellido.Name = "colApellido";
             colApellido.ReadOnly = true;
+            colApellido.Width = 76;
             // 
             // colTipo
             // 
+            colTipo.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             colTipo.DataPropertyName = "Tipo";
             colTipo.HeaderText = "Tipo";
             colTipo.Name = "colTipo";
             colTipo.ReadOnly = true;
-            colTipo.Width = 120;
+            colTipo.Width = 56;
             // 
             // colDocumento
             // 
+            colDocumento.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
             colDocumento.DataPropertyName = "Documento";
             colDocumento.HeaderText = "Documento";
             colDocumento.Name = "colDocumento";
             colDocumento.ReadOnly = true;
-            colDocumento.Width = 150;
+            colDocumento.Width = 95;
             // 
-            // checkSocio
+            // colTelefono
             // 
-            checkSocio.AutoSize = true;
-            checkSocio.Location = new Point(404, 109);
-            checkSocio.Name = "checkSocio";
-            checkSocio.Size = new Size(55, 19);
-            checkSocio.TabIndex = 11;
-            checkSocio.Text = "Socio";
-            checkSocio.UseVisualStyleBackColor = true;
-            checkSocio.CheckedChanged += checkBox1_CheckedChanged;
+            colTelefono.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colTelefono.DataPropertyName = "Telefono";
+            colTelefono.HeaderText = "Teléfono";
+            colTelefono.Name = "colTelefono";
+            colTelefono.ReadOnly = true;
+            colTelefono.Width = 78;
+            // 
+            // colEmail
+            // 
+            colEmail.DataPropertyName = "Email";
+            colEmail.HeaderText = "E-mail";
+            colEmail.Name = "colEmail";
+            colEmail.ReadOnly = true;
             // 
             // FrmPrimerProyecto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(504, 330);
-            Controls.Add(checkSocio);
-            Controls.Add(dgvPostulantes);
+            ClientSize = new Size(571, 330);
+            Controls.Add(lblEmail);
+            Controls.Add(txtEmail);
+            Controls.Add(txtTelefono);
+            Controls.Add(lblTelefono);
+            Controls.Add(dgvPersona);
             Controls.Add(btnLimpiar);
             Controls.Add(btnIngresar);
             Controls.Add(txtDocumento);
@@ -220,9 +269,9 @@ namespace ClubDeportivo
             Margin = new Padding(3, 2, 3, 2);
             Name = "FrmPrimerProyecto";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Registro de postulantes";
+            Text = "Registro de persona";
             Load += FrmPrimerProyecto_Load;
-            ((System.ComponentModel.ISupportInitialize)dgvPostulantes).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvPersona).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -239,11 +288,16 @@ namespace ClubDeportivo
         private System.Windows.Forms.TextBox txtDocumento;
         private System.Windows.Forms.Button btnIngresar;
         private System.Windows.Forms.Button btnLimpiar;
-        private System.Windows.Forms.DataGridView dgvPostulantes;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colNombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colApellido;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTipo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDocumento;
-        private CheckBox checkSocio;
+        private System.Windows.Forms.DataGridView dgvPersona;
+        private Label lblTelefono;
+        private TextBox txtTelefono;
+        private TextBox txtEmail;
+        private Label lblEmail;
+        private DataGridViewTextBoxColumn colNombre;
+        private DataGridViewTextBoxColumn colApellido;
+        private DataGridViewTextBoxColumn colTipo;
+        private DataGridViewTextBoxColumn colDocumento;
+        private DataGridViewTextBoxColumn colTelefono;
+        private DataGridViewTextBoxColumn colEmail;
     }
 }

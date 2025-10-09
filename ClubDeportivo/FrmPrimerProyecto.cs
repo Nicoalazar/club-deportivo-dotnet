@@ -16,8 +16,8 @@ namespace ClubDeportivo
         public FrmPrimerProyecto()
         {
             InitializeComponent();
-            dgvPostulantes.AutoGenerateColumns = false;
-            dgvPostulantes.DataSource = _postulantes;
+            dgvPersona.AutoGenerateColumns = false;
+            dgvPersona.DataSource = _persona;
         }
 
         private void FrmPrimerProyecto_Load(object sender, EventArgs e)
@@ -63,12 +63,13 @@ namespace ClubDeportivo
                 return;
             }
 
-            var postulante = new Postulante(
+            var persona = new Persona(
                 txtNombre.Text.Trim(),
                 txtApellido.Text.Trim(),
                 cmbTipo.SelectedItem.ToString()!,
-                txtDocumento.Text.Trim()
-            );
+                txtDocumento.Text.Trim(),
+                int.Parse(txtTelefono.Text.Trim()),
+                txtEmail.Text.Trim());
 
             try
             {
