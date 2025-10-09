@@ -43,6 +43,9 @@ namespace ClubDeportivo
             colApellido = new DataGridViewTextBoxColumn();
             colTipo = new DataGridViewTextBoxColumn();
             colDocumento = new DataGridViewTextBoxColumn();
+            colSexo = new DataGridViewTextBoxColumn();
+            colRelacion = new DataGridViewCheckBoxColumn();
+            colAptoFisico = new DataGridViewCheckBoxColumn();
             colTelefono = new DataGridViewTextBoxColumn();
             colEmail = new DataGridViewTextBoxColumn();
             lblTelefono = new Label();
@@ -52,13 +55,14 @@ namespace ClubDeportivo
             checkSocio = new CheckBox();
             cmbSexo = new ComboBox();
             Sexo = new Label();
+            checkApto = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)dgvPersona).BeginInit();
             SuspendLayout();
             // 
             // lblNombre
             // 
             lblNombre.AutoSize = true;
-            lblNombre.Location = new Point(21, 18);
+            lblNombre.Location = new Point(21, 23);
             lblNombre.Name = "lblNombre";
             lblNombre.Size = new Size(51, 15);
             lblNombre.TabIndex = 0;
@@ -67,28 +71,28 @@ namespace ClubDeportivo
             // lblApellido
             // 
             lblApellido.AutoSize = true;
-            lblApellido.Location = new Point(21, 48);
+            lblApellido.Location = new Point(391, 23);
             lblApellido.Name = "lblApellido";
             lblApellido.Size = new Size(51, 15);
-            lblApellido.TabIndex = 2;
+            lblApellido.TabIndex = 0;
             lblApellido.Text = "Apellido";
             // 
             // lblTipo
             // 
             lblTipo.AutoSize = true;
-            lblTipo.Location = new Point(21, 109);
+            lblTipo.Location = new Point(21, 55);
             lblTipo.Name = "lblTipo";
             lblTipo.Size = new Size(96, 15);
-            lblTipo.TabIndex = 4;
+            lblTipo.TabIndex = 0;
             lblTipo.Text = "Tipo documento";
             // 
             // lblDocumento
             // 
             lblDocumento.AutoSize = true;
-            lblDocumento.Location = new Point(21, 136);
+            lblDocumento.Location = new Point(391, 55);
             lblDocumento.Name = "lblDocumento";
             lblDocumento.Size = new Size(70, 15);
-            lblDocumento.TabIndex = 6;
+            lblDocumento.TabIndex = 0;
             lblDocumento.Text = "Documento";
             // 
             // txtNombre
@@ -101,48 +105,48 @@ namespace ClubDeportivo
             // 
             // txtApellido
             // 
-            txtApellido.Location = new Point(140, 45);
+            txtApellido.Location = new Point(467, 15);
             txtApellido.Margin = new Padding(3, 2, 3, 2);
             txtApellido.Name = "txtApellido";
             txtApellido.Size = new Size(219, 23);
-            txtApellido.TabIndex = 3;
+            txtApellido.TabIndex = 2;
             // 
             // cmbTipo
             // 
             cmbTipo.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTipo.FormattingEnabled = true;
-            cmbTipo.Location = new Point(140, 101);
+            cmbTipo.Location = new Point(140, 47);
             cmbTipo.Margin = new Padding(3, 2, 3, 2);
             cmbTipo.Name = "cmbTipo";
             cmbTipo.Size = new Size(219, 23);
-            cmbTipo.TabIndex = 5;
+            cmbTipo.TabIndex = 4;
             // 
             // txtDocumento
             // 
-            txtDocumento.Location = new Point(140, 128);
+            txtDocumento.Location = new Point(467, 47);
             txtDocumento.Margin = new Padding(3, 2, 3, 2);
             txtDocumento.Name = "txtDocumento";
             txtDocumento.Size = new Size(219, 23);
-            txtDocumento.TabIndex = 7;
+            txtDocumento.TabIndex = 5;
             // 
             // btnIngresar
             // 
-            btnIngresar.Location = new Point(385, 15);
+            btnIngresar.Location = new Point(261, 162);
             btnIngresar.Margin = new Padding(3, 2, 3, 2);
             btnIngresar.Name = "btnIngresar";
             btnIngresar.Size = new Size(98, 30);
-            btnIngresar.TabIndex = 8;
+            btnIngresar.TabIndex = 10;
             btnIngresar.Text = "Ingresar";
             btnIngresar.UseVisualStyleBackColor = true;
             btnIngresar.Click += btnIngresar_Click;
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Location = new Point(385, 63);
+            btnLimpiar.Location = new Point(391, 162);
             btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(98, 30);
-            btnLimpiar.TabIndex = 9;
+            btnLimpiar.TabIndex = 11;
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.UseVisualStyleBackColor = true;
             btnLimpiar.Click += btnLimpiar_Click;
@@ -153,7 +157,7 @@ namespace ClubDeportivo
             dgvPersona.AllowUserToDeleteRows = false;
             dgvPersona.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvPersona.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvPersona.Columns.AddRange(new DataGridViewColumn[] { colNombre, colApellido, colTipo, colDocumento, colTelefono, colEmail });
+            dgvPersona.Columns.AddRange(new DataGridViewColumn[] { colNombre, colApellido, colTipo, colDocumento, colSexo, colRelacion, colAptoFisico, colTelefono, colEmail });
             dgvPersona.Location = new Point(21, 207);
             dgvPersona.Margin = new Padding(3, 2, 3, 2);
             dgvPersona.MultiSelect = false;
@@ -162,8 +166,8 @@ namespace ClubDeportivo
             dgvPersona.RowHeadersVisible = false;
             dgvPersona.RowTemplate.Height = 29;
             dgvPersona.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPersona.Size = new Size(529, 102);
-            dgvPersona.TabIndex = 10;
+            dgvPersona.Size = new Size(663, 102);
+            dgvPersona.TabIndex = 13;
             // 
             // colNombre
             // 
@@ -201,6 +205,33 @@ namespace ClubDeportivo
             colDocumento.ReadOnly = true;
             colDocumento.Width = 95;
             // 
+            // colSexo
+            // 
+            colSexo.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colSexo.DataPropertyName = "Sexo";
+            colSexo.HeaderText = "Sexo";
+            colSexo.Name = "colSexo";
+            colSexo.ReadOnly = true;
+            colSexo.Width = 56;
+            // 
+            // colRelacion
+            // 
+            colRelacion.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colRelacion.DataPropertyName = "Relacion";
+            colRelacion.HeaderText = "Relación";
+            colRelacion.Name = "colRelacion";
+            colRelacion.ReadOnly = true;
+            colRelacion.Width = 77;
+            // 
+            // colAptoFisico
+            // 
+            colAptoFisico.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            colAptoFisico.DataPropertyName = "AptoFisico";
+            colAptoFisico.HeaderText = "Apto Físico";
+            colAptoFisico.Name = "colAptoFisico";
+            colAptoFisico.ReadOnly = true;
+            colAptoFisico.Width = 91;
+            // 
             // colTelefono
             // 
             colTelefono.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
@@ -220,67 +251,78 @@ namespace ClubDeportivo
             // lblTelefono
             // 
             lblTelefono.AutoSize = true;
-            lblTelefono.Location = new Point(21, 164);
+            lblTelefono.Location = new Point(391, 83);
             lblTelefono.Name = "lblTelefono";
             lblTelefono.Size = new Size(53, 15);
-            lblTelefono.TabIndex = 11;
+            lblTelefono.TabIndex = 0;
             lblTelefono.Text = "Teléfono";
             // 
             // txtTelefono
             // 
-            txtTelefono.Location = new Point(80, 156);
+            txtTelefono.Location = new Point(467, 75);
             txtTelefono.Name = "txtTelefono";
-            txtTelefono.Size = new Size(163, 23);
-            txtTelefono.TabIndex = 12;
+            txtTelefono.Size = new Size(219, 23);
+            txtTelefono.TabIndex = 6;
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(293, 156);
+            txtEmail.Location = new Point(467, 104);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(190, 23);
-            txtEmail.TabIndex = 13;
+            txtEmail.Size = new Size(219, 23);
+            txtEmail.TabIndex = 7;
             // 
             // lblEmail
             // 
             lblEmail.AutoSize = true;
-            lblEmail.Location = new Point(249, 164);
+            lblEmail.Location = new Point(391, 112);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(41, 15);
-            lblEmail.TabIndex = 14;
+            lblEmail.TabIndex = 0;
             lblEmail.Text = "E-mail";
             // 
             // checkSocio
             // 
             checkSocio.AutoSize = true;
-            checkSocio.Location = new Point(400, 101);
+            checkSocio.Location = new Point(112, 116);
             checkSocio.Name = "checkSocio";
             checkSocio.Size = new Size(55, 19);
-            checkSocio.TabIndex = 15;
+            checkSocio.TabIndex = 8;
             checkSocio.Text = "Socio";
             checkSocio.UseVisualStyleBackColor = true;
             // 
             // cmbSexo
             // 
             cmbSexo.FormattingEnabled = true;
-            cmbSexo.Location = new Point(140, 73);
+            cmbSexo.Location = new Point(140, 75);
             cmbSexo.Name = "cmbSexo";
             cmbSexo.Size = new Size(219, 23);
-            cmbSexo.TabIndex = 16;
+            cmbSexo.TabIndex = 3;
             // 
             // Sexo
             // 
             Sexo.AutoSize = true;
-            Sexo.Location = new Point(21, 81);
+            Sexo.Location = new Point(21, 83);
             Sexo.Name = "Sexo";
             Sexo.Size = new Size(31, 15);
-            Sexo.TabIndex = 17;
+            Sexo.TabIndex = 0;
             Sexo.Text = "Sexo";
+            // 
+            // checkApto
+            // 
+            checkApto.AutoSize = true;
+            checkApto.Location = new Point(217, 116);
+            checkApto.Name = "checkApto";
+            checkApto.Size = new Size(85, 19);
+            checkApto.TabIndex = 9;
+            checkApto.Text = "Apto Fisico";
+            checkApto.UseVisualStyleBackColor = true;
             // 
             // FrmPrimerProyecto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(571, 330);
+            ClientSize = new Size(705, 330);
+            Controls.Add(checkApto);
             Controls.Add(Sexo);
             Controls.Add(cmbSexo);
             Controls.Add(checkSocio);
@@ -330,10 +372,14 @@ namespace ClubDeportivo
         private DataGridViewTextBoxColumn colApellido;
         private DataGridViewTextBoxColumn colTipo;
         private DataGridViewTextBoxColumn colDocumento;
+        private DataGridViewTextBoxColumn colSexo;
+        private DataGridViewCheckBoxColumn colRelacion;
+        private DataGridViewCheckBoxColumn colAptoFisico;
         private DataGridViewTextBoxColumn colTelefono;
         private DataGridViewTextBoxColumn colEmail;
         private CheckBox checkSocio;
         private ComboBox cmbSexo;
         private Label Sexo;
+        private CheckBox checkApto;
     }
 }

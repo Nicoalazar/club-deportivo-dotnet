@@ -8,15 +8,16 @@
         public string Tipo { get; set; }       // DNI / Pasaporte / Extranjero
         public string Documento { get; set; }
         public string Email { get; set; }
-        public int Telefono { get; set; }
+        public string Telefono { get; set; }
         public int Relacion {  get; set; }
+        public int AptoFisico { get; set; }
 
 
 
 
         public Persona() { }
 
-        public Persona(string nombre, string apellido, string sexo, string tipo, string documento, int telefono, string email, int relacion )
+        public Persona(string nombre, string apellido, string sexo, string tipo, string documento, string telefono, string email, int relacion, int aptoFisico )
         {
             Nombre = nombre;
             Apellido = apellido;
@@ -26,6 +27,7 @@
             Email = email;
             Telefono = telefono;
             Relacion = relacion;
+            AptoFisico = aptoFisico;
         }
         
         public virtual string MostrarDatos()

@@ -38,7 +38,7 @@ namespace ClubDeportivo
 
             if (cmbSexo.Items.Count > 0 && cmbSexo.SelectedIndex < 0)
             {
-                cmbSexo.SelectedIndex = 0;
+                cmbSexo.Text = "Seleccione";
             }
         }
 
@@ -73,6 +73,7 @@ namespace ClubDeportivo
             }
 
             var socioFlag = checkSocio.Checked ? 1 : 0;
+            var aptoFlag = checkApto.Checked? 1 : 0;
 
             var persona = new Persona(
                 txtNombre.Text.Trim(),
@@ -80,9 +81,10 @@ namespace ClubDeportivo
                 cmbSexo.SelectedItem.ToString()!,
                 cmbTipo.SelectedItem.ToString()!,
                 txtDocumento.Text.Trim(),
-                int.Parse(txtTelefono.Text.Trim()),
+                txtTelefono.Text.Trim(),
                 txtEmail.Text.Trim(),
-                socioFlag);
+                socioFlag,
+                aptoFlag);
 
             try
             {
@@ -97,8 +99,12 @@ namespace ClubDeportivo
 
                 _persona.Add(persona);
 
+                var detalleRelacion = persona.Relacion == 1
+                    ? "La persona fue dada de alta como socio."
+                    : "La persona fue registrada como no socio.";
+
                 MessageBox.Show(
-                    personaId > 0 ? $"Guardado OK. ID: {personaId}" : "Guardado OK.",
+                    personaId > 0 ? $"{detalleRelacion} con ID: {personaId}" : "Guardado OK.",
                     "Información",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
@@ -129,6 +135,15 @@ namespace ClubDeportivo
             txtNombre.Clear();
             txtApellido.Clear();
             txtDocumento.Clear();
+            txtEmail.Clear();
+            txtTelefono.Clear();
+            checkSocio.Checked = false;
+            checkApto.Checked = false;
+
+            if (cmbSexo.Items.Count > 0)
+            {
+                cmbSexo.Text = "Seleccione";
+            }
 
             if (cmbTipo.Items.Count > 0)
             {
@@ -154,7 +169,8 @@ namespace ClubDeportivo
                 cmd.Parameters.Add("p_documento", MySqlDbType.VarChar).Value = p.Documento;
                 cmd.Parameters.Add("p_email", MySqlDbType.VarChar).Value = p.Email;
                 cmd.Parameters.Add("p_telefono", MySqlDbType.VarChar).Value = p.Telefono;
-                cmd.Parameters.Add("p_socio", MySqlDbType.Int64).Value = p.Relacion;
+                cmd.Parameters.Add("p_socio", MySqlDbType.Binary).Value = p.Relacion;
+                cmd.Parameters.Add("p_aptoFisico", MySqlDbType.Binary).Value = p.AptoFisico;
                 cmd.ExecuteNonQuery();
             }
 
