@@ -10,9 +10,9 @@ namespace ClubDeportivo
 
         public NoSocio() { }
 
-        public NoSocio(string nombre, string apellido, string tipo, string documento, int telefono, string email,
+        public NoSocio(string nombre, string apellido, string sexo, string tipo, string documento, int telefono, string email, int relacion,
                        int id_persona, bool apto_fisico, string carnet_noSocio)
-            : base(nombre, apellido, tipo, documento, telefono, email)
+            : base(nombre, apellido, sexo, tipo, documento, telefono, email, relacion)
         {
             Id_Persona = id_persona;
             Apto_Fisico = apto_fisico;

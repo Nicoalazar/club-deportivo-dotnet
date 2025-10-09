@@ -39,16 +39,19 @@ namespace ClubDeportivo
             btnIngresar = new Button();
             btnLimpiar = new Button();
             dgvPersona = new DataGridView();
-            lblTelefono = new Label();
-            txtTelefono = new TextBox();
-            txtEmail = new TextBox();
-            lblEmail = new Label();
             colNombre = new DataGridViewTextBoxColumn();
             colApellido = new DataGridViewTextBoxColumn();
             colTipo = new DataGridViewTextBoxColumn();
             colDocumento = new DataGridViewTextBoxColumn();
             colTelefono = new DataGridViewTextBoxColumn();
             colEmail = new DataGridViewTextBoxColumn();
+            lblTelefono = new Label();
+            txtTelefono = new TextBox();
+            txtEmail = new TextBox();
+            lblEmail = new Label();
+            checkSocio = new CheckBox();
+            cmbSexo = new ComboBox();
+            Sexo = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvPersona).BeginInit();
             SuspendLayout();
             // 
@@ -73,7 +76,7 @@ namespace ClubDeportivo
             // lblTipo
             // 
             lblTipo.AutoSize = true;
-            lblTipo.Location = new Point(21, 78);
+            lblTipo.Location = new Point(21, 109);
             lblTipo.Name = "lblTipo";
             lblTipo.Size = new Size(96, 15);
             lblTipo.TabIndex = 4;
@@ -82,7 +85,7 @@ namespace ClubDeportivo
             // lblDocumento
             // 
             lblDocumento.AutoSize = true;
-            lblDocumento.Location = new Point(21, 108);
+            lblDocumento.Location = new Point(21, 136);
             lblDocumento.Name = "lblDocumento";
             lblDocumento.Size = new Size(70, 15);
             lblDocumento.TabIndex = 6;
@@ -108,7 +111,7 @@ namespace ClubDeportivo
             // 
             cmbTipo.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTipo.FormattingEnabled = true;
-            cmbTipo.Location = new Point(140, 75);
+            cmbTipo.Location = new Point(140, 101);
             cmbTipo.Margin = new Padding(3, 2, 3, 2);
             cmbTipo.Name = "cmbTipo";
             cmbTipo.Size = new Size(219, 23);
@@ -116,7 +119,7 @@ namespace ClubDeportivo
             // 
             // txtDocumento
             // 
-            txtDocumento.Location = new Point(140, 105);
+            txtDocumento.Location = new Point(140, 128);
             txtDocumento.Margin = new Padding(3, 2, 3, 2);
             txtDocumento.Name = "txtDocumento";
             txtDocumento.Size = new Size(219, 23);
@@ -135,7 +138,7 @@ namespace ClubDeportivo
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Location = new Point(385, 54);
+            btnLimpiar.Location = new Point(385, 63);
             btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(98, 30);
@@ -151,7 +154,7 @@ namespace ClubDeportivo
             dgvPersona.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvPersona.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvPersona.Columns.AddRange(new DataGridViewColumn[] { colNombre, colApellido, colTipo, colDocumento, colTelefono, colEmail });
-            dgvPersona.Location = new Point(21, 180);
+            dgvPersona.Location = new Point(21, 207);
             dgvPersona.Margin = new Padding(3, 2, 3, 2);
             dgvPersona.MultiSelect = false;
             dgvPersona.Name = "dgvPersona";
@@ -159,40 +162,8 @@ namespace ClubDeportivo
             dgvPersona.RowHeadersVisible = false;
             dgvPersona.RowTemplate.Height = 29;
             dgvPersona.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPersona.Size = new Size(529, 129);
+            dgvPersona.Size = new Size(529, 102);
             dgvPersona.TabIndex = 10;
-            // 
-            // lblTelefono
-            // 
-            lblTelefono.AutoSize = true;
-            lblTelefono.Location = new Point(21, 142);
-            lblTelefono.Name = "lblTelefono";
-            lblTelefono.Size = new Size(53, 15);
-            lblTelefono.TabIndex = 11;
-            lblTelefono.Text = "Teléfono";
-            // 
-            // txtTelefono
-            // 
-            txtTelefono.Location = new Point(80, 139);
-            txtTelefono.Name = "txtTelefono";
-            txtTelefono.Size = new Size(163, 23);
-            txtTelefono.TabIndex = 12;
-            // 
-            // txtEmail
-            // 
-            txtEmail.Location = new Point(293, 142);
-            txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(190, 23);
-            txtEmail.TabIndex = 13;
-            // 
-            // lblEmail
-            // 
-            lblEmail.AutoSize = true;
-            lblEmail.Location = new Point(249, 145);
-            lblEmail.Name = "lblEmail";
-            lblEmail.Size = new Size(41, 15);
-            lblEmail.TabIndex = 14;
-            lblEmail.Text = "E-mail";
             // 
             // colNombre
             // 
@@ -246,11 +217,73 @@ namespace ClubDeportivo
             colEmail.Name = "colEmail";
             colEmail.ReadOnly = true;
             // 
+            // lblTelefono
+            // 
+            lblTelefono.AutoSize = true;
+            lblTelefono.Location = new Point(21, 164);
+            lblTelefono.Name = "lblTelefono";
+            lblTelefono.Size = new Size(53, 15);
+            lblTelefono.TabIndex = 11;
+            lblTelefono.Text = "Teléfono";
+            // 
+            // txtTelefono
+            // 
+            txtTelefono.Location = new Point(80, 156);
+            txtTelefono.Name = "txtTelefono";
+            txtTelefono.Size = new Size(163, 23);
+            txtTelefono.TabIndex = 12;
+            // 
+            // txtEmail
+            // 
+            txtEmail.Location = new Point(293, 156);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(190, 23);
+            txtEmail.TabIndex = 13;
+            // 
+            // lblEmail
+            // 
+            lblEmail.AutoSize = true;
+            lblEmail.Location = new Point(249, 164);
+            lblEmail.Name = "lblEmail";
+            lblEmail.Size = new Size(41, 15);
+            lblEmail.TabIndex = 14;
+            lblEmail.Text = "E-mail";
+            // 
+            // checkSocio
+            // 
+            checkSocio.AutoSize = true;
+            checkSocio.Location = new Point(400, 101);
+            checkSocio.Name = "checkSocio";
+            checkSocio.Size = new Size(55, 19);
+            checkSocio.TabIndex = 15;
+            checkSocio.Text = "Socio";
+            checkSocio.UseVisualStyleBackColor = true;
+            // 
+            // cmbSexo
+            // 
+            cmbSexo.FormattingEnabled = true;
+            cmbSexo.Location = new Point(140, 73);
+            cmbSexo.Name = "cmbSexo";
+            cmbSexo.Size = new Size(219, 23);
+            cmbSexo.TabIndex = 16;
+            // 
+            // Sexo
+            // 
+            Sexo.AutoSize = true;
+            Sexo.Location = new Point(21, 81);
+            Sexo.Name = "Sexo";
+            Sexo.Size = new Size(31, 15);
+            Sexo.TabIndex = 17;
+            Sexo.Text = "Sexo";
+            // 
             // FrmPrimerProyecto
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(571, 330);
+            Controls.Add(Sexo);
+            Controls.Add(cmbSexo);
+            Controls.Add(checkSocio);
             Controls.Add(lblEmail);
             Controls.Add(txtEmail);
             Controls.Add(txtTelefono);
@@ -299,5 +332,8 @@ namespace ClubDeportivo
         private DataGridViewTextBoxColumn colDocumento;
         private DataGridViewTextBoxColumn colTelefono;
         private DataGridViewTextBoxColumn colEmail;
+        private CheckBox checkSocio;
+        private ComboBox cmbSexo;
+        private Label Sexo;
     }
 }
