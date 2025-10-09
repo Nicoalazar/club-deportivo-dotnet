@@ -10,8 +10,7 @@ namespace ClubDeportivo
 {
     public partial class FrmPrimerProyecto : Form
     {
-        private readonly BindingList<Postulante> _postulantes = new();
-        private int socio = 0;
+        private readonly BindingList<Persona> _persona = new();
 
         public FrmPrimerProyecto()
         {
@@ -30,6 +29,16 @@ namespace ClubDeportivo
             if (cmbTipo.Items.Count > 0 && cmbTipo.SelectedIndex < 0)
             {
                 cmbTipo.SelectedIndex = 0;
+            }
+
+            if(cmbSexo.Items.Count == 0)
+            {
+                cmbSexo.Items.AddRange(new object[] { "Masculino", "Femenino", "Otro" });
+            }
+
+            if (cmbSexo.Items.Count > 0 && cmbSexo.SelectedIndex < 0)
+            {
+                cmbSexo.SelectedIndex = 0;
             }
         }
 
@@ -63,26 +72,30 @@ namespace ClubDeportivo
                 return;
             }
 
+            var socioFlag = checkSocio.Checked ? 1 : 0;
+
             var persona = new Persona(
                 txtNombre.Text.Trim(),
                 txtApellido.Text.Trim(),
+                cmbSexo.SelectedItem.ToString()!,
                 cmbTipo.SelectedItem.ToString()!,
                 txtDocumento.Text.Trim(),
                 int.Parse(txtTelefono.Text.Trim()),
-                txtEmail.Text.Trim());
+                txtEmail.Text.Trim(),
+                socioFlag);
 
             try
             {
-                if (PersonaExiste(postulante.Tipo, postulante.Documento))
+                if (PersonaExiste(persona.Tipo, persona.Documento))
                 {
                     MessageBox.Show("Ya existe una persona con ese Tipo y Documento.",
                                     "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                int personaId = GuardarPersonaEnDb(postulante);
+                int personaId = GuardarPersonaEnDb(persona);
 
-                _postulantes.Add(postulante);
+                _persona.Add(persona);
 
                 MessageBox.Show(
                     personaId > 0 ? $"Guardado OK. ID: {personaId}" : "Guardado OK.",
@@ -124,15 +137,7 @@ namespace ClubDeportivo
 
             txtNombre.Focus();
         }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkSocio.Checked)
-            {
-                socio = 1;
-            }
-        }
-        private int GuardarPersonaEnDb(Postulante p)
+        private int GuardarPersonaEnDb(Persona p)
         {
             // Reutilizamos tu misma conexión del login
             using var cn = Conexion.getInstancia().CrearConcexion();
@@ -144,9 +149,12 @@ namespace ClubDeportivo
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("p_nombre", MySqlDbType.VarChar).Value = p.Nombre;
                 cmd.Parameters.Add("p_apellido", MySqlDbType.VarChar).Value = p.Apellido;
+                cmd.Parameters.Add("p_sexo", MySqlDbType.VarString).Value = p.Sexo;
                 cmd.Parameters.Add("p_tipo", MySqlDbType.VarChar).Value = p.Tipo;        // 'DNI' | 'Pasaporte' | 'Extranjero'
                 cmd.Parameters.Add("p_documento", MySqlDbType.VarChar).Value = p.Documento;
-                cmd.Parameters.Add("p_socio", MySqlDbType.TinyText).Value = socio;
+                cmd.Parameters.Add("p_email", MySqlDbType.VarChar).Value = p.Email;
+                cmd.Parameters.Add("p_telefono", MySqlDbType.VarChar).Value = p.Telefono;
+                cmd.Parameters.Add("p_socio", MySqlDbType.Int64).Value = p.Relacion;
                 cmd.ExecuteNonQuery();
             }
 
