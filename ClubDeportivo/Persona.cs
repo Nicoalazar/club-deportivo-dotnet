@@ -31,9 +31,9 @@
         }
         
         public virtual string MostrarDatos()
-{
-    return $"{Nombre} {Apellido} | {Tipo}: {Documento} | Tel: {Telefono} | Email: {Email}";
-}
+        {
+            return $"{Nombre} {Apellido} | {Tipo}: {Documento} | Tel: {Telefono} | Email: {Email}";
+        }
 
     }
 }
