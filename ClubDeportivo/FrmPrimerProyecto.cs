@@ -65,6 +65,13 @@ namespace ClubDeportivo
                 return;
             }
 
+            if (cmbSexo.SelectedItem is null)
+            {
+                MessageBox.Show("Seleccione el Sexo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbSexo.DroppedDown = true;
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(txtDocumento.Text))
             {
                 MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
