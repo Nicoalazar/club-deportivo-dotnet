@@ -32,24 +32,25 @@
             btnRegistrarPersona = new Button();
             btnListarVencimientos = new Button();
             btnRevisarAsistencia = new Button();
-            btnPrueba = new Button();
+            btnBuscar = new Button();
             SuspendLayout();
             // 
             // tituloVentanaPrincipal
             // 
             tituloVentanaPrincipal.AutoSize = true;
             tituloVentanaPrincipal.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            tituloVentanaPrincipal.Location = new Point(281, 50);
+            tituloVentanaPrincipal.Location = new Point(246, 38);
             tituloVentanaPrincipal.Name = "tituloVentanaPrincipal";
-            tituloVentanaPrincipal.Size = new Size(214, 37);
+            tituloVentanaPrincipal.Size = new Size(171, 30);
             tituloVentanaPrincipal.TabIndex = 0;
             tituloVentanaPrincipal.Text = "Club Deportivo";
             // 
             // btnRegistrarPersona
             // 
-            btnRegistrarPersona.Location = new Point(142, 143);
+            btnRegistrarPersona.Location = new Point(124, 107);
+            btnRegistrarPersona.Margin = new Padding(3, 2, 3, 2);
             btnRegistrarPersona.Name = "btnRegistrarPersona";
-            btnRegistrarPersona.Size = new Size(158, 29);
+            btnRegistrarPersona.Size = new Size(138, 31);
             btnRegistrarPersona.TabIndex = 1;
             btnRegistrarPersona.Text = "Registrar Persona";
             btnRegistrarPersona.UseVisualStyleBackColor = true;
@@ -57,9 +58,10 @@
             // 
             // btnListarVencimientos
             // 
-            btnListarVencimientos.Location = new Point(469, 143);
+            btnListarVencimientos.Location = new Point(410, 107);
+            btnListarVencimientos.Margin = new Padding(3, 2, 3, 2);
             btnListarVencimientos.Name = "btnListarVencimientos";
-            btnListarVencimientos.Size = new Size(158, 29);
+            btnListarVencimientos.Size = new Size(138, 31);
             btnListarVencimientos.TabIndex = 2;
             btnListarVencimientos.Text = "Listar Vencimientos";
             btnListarVencimientos.UseVisualStyleBackColor = true;
@@ -67,34 +69,37 @@
             // 
             // btnRevisarAsistencia
             // 
-            btnRevisarAsistencia.Location = new Point(142, 280);
+            btnRevisarAsistencia.Location = new Point(410, 199);
+            btnRevisarAsistencia.Margin = new Padding(3, 2, 3, 2);
             btnRevisarAsistencia.Name = "btnRevisarAsistencia";
-            btnRevisarAsistencia.Size = new Size(158, 29);
-            btnRevisarAsistencia.TabIndex = 3;
+            btnRevisarAsistencia.Size = new Size(138, 31);
+            btnRevisarAsistencia.TabIndex = 4;
             btnRevisarAsistencia.Text = "Revisar Asistencia";
             btnRevisarAsistencia.UseVisualStyleBackColor = true;
             btnRevisarAsistencia.Click += btnRevisarAsistencia_Click;
             // 
-            // btnPrueba
+            // btnBuscar
             // 
-            btnPrueba.Location = new Point(469, 280);
-            btnPrueba.Name = "btnPrueba";
-            btnPrueba.Size = new Size(158, 29);
-            btnPrueba.TabIndex = 4;
-            btnPrueba.Text = "Prueba";
-            btnPrueba.UseVisualStyleBackColor = true;
-            btnPrueba.Click += btnPrueba_Click;
+            btnBuscar.Location = new Point(124, 199);
+            btnBuscar.Margin = new Padding(3, 2, 3, 2);
+            btnBuscar.Name = "btnBuscar";
+            btnBuscar.Size = new Size(138, 31);
+            btnBuscar.TabIndex = 3;
+            btnBuscar.Text = "Buscar Persona";
+            btnBuscar.UseVisualStyleBackColor = true;
+            btnBuscar.Click += btnBuscar_Click;
             // 
             // FrmPrincipal
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(btnPrueba);
+            ClientSize = new Size(700, 338);
+            Controls.Add(btnBuscar);
             Controls.Add(btnRevisarAsistencia);
             Controls.Add(btnListarVencimientos);
             Controls.Add(btnRegistrarPersona);
             Controls.Add(tituloVentanaPrincipal);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmPrincipal";
             Text = "Pantalla Principal";
             ResumeLayout(false);
@@ -107,6 +112,6 @@
         private Button btnRegistrarPersona;
         private Button btnListarVencimientos;
         private Button btnRevisarAsistencia;
-        private Button btnPrueba;
+        private Button btnBuscar;
     }
 }
