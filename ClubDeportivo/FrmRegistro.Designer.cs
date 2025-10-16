@@ -1,6 +1,6 @@
 namespace ClubDeportivo
 {
-    partial class FrmPrimerProyecto
+    partial class FrmRegistro
     {
         /// <summary>
         ///  Required designer variable.
