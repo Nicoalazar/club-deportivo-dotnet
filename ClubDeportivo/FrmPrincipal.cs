@@ -19,7 +19,7 @@ namespace ClubDeportivo
 
         private void btnRegistrarPersona_Click(object sender, EventArgs e)
         {
-            FrmPrimerProyecto frmAltas = new FrmPrimerProyecto();
+            FrmRegistro frmAltas = new FrmRegistro();
             frmAltas.ShowDialog();
         }
 

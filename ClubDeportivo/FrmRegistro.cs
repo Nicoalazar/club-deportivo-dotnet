@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace ClubDeportivo
 {
-    public partial class FrmPrimerProyecto : Form
+    public partial class FrmRegistro : Form
     {
         private readonly BindingList<Persona> _persona = new();
 
-        public FrmPrimerProyecto()
+        public FrmRegistro()
         {
             InitializeComponent();
             dgvPersona.AutoGenerateColumns = false;
