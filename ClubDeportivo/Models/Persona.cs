@@ -1,4 +1,4 @@
-﻿namespace ClubDeportivo
+﻿namespace ClubDeportivo.Models
 {
     public class Persona
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace ClubDeportivo
+namespace ClubDeportivo.Models
 {
     public class Socio : Persona
     {

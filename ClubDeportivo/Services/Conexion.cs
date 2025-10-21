@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace ClubDeportivo
+namespace ClubDeportivo.Services
 {
     public class Conexion
     {
@@ -18,11 +18,11 @@ namespace ClubDeportivo
         private static Conexion? con = null;
         private Conexion()  // asignamos valores a las variables de la conexion
         {
-            this.baseDatos = "grupo20_club";  //appdb
-            this.servidor = "localhost";      //127.0.0.1
-            this.puerto = "3306";             //13306
-            this.usuario = "root";            //appuser
-            this.clave = "";                  //AppP4ss!
+            baseDatos = "grupo20_club";  //appdb
+            servidor = "localhost";      //127.0.0.1
+            puerto = "3306";             //13306
+            usuario = "root";            //appuser
+            clave = "";                  //AppP4ss!
         }
         // proceso de interacción
         public MySqlConnection CrearConcexion()
@@ -32,11 +32,11 @@ namespace ClubDeportivo
             // el bloque try permite controlar errores
             try
             {
-                cadena.ConnectionString = "datasource=" + this.servidor +
-                ";port=" + this.puerto +
-                ";username=" + this.usuario +
-                ";password=" + this.clave +
-                ";Database=" + this.baseDatos;
+                cadena.ConnectionString = "datasource=" + servidor +
+                ";port=" + puerto +
+                ";username=" + usuario +
+                ";password=" + clave +
+                ";Database=" + baseDatos;
             }
             catch (Exception ex)
             {

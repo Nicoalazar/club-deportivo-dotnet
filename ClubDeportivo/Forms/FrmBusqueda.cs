@@ -1,4 +1,6 @@
-﻿using MySql.Data.MySqlClient;
+﻿using ClubDeportivo.Models;
+using ClubDeportivo.Services;
+using MySql.Data.MySqlClient;
 using System.ComponentModel;
 
 namespace ClubDeportivo

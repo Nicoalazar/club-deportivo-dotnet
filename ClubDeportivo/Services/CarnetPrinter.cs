@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClubDeportivo.Models;
+using System;
 using System.Drawing;
 using System.Drawing.Printing;
 
