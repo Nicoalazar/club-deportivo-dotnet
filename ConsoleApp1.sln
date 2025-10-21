@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClubDeportivo", "ClubDeport
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S10_Polimorfismo", "S10_Polimorfismo\S10_Polimorfismo.csproj", "{308B3ACE-8BDE-46B9-8ADA-7D9230EC4005}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S12_Interfaces_Y_Polimorfismo", "S12_Interfaces_Y_Polimorfismo\S12_Interfaces_Y_Polimorfismo.csproj", "{C0D68B42-2116-41D7-8F82-A982F310FE73}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{308B3ACE-8BDE-46B9-8ADA-7D9230EC4005}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{308B3ACE-8BDE-46B9-8ADA-7D9230EC4005}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{308B3ACE-8BDE-46B9-8ADA-7D9230EC4005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0D68B42-2116-41D7-8F82-A982F310FE73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0D68B42-2116-41D7-8F82-A982F310FE73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0D68B42-2116-41D7-8F82-A982F310FE73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0D68B42-2116-41D7-8F82-A982F310FE73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
