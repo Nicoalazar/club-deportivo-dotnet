@@ -7,7 +7,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 
 
-namespace ClubDeportivo
+namespace ClubDeportivo.Services
 {
     public class Usuario
     {
