@@ -56,7 +56,7 @@
             dataGridBusqueda.AllowUserToAddRows = false;
             dataGridBusqueda.AllowUserToDeleteRows = false;
             dataGridBusqueda.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridBusqueda.Location = new Point(28, 272);
+            dataGridBusqueda.Location = new Point(24, 277);
             dataGridBusqueda.Name = "dataGridBusqueda";
             dataGridBusqueda.ReadOnly = true;
             dataGridBusqueda.Size = new Size(595, 150);

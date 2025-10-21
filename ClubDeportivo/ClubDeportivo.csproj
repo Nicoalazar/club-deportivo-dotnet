@@ -27,4 +27,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Forms\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>
