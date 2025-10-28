@@ -48,9 +48,9 @@ namespace ClubDeportivo.Services
             Font textFont = new Font("Arial", 12, FontStyle.Regular);
 
             g.DrawString("Carnet de Socio", titleFont, Brushes.DarkBlue, 220, 110);
-            g.DrawString($"Nombre: {persona.Nombre} {persona.Apellido}", textFont, Brushes.Black, 120, 200);
-            g.DrawString($"Documento: {persona.Tipo} {persona.Documento}", textFont, Brushes.Black, 120, 225);
-            g.DrawString($"Socio: {(persona.Relacion == 1 ? "Activo" : "No socio")}", textFont, Brushes.Black, 120, 250);
+            g.DrawString($"Nombre: {persona.Nombres} {persona.Apellidos}", textFont, Brushes.Black, 120, 200);
+            g.DrawString($"Documento: {persona.TipoDocumento} {persona.NumeroDocumento}", textFont, Brushes.Black, 120, 225);
+            g.DrawString($"Socio: {(persona.Activo == 1 ? "Activo" : "No socio")}", textFont, Brushes.Black, 120, 250);
             g.DrawString($"Emitido: {DateTime.Now:dd/MM/yyyy}", textFont, Brushes.Black, 120, 275);
         }
     }

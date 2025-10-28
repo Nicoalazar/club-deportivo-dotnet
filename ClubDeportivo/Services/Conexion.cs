@@ -22,7 +22,7 @@ namespace ClubDeportivo.Services
             servidor = "localhost";      //127.0.0.1
             puerto = "3306";             //13306
             usuario = "root";            //appuser
-            clave = "";                  //AppP4ss!
+            clave = "desampa";                  //AppP4ss!
         }
         // proceso de interacción
         public MySqlConnection CrearConcexion()
