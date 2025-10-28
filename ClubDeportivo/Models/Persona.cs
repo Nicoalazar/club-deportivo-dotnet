@@ -2,37 +2,46 @@
 {
     public class Persona
     {
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public string Nombres { get; set; }
+        public string Apellidos { get; set; }
         public string Sexo { get; set; }
-        public string Tipo { get; set; }       // DNI / Pasaporte / Extranjero
-        public string Documento { get; set; }
+        public string TipoDocumento { get; set; }       // DNI / Pasaporte / Extranjero
+        public string NumeroDocumento { get; set; }
+        public DateTime FechaNacimiento { get; set; }
+
         public string Email { get; set; }
         public string Telefono { get; set; }
-        public int Relacion {  get; set; }
-        public int AptoFisico { get; set; }
+        public string Domicilio { get; set; }
+        public int Activo {  get; set; }
 
-
-
-
-        public Persona() { }
-
-        public Persona(string nombre, string apellido, string sexo, string tipo, string documento, string telefono, string email, int relacion, int aptoFisico )
+        public Persona(
+            string nombre, 
+            string apellido, 
+            string sexo, 
+            string tipoDocumento, 
+            string numeroDocumento, 
+            DateTime fechaNacimiento,
+            string email,
+            string telefono,
+            string domicilio ,
+            int activo 
+            )
         {
-            Nombre = nombre;
-            Apellido = apellido;
+            Nombres = nombre;
+            Apellidos = apellido;
             Sexo = sexo;
-            Tipo = tipo;
-            Documento = documento;
+            TipoDocumento = tipoDocumento;
+            NumeroDocumento = numeroDocumento;
+            FechaNacimiento = fechaNacimiento;
             Email = email;
             Telefono = telefono;
-            Relacion = relacion;
-            AptoFisico = aptoFisico;
+            Activo = activo;
+            Domicilio = domicilio;
         }
         
         public virtual string MostrarDatos()
         {
-            return $"{Nombre} {Apellido} | {Tipo}: {Documento} | Tel: {Telefono} | Email: {Email}";
+            return $"{Nombres} {Apellidos} | {TipoDocumento}: {NumeroDocumento} | Tel: {Telefono} | Email: {Email}";
         }
 
     }

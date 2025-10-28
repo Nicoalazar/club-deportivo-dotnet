@@ -2,23 +2,21 @@
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System.ComponentModel;
+using System.Data;
 
 namespace ClubDeportivo
 {
     public partial class FrmBusqueda : Form
     {
-        private readonly BindingList<Persona> _persona = new();
         private ContextMenuStrip menuSocio;
         public FrmBusqueda()
         {
             InitializeComponent();
 
             dataGridBusqueda.AutoGenerateColumns = true;
-            dataGridBusqueda.DataSource = _persona;
-
             menuSocio = new ContextMenuStrip();
 
-            // Ítems del menú
+            // Ítems del menú del listado
             menuSocio.Items.Add("Editar Socio", null, MenuEditar_Click);
             menuSocio.Items.Add("Cobrar Cuota", null, MenuCobrar_Click);
             menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
@@ -34,35 +32,34 @@ namespace ClubDeportivo
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            string documento = txtDni.Text.Trim();
+            //captura de datos del formulario
+            //TODO: AGREGAR nombres y apellidos
+            string nroDocumento = txtDni.Text.Trim();
 
             using var cn = Conexion.getInstancia().CrearConcexion();
             cn.Open();
 
-            using var cmd = new MySqlCommand(
-                "SELECT * FROM personas WHERE documento = @d;", cn); //TODO: mejorar consulta
-            cmd.Parameters.Add("@d", MySqlDbType.VarChar).Value = documento;
+            using var cmd = new MySqlCommand("sp_persona_search", cn); //TODO: TERMINAR VISTA
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = "";
+            //TODO: CAMBIAR por nombres y apellidos
+            cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = "";
+            cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value = nroDocumento;
 
-            using var reader = cmd.ExecuteReader();
+            using var adapter = new MySqlDataAdapter(cmd);
+            DataTable tabla = new DataTable();
+            adapter.Fill(tabla);
 
-            if (reader.Read())
+            if (tabla.Rows.Count > 0)
             {
-                Persona persona = new Persona
-                {
-                    Nombre = reader.GetString("nombre"),
-                    Apellido = reader.GetString("apellido"),
-                    Tipo = reader.GetString("tipo"),
-                    Documento = reader.GetString("documento")
-                };
-
-                _persona.Clear();  // limpia resultados anteriores
-                _persona.Add(persona);
+                dataGridBusqueda.DataSource = tabla;
 
                 MessageBox.Show("La persona existe en la base de datos.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
                 MessageBox.Show("No se encontró ninguna persona con ese documento.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             }
 
         }
@@ -82,21 +79,21 @@ namespace ClubDeportivo
         {
             var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
             if (persona != null)
-                MessageBox.Show($"Editar socio: {persona.Nombre} {persona.Apellido}");
+                MessageBox.Show($"Editar socio: {persona.Nombres} {persona.Apellidos}");
         }
 
         private void MenuCobrar_Click(object? sender, EventArgs e)
         {
             var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
             if (persona != null)
-                MessageBox.Show($"Cobrar cuota a: {persona.Nombre}");
+                MessageBox.Show($"Cobrar cuota a: {persona.Nombres}");
         }
 
         private void MenuInhabilitar_Click(object? sender, EventArgs e)
         {
             var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
             if (persona != null)
-                MessageBox.Show($"Inhabilitar socio: {persona.Nombre}");
+                MessageBox.Show($"Inhabilitar socio: {persona.Nombres}");
         }
 
         private void MenuCarnet_Click(object? sender, EventArgs e)

@@ -4,22 +4,50 @@ namespace ClubDeportivo.Models
 {
     public class Socio : Persona
     {
-        public string CarnetSocio { get; set; }
-        public string Estado { get; set; } //este era el estado del pago
-        public Socio() { }
+        public string IdSocio { get; set; }
+        public string FechaAlta { get; set; }
+        public string VtoAptoFisico { get; set; }
+        public string Observaciones { get; set; } 
 
-        public Socio(string nombre, string apellido, string sexo, string tipo, string documento, string telefono, string email, int relacion, 
-            int aptoFisico, string carnetSocio, string estado)
-            : base(nombre, apellido, sexo, tipo, documento, telefono, email, relacion, aptoFisico)
+        public Socio(
+            string nombre,
+            string apellido,
+            string sexo,
+            string tipo,
+            string documento,
+            DateTime fechaNacimiento,
+            string telefono,
+            string email,
+            string domicilio,
+            int activo,
+            string numeroSocio,
+            string fechaAlta,
+            string vtoAptoFisico,
+            string obs
+            )
+            : base(
+                  nombre, 
+                  apellido, 
+                  sexo, 
+                  tipo, 
+                  documento, 
+                  fechaNacimiento, 
+                  telefono, 
+                  email, 
+                  domicilio, 
+                  activo
+            )
         {
-            CarnetSocio = carnetSocio;
-            Estado = estado;
+            IdSocio = numeroSocio;
+            FechaAlta = fechaAlta;
+            VtoAptoFisico = vtoAptoFisico;
+            Observaciones = obs;
         }
 
         public override string MostrarDatos()
         {
-            string apto = AptoFisico == 1 ? "Apto físico OK" : "Apto físico NO";
-            return base.MostrarDatos() + $" | Carnet Socio: {CarnetSocio} | {apto} | Estado de cobro: {Estado}";
+            //string apto = AptoFisico == 1 ? "Apto físico OK" : "Apto físico NO";
+            return base.MostrarDatos() + $" | Carnet Socio: {IdSocio} |  Vencimiento apto fisico: {VtoAptoFisico}";
         }
     }
 }
