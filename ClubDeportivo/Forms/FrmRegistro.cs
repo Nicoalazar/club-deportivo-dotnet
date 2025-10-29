@@ -60,8 +60,7 @@ namespace ClubDeportivo
                 dateTimePickerNacim.Value,
                 txtEmail.Text.Trim(),
                 txtTelefono.Text.Trim(),
-                txtDomicilio.Text,
-                1
+                txtDomicilio.Text
             );
 
             using var cn = Conexion.getInstancia().CrearConcexion();
@@ -89,7 +88,7 @@ namespace ClubDeportivo
                 _persona.Add(persona);
 
                 var detalleRelacion = socioFlag
-                    ? "Socio regisreado con ID: "
+                    ? "Socio registrado con ID: "
                     : "La persona fue registrada";
 
                 var detalleAptoFisico = aptoFlag
@@ -163,7 +162,6 @@ namespace ClubDeportivo
             cmd.Parameters.Add("p_email", MySqlDbType.VarChar).Value = p.Email;
             cmd.Parameters.Add("p_telefono", MySqlDbType.VarChar).Value = p.Telefono;
             cmd.Parameters.Add("p_domicilio", MySqlDbType.VarChar).Value = p.Domicilio;
-            cmd.Parameters.Add("p_estado", MySqlDbType.Binary).Value = p.Activo;
 
 
             // 2) Retorna el id nuevo
@@ -254,7 +252,7 @@ namespace ClubDeportivo
 
         private int GuardarRelacionSocio(int personaId, bool socioFlag, bool aptoFlag, MySqlConnection cn, MySqlTransaction tx)
         {
-            var vencimientoApto = aptoFlag ? DateTime.Now.AddYears(1) : DateTime.Now;
+            var vencimientoApto = aptoFlag ? DateTime.Now.AddYears(1) : DateTime.Now.AddDays(-1);
 
             if (socioFlag)
             {

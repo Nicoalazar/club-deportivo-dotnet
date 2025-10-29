@@ -12,7 +12,6 @@
         public string Email { get; set; }
         public string Telefono { get; set; }
         public string Domicilio { get; set; }
-        public int Activo {  get; set; }
 
         public Persona(
             string nombre, 
@@ -23,8 +22,7 @@
             DateTime fechaNacimiento,
             string email,
             string telefono,
-            string domicilio ,
-            int activo 
+            string domicilio
             )
         {
             Nombres = nombre;
@@ -35,7 +33,6 @@
             FechaNacimiento = fechaNacimiento;
             Email = email;
             Telefono = telefono;
-            Activo = activo;
             Domicilio = domicilio;
         }
         
