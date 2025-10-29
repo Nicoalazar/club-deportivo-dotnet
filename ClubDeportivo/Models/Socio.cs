@@ -1,53 +1,31 @@
-using System;
+using ClubDeportivo.Models;
 
-namespace ClubDeportivo.Models
+public class Socio
 {
-    public class Socio : Persona
+    public Persona Persona { get; set; }
+    public int NumeroSocio { get; set; }
+    public DateTime VtoAptoFisico { get; set; }
+    public DateTime FechaAlta { get; set; }
+    public DateTime FechaBaja { get; set; }
+    public string Observaciones { get; set; }
+
+    public Socio()
     {
-        public string IdSocio { get; set; }
-        public string FechaAlta { get; set; }
-        public string VtoAptoFisico { get; set; }
-        public string Observaciones { get; set; } 
+        Persona = new Persona("", "", "", "", "", DateTime.Now, "", "", "");
+    }
 
-        public Socio(
-            string nombre,
-            string apellido,
-            string sexo,
-            string tipo,
-            string documento,
-            DateTime fechaNacimiento,
-            string telefono,
-            string email,
-            string domicilio,
-            int activo,
-            string numeroSocio,
-            string fechaAlta,
-            string vtoAptoFisico,
-            string obs
-            )
-            : base(
-                  nombre, 
-                  apellido, 
-                  sexo, 
-                  tipo, 
-                  documento, 
-                  fechaNacimiento, 
-                  telefono, 
-                  email, 
-                  domicilio, 
-                  activo
-            )
-        {
-            IdSocio = numeroSocio;
-            FechaAlta = fechaAlta;
-            VtoAptoFisico = vtoAptoFisico;
-            Observaciones = obs;
-        }
+    public Socio(Persona persona, int numeroSocio, DateTime vtoAptoFisico, DateTime fechaAlta, DateTime fechaBaja, string obs)
+    {
+        Persona = persona;
+        NumeroSocio = numeroSocio;
+        FechaAlta = fechaAlta;
+        FechaBaja = fechaBaja;
+        VtoAptoFisico = vtoAptoFisico;
+        Observaciones = obs;
+    }
 
-        public override string MostrarDatos()
-        {
-            //string apto = AptoFisico == 1 ? "Apto físico OK" : "Apto físico NO";
-            return base.MostrarDatos() + $" | Carnet Socio: {IdSocio} |  Vencimiento apto fisico: {VtoAptoFisico}";
-        }
+    public string MostrarDatos()
+    {
+        return $"{Persona.MostrarDatos()} | Carnet Socio: {NumeroSocio} | Venc. apto físico: {VtoAptoFisico:dd/MM/yyyy}";
     }
 }

@@ -1,7 +1,6 @@
 ﻿using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
-using System.ComponentModel;
 using System.Data;
 
 namespace ClubDeportivo
@@ -32,6 +31,9 @@ namespace ClubDeportivo
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            //limpia tabla anterior
+            dataGridBusqueda.DataSource = null;
+
             //captura de datos del formulario
             //TODO: AGREGAR nombres y apellidos
             string nroDocumento = txtDni.Text.Trim();
@@ -39,10 +41,10 @@ namespace ClubDeportivo
             using var cn = Conexion.getInstancia().CrearConcexion();
             cn.Open();
 
-            using var cmd = new MySqlCommand("sp_persona_search", cn); //TODO: TERMINAR VISTA
+            using var cmd = new MySqlCommand("sp_persona_search", cn);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = "";
             //TODO: CAMBIAR por nombres y apellidos
+            cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = "";
             cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = "";
             cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value = nroDocumento;
 
@@ -58,7 +60,7 @@ namespace ClubDeportivo
             }
             else
             {
-                MessageBox.Show("No se encontró ninguna persona con ese documento.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No se encontró ninguna persona con los datos proporcionados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             }
 
@@ -77,34 +79,78 @@ namespace ClubDeportivo
 
         private void MenuEditar_Click(object? sender, EventArgs e)
         {
-            var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
-            if (persona != null)
-                MessageBox.Show($"Editar socio: {persona.Nombres} {persona.Apellidos}");
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
+                string apellido = row.Cells["apellidos"].Value?.ToString() ?? "";
+                MessageBox.Show($"Editar socio: {nombre} {apellido}");
+            }
         }
 
         private void MenuCobrar_Click(object? sender, EventArgs e)
         {
-            var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
-            if (persona != null)
-                MessageBox.Show($"Cobrar cuota a: {persona.Nombres}");
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
+                MessageBox.Show($"Cobrar cuota a: {nombre}");
+            }
         }
 
         private void MenuInhabilitar_Click(object? sender, EventArgs e)
         {
-            var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
-            if (persona != null)
-                MessageBox.Show($"Inhabilitar socio: {persona.Nombres}");
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
+                MessageBox.Show($"Inhabilitar socio: {nombre}");
+            }
         }
 
         private void MenuCarnet_Click(object? sender, EventArgs e)
         {
-            var persona = dataGridBusqueda.CurrentRow?.DataBoundItem as Persona;
-            if (persona != null)
+            var row = dataGridBusqueda.CurrentRow;
+            
+            if (row == null) return;
+            
+            var persona = new Persona(
+                    
+                row.Cells["Nombres"].Value.ToString()!,
+                row.Cells["Apellidos"].Value.ToString()!,
+                row.Cells["Sexo"].Value.ToString()!,
+                row.Cells["Tipo"].Value.ToString()!,
+                row.Cells["NroDocumento"].Value.ToString()!,
+                Convert.ToDateTime(row.Cells["Nacimiento"].Value).Date,
+                "",
+                "",
+                ""
+                );
+            string categoria = row.Cells["Categoría"].Value.ToString()!;
+
+            if (categoria == "Socio")
             {
-                var printer = new Services.CarnetPrinter(persona);
-                printer.Imprimir();
+                var socio = new Socio(
+                    persona,
+                    Convert.ToInt32(row.Cells["Id"].Value),
+                    Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
+                    Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
+                    DateTime.Now,
+                    row.Cells["estado"].Value.ToString()!);
+                new SocioCarnetPrinter(socio).Imprimir();
             }
+            else
+            {
+                var noSocio = new NoSocio(
+                   persona,
+                   Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
+                   row.Cells["estado"].Value.ToString()!,
+                   "",
+                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date);
+                new NoSocioCarnetPrinter(noSocio).Imprimir();
+            }               
         }
+
         private void MenuCancelar_Click(object? sender, EventArgs e)
         {
             dataGridBusqueda.ClearSelection();
