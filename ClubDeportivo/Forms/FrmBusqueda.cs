@@ -52,8 +52,7 @@ namespace ClubDeportivo
                     Nombre = reader.GetString("nombre"),
                     Apellido = reader.GetString("apellido"),
                     Tipo = reader.GetString("tipo"),
-                    Documento = reader.GetString("documento"),
-                    Relacion = reader.GetInt32("socio"),
+                    Documento = reader.GetString("documento")
                 };
 
                 _persona.Clear();  // limpia resultados anteriores
