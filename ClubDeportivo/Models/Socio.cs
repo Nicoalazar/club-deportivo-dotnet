@@ -1,25 +1,31 @@
-using System;
+using ClubDeportivo.Models;
 
-namespace ClubDeportivo.Models
+public class Socio
 {
-    public class Socio : Persona
+    public Persona Persona { get; set; }
+    public int NumeroSocio { get; set; }
+    public DateTime VtoAptoFisico { get; set; }
+    public DateTime FechaAlta { get; set; }
+    public DateTime FechaBaja { get; set; }
+    public string? Observaciones { get; set; }
+
+    public Socio()
     {
-        public string CarnetSocio { get; set; }
-        public string Estado { get; set; } //este era el estado del pago
-        public Socio() { }
+        Persona = new Persona("", "", "", "", "", DateTime.Now, "", "", "");
+    }
 
-        public Socio(string nombre, string apellido, string sexo, string tipo, string documento, string telefono, string email, int relacion, 
-            int aptoFisico, string carnetSocio, string estado)
-            : base(nombre, apellido, sexo, tipo, documento, telefono, email, relacion, aptoFisico)
-        {
-            CarnetSocio = carnetSocio;
-            Estado = estado;
-        }
+    public Socio(Persona persona, int numeroSocio, DateTime vtoAptoFisico, DateTime fechaAlta, DateTime fechaBaja, string obs)
+    {
+        Persona = persona;
+        NumeroSocio = numeroSocio;
+        FechaAlta = fechaAlta;
+        FechaBaja = fechaBaja;
+        VtoAptoFisico = vtoAptoFisico;
+        Observaciones = obs;
+    }
 
-        public override string MostrarDatos()
-        {
-            string apto = AptoFisico == 1 ? "Apto físico OK" : "Apto físico NO";
-            return base.MostrarDatos() + $" | Carnet Socio: {CarnetSocio} | {apto} | Estado de cobro: {Estado}";
-        }
+    public string MostrarDatos()
+    {
+        return $"{Persona.MostrarDatos()} | Carnet Socio: {NumeroSocio} | Venc. apto físico: {VtoAptoFisico:dd/MM/yyyy}";
     }
 }

@@ -2,23 +2,32 @@ using System;
 
 namespace ClubDeportivo.Models
 {
-    public class NoSocio : Persona
+    public class NoSocio
     {
-        public string CarnetNoSocio { get; set; }
+        public Persona Persona { get; set; }
 
-        public NoSocio() { }
+        public string? Estado { get; set; }
+        public string? Motivo { get; set; }
+        public DateTime FechaRegistro { get; set; }
+        public DateTime VtoAptoFisico { get; set; }
 
-        public NoSocio(string nombre, string apellido, string sexo, string tipo, string documento, string telefono, string email, int relacion,
-                       int aptoFisico, string carnetNoSocio)
-            : base(nombre, apellido, sexo, tipo, documento, telefono, email, relacion, aptoFisico)
+        public NoSocio()
         {
-            CarnetNoSocio = carnetNoSocio;
+            Persona = new Persona("", "", "", "", "", DateTime.Now, "", "", "");
         }
 
-        public override string MostrarDatos()
+        public NoSocio(Persona persona, DateTime vtoAptoFisico, string estado, string motivo, DateTime fechaRegistro )
         {
-            string apto = AptoFisico == 1 ? "Apto físico OK" : "Apto físico Rechazado";
-            return base.MostrarDatos() + $" | Carnet No Socio: {CarnetNoSocio} | {apto}";
+            Persona = persona;
+            VtoAptoFisico = vtoAptoFisico;
+            Estado = estado;
+            Motivo = motivo;
+            FechaRegistro = fechaRegistro;
+        }
+
+        public string MostrarDatos()
+        {
+            return $"{Persona.MostrarDatos()} | No Socio: {Estado} | {Motivo}";
         }
     }
 }

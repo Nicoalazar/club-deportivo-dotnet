@@ -25,7 +25,7 @@ namespace ClubDeportivo
                 string user = tablaLogin.Rows[0]["NombreUsu"].ToString()!;
                 string role = tablaLogin.Rows[0]["NomRol"].ToString()!;
                 // quiere decir que el resultado tiene 1 fila por lo que el usuario EXISTE
-                var frmPrincipal = new FrmPrincipal(user, role);     // hago un cambio aca para abrir la ventana principal
+                var frmPrincipal = new FrmPrincipal(user, role);  //envia datos de inicio para mostrar en pantalla principal
                 frmPrincipal.Show();
                 this.Hide();
                 frmPrincipal.FormClosed += (s, args) => this.Close();

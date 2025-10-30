@@ -22,7 +22,7 @@ namespace ClubDeportivo.Services
                 sqlCon = Conexion.getInstancia().CrearConcexion();
                 // el comando es un elemento que almacena en este caso el nombre
                 // del procedimiento almacenado y la referencia a la  conexion
-                MySqlCommand comando = new MySqlCommand("IngresoLogin", sqlCon);
+                MySqlCommand comando = new MySqlCommand("sp_login", sqlCon);
                 comando.CommandType = CommandType.StoredProcedure;
                 // definimos los parametros que tiene el procedure
                 comando.Parameters.Add("Usu", MySqlDbType.VarChar).Value = L_Usu;
@@ -35,7 +35,7 @@ namespace ClubDeportivo.Services
                 //  de esta forma esta asociado el metodo con el procedure que esta  almacenado en MySQ
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
