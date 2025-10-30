@@ -7,7 +7,7 @@ public class Socio
     public DateTime VtoAptoFisico { get; set; }
     public DateTime FechaAlta { get; set; }
     public DateTime FechaBaja { get; set; }
-    public string Observaciones { get; set; }
+    public string? Observaciones { get; set; }
 
     public Socio()
     {

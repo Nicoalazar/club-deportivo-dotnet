@@ -27,7 +27,7 @@ namespace ClubDeportivo.Services
 
         private void PrintDoc_PrintPage(object? sender, PrintPageEventArgs e)
         {
-            var g = e.Graphics;
+            var g = e.Graphics!;
             var rect = new Rectangle(100, 100, 500, 300);
 
             // Fondo azul claro institucional

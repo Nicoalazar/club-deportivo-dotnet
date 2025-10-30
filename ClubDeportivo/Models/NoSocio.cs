@@ -6,8 +6,8 @@ namespace ClubDeportivo.Models
     {
         public Persona Persona { get; set; }
 
-        public string Estado { get; set; }
-        public string Motivo { get; set; }
+        public string? Estado { get; set; }
+        public string? Motivo { get; set; }
         public DateTime FechaRegistro { get; set; }
         public DateTime VtoAptoFisico { get; set; }
 
