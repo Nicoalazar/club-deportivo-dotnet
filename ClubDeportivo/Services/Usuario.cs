@@ -35,7 +35,7 @@ namespace ClubDeportivo.Services
                 //  de esta forma esta asociado el metodo con el procedure que esta  almacenado en MySQ
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

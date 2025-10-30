@@ -28,7 +28,7 @@ namespace ClubDeportivo.Services
 
         private void PrintDoc_PrintPage(object? sender, PrintPageEventArgs e)
         {
-            Graphics g = e.Graphics;
+            Graphics g = e.Graphics!;
             Rectangle rect = new Rectangle(100, 100, 500, 300);
 
             // Fondo gris claro para indicar NO SOCIO (muy evidente)

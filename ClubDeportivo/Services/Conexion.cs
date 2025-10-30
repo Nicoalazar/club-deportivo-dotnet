@@ -38,7 +38,7 @@ namespace ClubDeportivo.Services
                 ";password=" + clave +
                 ";Database=" + baseDatos;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 cadena = null;
                 throw;
