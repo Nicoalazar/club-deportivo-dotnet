@@ -17,7 +17,7 @@ namespace ClubDeportivo
         public FrmRegistro()
         {
             InitializeComponent();
-            dgvPersona.AutoGenerateColumns = false;
+            dgvPersona.AutoGenerateColumns = true;
             dgvPersona.DataSource = _persona;
         }
 
@@ -25,7 +25,7 @@ namespace ClubDeportivo
         {
             if (cmbTipo.Items.Count == 0)
             {
-                cmbTipo.Items.AddRange(new object[] { "DNI", "Pasaporte", "Extranjero" });
+                cmbTipo.Items.AddRange(new object[] { "DNI", "Pasaporte" });
             }
 
             if (cmbTipo.Items.Count > 0 && cmbTipo.SelectedIndex < 0)
@@ -33,9 +33,9 @@ namespace ClubDeportivo
                 cmbTipo.SelectedIndex = 0;
             }
 
-            if(cmbSexo.Items.Count == 0)
+            if (cmbSexo.Items.Count == 0)
             {
-                cmbSexo.Items.AddRange(new object[] { "Masculino", "Femenino", "Otro" });
+                cmbSexo.Items.AddRange(new object[] { "Masculino", "Femenino", "Otros" });
             }
 
             if (cmbSexo.Items.Count > 0 && cmbSexo.SelectedIndex < 0)
@@ -46,74 +46,59 @@ namespace ClubDeportivo
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-            {
-                MessageBox.Show("Ingrese el Nombre.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtNombre.Focus();
-                return;
-            }
+            VerificarCampos();
 
-            if (string.IsNullOrWhiteSpace(txtApellido.Text))
-            {
-                MessageBox.Show("Ingrese el Apellido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtApellido.Focus();
-                return;
-            }
-
-            if (cmbTipo.SelectedItem is null)
-            {
-                MessageBox.Show("Seleccione el Tipo de documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cmbTipo.DroppedDown = true;
-                return;
-            }
-
-            if (cmbSexo.SelectedItem is null)
-            {
-                MessageBox.Show("Seleccione el Sexo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cmbSexo.DroppedDown = true;
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtDocumento.Text))
-            {
-                MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDocumento.Focus();
-                return;
-            }
-
-            var socioFlag = checkSocio.Checked ? 1 : 0;
-            var aptoFlag = checkApto.Checked? 1 : 0;
+            var socioFlag = checkSocio.Checked;
+            var aptoFlag = checkApto.Checked;
 
             var persona = new Persona(
                 txtNombre.Text.Trim(),
                 txtApellido.Text.Trim(),
-                cmbSexo.SelectedItem.ToString()!,
-                cmbTipo.SelectedItem.ToString()!,
+                cmbSexo.SelectedItem!.ToString()!,
+                cmbTipo.SelectedItem!.ToString()!,
                 txtDocumento.Text.Trim(),
-                txtTelefono.Text.Trim(),
+                dateTimePickerNacim.Value,
                 txtEmail.Text.Trim(),
-                socioFlag,
-                aptoFlag);
+                txtTelefono.Text.Trim(),
+                txtDomicilio.Text
+            );
+
+            using var cn = Conexion.getInstancia().CrearConcexion();
+            cn.Open();
+            using var transaction = cn.BeginTransaction();
 
             try
             {
-                if (PersonaExiste(persona.Tipo, persona.Documento))
+                if (PersonaExiste(persona.Nombres, persona.Apellidos, persona.NumeroDocumento))
                 {
-                    MessageBox.Show("Ya existe una persona con ese Tipo y Documento.",
+                    MessageBox.Show("La persona ya está registrada. Revise los datos.",
                                     "Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
-                int personaId = GuardarPersonaEnDb(persona);
+                int personaId = GuardarPersonaEnDb(persona,cn,transaction);
+                if (personaId <= 0) throw new Exception("No se pudo guardar persona.");
+
+                //Guardo Relación como socio o no socio;
+                int relacionId = GuardarRelacionSocio(personaId, socioFlag, aptoFlag,cn,transaction);
+                if(relacionId <= 0) throw new Exception("No se pudo guardar la relación.");
+
+                transaction.Commit();
 
                 _persona.Add(persona);
 
-                var detalleRelacion = persona.Relacion == 1
-                    ? "La persona fue dada de alta como socio."
-                    : "La persona fue registrada como no socio.";
+                var detalleRelacion = socioFlag
+                    ? "Socio registrado con ID: "
+                    : "La persona fue registrada";
+
+                var detalleAptoFisico = aptoFlag
+                    ? "\n\nEntregó apto fisico y vence dentro de un año"
+                    : "\n\nNo entregó apto fisico";
 
                 MessageBox.Show(
-                    personaId > 0 ? $"{detalleRelacion} con ID: {personaId}" : "Guardado OK.",
+                    socioFlag ? 
+                    detalleRelacion + relacionId + detalleAptoFisico
+                    : detalleRelacion + detalleAptoFisico,
                     "Información",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
@@ -121,13 +106,9 @@ namespace ClubDeportivo
 
                 LimpiarEntradas();
             }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show("Error de base de datos: " + ex.Message, "DB",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
             catch (Exception ex)
             {
+                transaction.Rollback();
                 MessageBox.Show("Error: " + ex.Message, "Error",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -143,9 +124,14 @@ namespace ClubDeportivo
         {
             txtNombre.Clear();
             txtApellido.Clear();
+            cmbSexo.SelectedItem = null;
+            cmbTipo.SelectedItem = null;
             txtDocumento.Clear();
+            dateTimePickerNacim.Value = DateTime.Now;
             txtEmail.Clear();
             txtTelefono.Clear();
+            txtDomicilio.Clear();
+
             checkSocio.Checked = false;
             checkApto.Checked = false;
 
@@ -161,50 +147,140 @@ namespace ClubDeportivo
 
             txtNombre.Focus();
         }
-        private int GuardarPersonaEnDb(Persona p)
+        private int GuardarPersonaEnDb(Persona p, MySqlConnection cn, MySqlTransaction tx)
         {
-            // Reutilizamos tu misma conexión del login
-            using var cn = Conexion.getInstancia().CrearConcexion();
-            cn.Open();
-
             // 1) Llamar al SP de UNA SOLA SENTENCIA (sin DELIMITER)
-            using (var cmd = new MySqlCommand("sp_persona_insert", cn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("p_nombre", MySqlDbType.VarChar).Value = p.Nombre;
-                cmd.Parameters.Add("p_apellido", MySqlDbType.VarChar).Value = p.Apellido;
-                cmd.Parameters.Add("p_sexo", MySqlDbType.VarString).Value = p.Sexo;
-                cmd.Parameters.Add("p_tipo", MySqlDbType.VarChar).Value = p.Tipo;        // 'DNI' | 'Pasaporte' | 'Extranjero'
-                cmd.Parameters.Add("p_documento", MySqlDbType.VarChar).Value = p.Documento;
-                cmd.Parameters.Add("p_email", MySqlDbType.VarChar).Value = p.Email;
-                cmd.Parameters.Add("p_telefono", MySqlDbType.VarChar).Value = p.Telefono;
-                cmd.Parameters.Add("p_socio", MySqlDbType.Binary).Value = p.Relacion;
-                cmd.Parameters.Add("p_aptoFisico", MySqlDbType.Binary).Value = p.AptoFisico;
-                cmd.ExecuteNonQuery();
-            }
+            using var cmd = new MySqlCommand("sp_persona_insert", cn, tx);
+            cmd.CommandType = CommandType.StoredProcedure;
 
-            // 2) Recuperar el id (nuevo o existente) por la clave única (tipo, documento)
-            using var cmdId = new MySqlCommand(
-                "SELECT id FROM personas WHERE tipo = @tipo AND documento = @doc LIMIT 1;", cn);
-            cmdId.Parameters.Add("@tipo", MySqlDbType.VarChar).Value = p.Tipo;
-            cmdId.Parameters.Add("@doc", MySqlDbType.VarChar).Value = p.Documento;
+            cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = p.Nombres;
+            cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = p.Apellidos;
+            cmd.Parameters.Add("p_sexo", MySqlDbType.VarString).Value = p.Sexo;
+            cmd.Parameters.Add("p_tipo_documento", MySqlDbType.VarChar).Value = p.TipoDocumento;        // 'DNI' | 'Pasaporte' | 'Extranjero'
+            cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value = p.NumeroDocumento;
+            cmd.Parameters.Add("p_fecha_nacimiento", MySqlDbType.Date).Value = p.FechaNacimiento;
+            cmd.Parameters.Add("p_email", MySqlDbType.VarChar).Value = p.Email;
+            cmd.Parameters.Add("p_telefono", MySqlDbType.VarChar).Value = p.Telefono;
+            cmd.Parameters.Add("p_domicilio", MySqlDbType.VarChar).Value = p.Domicilio;
 
-            object? obj = cmdId.ExecuteScalar();
-            return (obj != null && int.TryParse(obj.ToString(), out int id)) ? id : 0;
+
+            // 2) Retorna el id nuevo
+
+            return Convert.ToInt32(cmd.ExecuteScalar());
         }
-        private bool PersonaExiste(string tipo, string documento)
+        private bool PersonaExiste(string nombres,string apellidos, string documento)
         {
             using var cn = Conexion.getInstancia().CrearConcexion();
             cn.Open();
 
-            using var cmd = new MySqlCommand(
-                "SELECT COUNT(1) FROM personas WHERE tipo = @t AND documento = @d LIMIT 1;", cn);
-            cmd.Parameters.Add("@t", MySqlDbType.VarChar).Value = tipo;
-            cmd.Parameters.Add("@d", MySqlDbType.VarChar).Value = documento;
+            using var cmd = new MySqlCommand("sp_persona_search", cn);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = nombres;
+            cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = apellidos;
+            cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value =documento;
 
             var result = cmd.ExecuteScalar();
             var count = Convert.ToInt32(result);
             return count > 0;
         }
+
+        private void VerificarCampos()
+        {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("Ingrese el Nombre.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtApellido.Text))
+            {
+                MessageBox.Show("Ingrese el Apellido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtApellido.Focus();
+                return;
+            }
+
+            if (cmbSexo.SelectedItem is null)
+            {
+                MessageBox.Show("Seleccione el Sexo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbSexo.DroppedDown = true;
+                return;
+            }
+
+            if (dateTimePickerNacim.Value.Date == DateTime.Now.Date)
+            {
+                MessageBox.Show("Ingrese Fecha de Nacimiento Valida", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dateTimePickerNacim.Focus();
+                return;
+            }
+
+            if (cmbTipo.SelectedItem is null)
+            {
+                MessageBox.Show("Seleccione el Tipo de documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmbTipo.DroppedDown = true;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtDocumento.Text))
+            {
+                MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDocumento.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtTelefono.Text))
+            {
+                MessageBox.Show("Ingrese el Teléfono", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTelefono.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                MessageBox.Show("Ingrese el Email", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtEmail.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtDomicilio.Text))
+            {
+                MessageBox.Show("Ingrese el Domicilio", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDomicilio.Focus();
+                return;
+            }
+        }
+
+        private int GuardarRelacionSocio(int personaId, bool socioFlag, bool aptoFlag, MySqlConnection cn, MySqlTransaction tx)
+        {
+            var vencimientoApto = aptoFlag ? DateTime.Now.AddYears(1) : DateTime.Now.AddDays(-1);
+
+            if (socioFlag)
+            {
+                // Guardo Socio
+                using var cmd = new MySqlCommand("sp_socio_insert", cn, tx);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add("p_id_persona", MySqlDbType.Int32).Value = personaId;
+                cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
+
+                // Retorno el id nuevo
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            else
+            {
+                //Guardo No Socio
+                using var cmd = new MySqlCommand("sp_no_socio_insert", cn, tx);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add("p_id_persona", MySqlDbType.Int32).Value = personaId;
+                cmd.Parameters.Add("p_estado", MySqlDbType.VarChar).Value = "Eleccion";
+                cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
+                cmd.Parameters.Add("p_motivo", MySqlDbType.VarChar).Value = "Inscripción";
+
+                // Retorno el id nuevo
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
     }
 }
