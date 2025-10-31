@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Printing;
+using ClubDeportivo.Models;
 
 namespace ClubDeportivo.Services
 {
