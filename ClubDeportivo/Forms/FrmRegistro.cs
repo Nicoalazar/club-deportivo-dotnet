@@ -273,7 +273,7 @@ namespace ClubDeportivo
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.Add("p_id_persona", MySqlDbType.Int32).Value = personaId;
-                cmd.Parameters.Add("p_estado", MySqlDbType.VarChar).Value = "Eleccion";
+                cmd.Parameters.Add("p_estado", MySqlDbType.VarChar).Value = "Adherente";
                 cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
                 cmd.Parameters.Add("p_motivo", MySqlDbType.VarChar).Value = "Inscripción";
 
