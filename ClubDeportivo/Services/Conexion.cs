@@ -10,19 +10,23 @@ namespace ClubDeportivo.Services
     public class Conexion
     {
         // declaramos las variables 
-        private string baseDatos;
-        private string servidor;
-        private string puerto;
-        private string usuario;
-        private string clave;
+        private readonly string baseDatos;
+        private readonly string servidor;
+        private readonly string puerto;
+        private readonly string usuario;
+        private readonly string clave;
+
         private static Conexion? con = null;
-        private Conexion()  // asignamos valores a las variables de la conexion
+        private readonly Env env;
+
+        private Conexion()
         {
-            baseDatos = "grupo20_club";  //appdb
-            servidor = "localhost";      //127.0.0.1
-            puerto = "3306";             //13306
-            usuario = "root";            //appuser
-            clave = "desampa";                  //AppP4ss!
+            env = new Env();
+            baseDatos = env.BaseDatos;
+            servidor = env.Servidor;
+            puerto = env.Puerto;
+            usuario = env.Usuario;
+            clave = env.Clave;
         }
         // proceso de interacción
         public MySqlConnection CrearConcexion()
