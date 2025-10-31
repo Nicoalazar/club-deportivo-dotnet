@@ -28,11 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPrincipal));
             tituloVentanaPrincipal = new Label();
             btnRegistrarPersona = new Button();
             btnListarVencimientos = new Button();
             btnRevisarAsistencia = new Button();
             btnBuscar = new Button();
+            statusStrip1 = new StatusStrip();
+            toolStripUser = new ToolStripStatusLabel();
+            toolStripRol = new ToolStripStatusLabel();
+            toolStripDateTime = new ToolStripStatusLabel();
+            pictureBox1 = new PictureBox();
+            statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // tituloVentanaPrincipal
@@ -89,19 +97,62 @@
             btnBuscar.UseVisualStyleBackColor = true;
             btnBuscar.Click += btnBuscar_Click;
             // 
+            // statusStrip1
+            // 
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripUser, toolStripRol, toolStripDateTime });
+            statusStrip1.Location = new Point(0, 316);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(700, 22);
+            statusStrip1.TabIndex = 5;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripUser
+            // 
+            toolStripUser.Name = "toolStripUser";
+            toolStripUser.Size = new Size(118, 17);
+            toolStripUser.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripRol
+            // 
+            toolStripRol.Name = "toolStripRol";
+            toolStripRol.Size = new Size(118, 17);
+            toolStripRol.Text = "toolStripStatusLabel2";
+            // 
+            // toolStripDateTime
+            // 
+            toolStripDateTime.Name = "toolStripDateTime";
+            toolStripDateTime.Size = new Size(118, 17);
+            toolStripDateTime.Text = "toolStripStatusLabel3";
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(700, 338);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 6;
+            pictureBox1.TabStop = false;
+            // 
             // FrmPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(700, 338);
+            Controls.Add(statusStrip1);
             Controls.Add(btnBuscar);
             Controls.Add(btnRevisarAsistencia);
             Controls.Add(btnListarVencimientos);
             Controls.Add(btnRegistrarPersona);
             Controls.Add(tituloVentanaPrincipal);
+            Controls.Add(pictureBox1);
             Margin = new Padding(3, 2, 3, 2);
             Name = "FrmPrincipal";
             Text = "Pantalla Principal";
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -113,5 +164,10 @@
         private Button btnListarVencimientos;
         private Button btnRevisarAsistencia;
         private Button btnBuscar;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripUser;
+        private ToolStripStatusLabel toolStripRol;
+        private ToolStripStatusLabel toolStripDateTime;
+        private PictureBox pictureBox1;
     }
 }

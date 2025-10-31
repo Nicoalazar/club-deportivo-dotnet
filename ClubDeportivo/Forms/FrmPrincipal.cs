@@ -12,9 +12,12 @@ namespace ClubDeportivo
 {
     public partial class FrmPrincipal : Form
     {
-        public FrmPrincipal()
+        public FrmPrincipal(string user, string role)
         {
             InitializeComponent();
+            toolStripUser.Text = "Usuario: " + user;
+            toolStripRol.Text = "Rol: " + role; 
+            toolStripDateTime.Text = "Fecha y Hora de Inicio: " + DateTime.Now.ToString("G");
         }
 
         private void btnRegistrarPersona_Click(object sender, EventArgs e)
@@ -42,10 +45,8 @@ namespace ClubDeportivo
 
         private void btnBuscar_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Busqueda' - ¡PRÓXIMAMENTE!",
-                "En Desarrollo",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            FrmBusqueda frmBusqueda = new FrmBusqueda();
+            frmBusqueda.ShowDialog();
         }
     }
 }
