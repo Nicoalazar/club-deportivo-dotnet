@@ -46,7 +46,7 @@ namespace ClubDeportivo
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            VerificarCampos();
+            if (VerificarCampos() == false) return;
 
             var socioFlag = checkSocio.Checked;
             var aptoFlag = checkApto.Checked;
@@ -184,70 +184,71 @@ namespace ClubDeportivo
             return count > 0;
         }
 
-        private void VerificarCampos()
+        private bool VerificarCampos()
         {
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
                 MessageBox.Show("Ingrese el Nombre.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNombre.Focus();
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(txtApellido.Text))
             {
                 MessageBox.Show("Ingrese el Apellido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtApellido.Focus();
-                return;
+                return false;
             }
 
             if (cmbSexo.SelectedItem is null)
             {
                 MessageBox.Show("Seleccione el Sexo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbSexo.DroppedDown = true;
-                return;
+                return false;
             }
 
             if (dateTimePickerNacim.Value.Date == DateTime.Now.Date)
             {
                 MessageBox.Show("Ingrese Fecha de Nacimiento Valida", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dateTimePickerNacim.Focus();
-                return;
+                return false;
             }
 
             if (cmbTipo.SelectedItem is null)
             {
                 MessageBox.Show("Seleccione el Tipo de documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbTipo.DroppedDown = true;
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(txtDocumento.Text))
             {
                 MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDocumento.Focus();
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(txtTelefono.Text))
             {
                 MessageBox.Show("Ingrese el Teléfono", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtTelefono.Focus();
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(txtEmail.Text))
             {
                 MessageBox.Show("Ingrese el Email", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmail.Focus();
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(txtDomicilio.Text))
             {
                 MessageBox.Show("Ingrese el Domicilio", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDomicilio.Focus();
-                return;
+                return false;
             }
+            return true;
         }
 
         private int GuardarRelacionSocio(int personaId, bool socioFlag, bool aptoFlag, MySqlConnection cn, MySqlTransaction tx)
