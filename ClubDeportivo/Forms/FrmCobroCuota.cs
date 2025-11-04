@@ -1,10 +1,12 @@
-﻿using ClubDeportivo.Services;
+﻿using ClubDeportivo.Models;
+using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using ClubDeportivo.Models;
+using System.Drawing;
 
 namespace ClubDeportivo.Forms
 {
@@ -12,12 +14,53 @@ namespace ClubDeportivo.Forms
     {
         public string periodo = "";
         public string medio = "";
-        private int idSocio;
+        private readonly int idSocio;
 
         public FrmCobroCuota(int idSocio)
         {
             InitializeComponent();
             this.idSocio = idSocio;
+            CargarVencimientos();
+            CargarMediosPago();
+        }
+
+        private void CargarVencimientos()
+        {
+            try
+            {
+                Cobros servicio = new Cobros();
+                DataTable vencimientos = servicio.ListarVencimientos();
+
+                DataView dv = vencimientos.DefaultView;
+                dv.RowFilter = $"id = {idSocio}";
+                DataTable vencimientosFiltrados = dv.ToTable();
+
+                cmbBoxPeriodo.DataSource = vencimientos;
+                cmbBoxPeriodo.DisplayMember = "periodo";
+                cmbBoxPeriodo.ValueMember = "periodo";
+                cmbBoxPeriodo.SelectedIndex = -1; // Iniciar sin selección
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar vencimientos: " + ex.Message);
+            }
+        }
+        private void CargarMediosPago()
+        {
+            try
+            {
+            Cobros servicio = new Cobros();
+            DataTable medios = servicio.ListarMediosPago();
+
+            cmbBoxMedio.DataSource = medios;
+            cmbBoxMedio.DisplayMember = "medio";
+            cmbBoxMedio.ValueMember = "medio";
+            cmbBoxMedio.SelectedIndex = -1; // Iniciar sin selección
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar medios de pago: " + ex.Message);
+            }
         }
 
         private void btnCobrar_Click(object sender, EventArgs e)
@@ -40,7 +83,6 @@ namespace ClubDeportivo.Forms
                 cmd.ExecuteNonQuery();
 
                 MessageBox.Show("Pago registrado correctamente");
-
                 this.Close();
             }
             catch (Exception ex) { 
@@ -50,7 +92,10 @@ namespace ClubDeportivo.Forms
 
         private void cmbBoxPeriodo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            periodo = cmbBoxPeriodo.Text;
+            if (cmbBoxPeriodo.SelectedIndex != -1)
+            {
+                periodo = cmbBoxPeriodo.Text;
+            }
         }
 
         private void cmbBoxMedio_SelectedIndexChanged(object sender, EventArgs e)
