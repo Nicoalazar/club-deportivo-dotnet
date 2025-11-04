@@ -5,24 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace ClubDeportivo
+namespace ClubDeportivo.Services
 {
     public class Conexion
     {
         // declaramos las variables 
-        private string baseDatos;
-        private string servidor;
-        private string puerto;
-        private string usuario;
-        private string clave;
+        private readonly string baseDatos;
+        private readonly string servidor;
+        private readonly string puerto;
+        private readonly string usuario;
+        private readonly string clave;
+
         private static Conexion? con = null;
-        private Conexion()  // asignamos valores a las variables de la conexion
+        private readonly Env env;
+
+        private Conexion()
         {
-            this.baseDatos = "Grupo20";
-            this.servidor = "localhost";      //"127.0.0.1"
-            this.puerto = "3306";       // 13306
-            this.usuario = "root";
-            this.clave = "1qwert";
+            env = new Env();
+            baseDatos = env.BaseDatos;
+            servidor = env.Servidor;
+            puerto = env.Puerto;
+            usuario = env.Usuario;
+            clave = env.Clave;
         }
         // proceso de interacción
         public MySqlConnection CrearConcexion()
@@ -32,13 +36,13 @@ namespace ClubDeportivo
             // el bloque try permite controlar errores
             try
             {
-                cadena.ConnectionString = "datasource=" + this.servidor +
-                ";port=" + this.puerto +
-                ";username=" + this.usuario +
-                ";password=" + this.clave +
-                ";Database=" + this.baseDatos;
+                cadena.ConnectionString = "datasource=" + servidor +
+                ";port=" + puerto +
+                ";username=" + usuario +
+                ";password=" + clave +
+                ";Database=" + baseDatos;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 cadena = null;
                 throw;
