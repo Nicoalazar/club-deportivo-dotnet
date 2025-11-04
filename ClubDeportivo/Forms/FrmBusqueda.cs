@@ -1,4 +1,5 @@
-﻿using ClubDeportivo.Models;
+﻿using ClubDeportivo.Forms;
+using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -93,8 +94,19 @@ namespace ClubDeportivo
             var row = dataGridBusqueda.CurrentRow;
             if (row != null)
             {
-                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
-                MessageBox.Show($"Cobrar cuota a: {nombre}");
+                string categoria = row.Cells["Categoría"].Value.ToString()!;
+                if (categoria == "Socio")
+                {
+                    int idSocio = Convert.ToInt32(row.Cells["id"].Value);
+                    FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                    frmCobros.ShowDialog();
+                }
+                else
+                {
+                    int idNoSocio = Convert.ToInt32(row.Cells["id"].Value);
+                    FrmCobroCuota frmCobros = new FrmCobroCuota(idNoSocio);
+                    frmCobros.ShowDialog();
+                }
             }
         }
 
