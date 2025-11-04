@@ -98,8 +98,22 @@ namespace ClubDeportivo
                 if (categoria == "Socio")
                 {
                     int idSocio = Convert.ToInt32(row.Cells["id"].Value);
-                    FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
-                    frmCobros.ShowDialog();
+
+                    Cobros servicio = new Cobros();
+                    DataTable vencimientos = servicio.ListarVencimientos();
+
+                    DataView dv = vencimientos.DefaultView;
+                    dv.RowFilter = $"id = {idSocio}";
+
+                    if (dv.Count > 0)
+                    {
+                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                        frmCobros.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Este socio no tiene cuotas pendientes");
+                    }
                 }
                 else
                 {

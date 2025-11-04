@@ -57,7 +57,6 @@
             // cmbBoxPeriodo
             // 
             cmbBoxPeriodo.FormattingEnabled = true;
-            cmbBoxPeriodo.Items.AddRange(new object[] { "202501" });
             cmbBoxPeriodo.Location = new Point(59, 62);
             cmbBoxPeriodo.Name = "cmbBoxPeriodo";
             cmbBoxPeriodo.Size = new Size(121, 23);
@@ -76,7 +75,6 @@
             // cmbBoxMedio
             // 
             cmbBoxMedio.FormattingEnabled = true;
-            cmbBoxMedio.Items.AddRange(new object[] { "Efectivo", "Virtual", "Debito", "Credito" });
             cmbBoxMedio.Location = new Point(61, 138);
             cmbBoxMedio.Name = "cmbBoxMedio";
             cmbBoxMedio.Size = new Size(121, 23);
