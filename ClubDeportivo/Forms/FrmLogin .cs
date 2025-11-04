@@ -1,9 +1,9 @@
-using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 using System.Windows.Forms;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using ClubDeportivo.Services;
 
 namespace ClubDeportivo
 {
@@ -21,8 +21,10 @@ namespace ClubDeportivo
             tablaLogin = dato.Log_Usu(txtUsuario.Text, txtClave.Text);
             if (tablaLogin.Rows.Count > 0)
             {
+                string user = tablaLogin.Rows[0]["NombreUsu"].ToString()!;
+                string role = tablaLogin.Rows[0]["NomRol"].ToString()!;
                 // quiere decir que el resultado tiene 1 fila por lo que el usuario EXISTE
-                var frmPrincipal = new FrmPrincipal();     // hago un cambio aca para abrir la ventana principal
+                var frmPrincipal = new FrmPrincipal(user, role);  //envia datos de inicio para mostrar en pantalla principal
                 frmPrincipal.Show();
                 this.Hide();
                 frmPrincipal.FormClosed += (s, args) => this.Close();
