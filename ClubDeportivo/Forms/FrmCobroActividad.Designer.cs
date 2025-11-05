@@ -28,12 +28,102 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "CobroActividad";
+            label1 = new Label();
+            dateTimePicker1 = new DateTimePicker();
+            label2 = new Label();
+            btnCobrar = new Button();
+            txtBoxMonto = new TextBox();
+            cmbBoxMedio = new ComboBox();
+            label3 = new Label();
+            SuspendLayout();
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(59, 91);
+            label1.Name = "label1";
+            label1.Size = new Size(109, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Habilitar para el día";
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Location = new Point(174, 85);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(213, 23);
+            dateTimePicker1.TabIndex = 1;
+            dateTimePicker1.ValueChanged += dateTimePicker1_ValueChanged;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(63, 125);
+            label2.Name = "label2";
+            label2.Size = new Size(38, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Costo";
+            // 
+            // btnCobrar
+            // 
+            btnCobrar.Location = new Point(174, 193);
+            btnCobrar.Name = "btnCobrar";
+            btnCobrar.Size = new Size(75, 23);
+            btnCobrar.TabIndex = 3;
+            btnCobrar.Text = "Cobrar";
+            btnCobrar.UseVisualStyleBackColor = true;
+            btnCobrar.Click += new System.EventHandler(this.btnCobrar_Click);
+            // 
+            // txtBoxMonto
+            // 
+            txtBoxMonto.Location = new Point(174, 122);
+            txtBoxMonto.Name = "txtBoxMonto";
+            txtBoxMonto.Size = new Size(100, 23);
+            txtBoxMonto.TabIndex = 4;
+            // 
+            // cmbBoxMedio
+            // 
+            cmbBoxMedio.FormattingEnabled = true;
+            cmbBoxMedio.Location = new Point(174, 164);
+            cmbBoxMedio.Name = "cmbBoxMedio";
+            cmbBoxMedio.Size = new Size(121, 23);
+            cmbBoxMedio.TabIndex = 5;
+            cmbBoxMedio.SelectedIndexChanged += cmbBoxMedio_SelectedIndexChanged;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(59, 172);
+            label3.Name = "label3";
+            label3.Size = new Size(87, 15);
+            label3.TabIndex = 6;
+            label3.Text = "Medio de Pago";
+            // 
+            // FrmCobroActividad
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(label3);
+            Controls.Add(cmbBoxMedio);
+            Controls.Add(txtBoxMonto);
+            Controls.Add(btnCobrar);
+            Controls.Add(label2);
+            Controls.Add(dateTimePicker1);
+            Controls.Add(label1);
+            Name = "FrmCobroActividad";
+            Text = "CobroActividad";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label label1;
+        private DateTimePicker dateTimePicker1;
+        private Label label2;
+        private Button btnCobrar;
+        private TextBox txtBoxMonto;
+        private ComboBox cmbBoxMedio;
+        private Label label3;
     }
 }
