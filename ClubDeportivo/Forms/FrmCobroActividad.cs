@@ -1,95 +1,146 @@
-﻿using ClubDeportivo.Services;
+﻿using ClubDeportivo.Models;
+using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 
 namespace ClubDeportivo.Forms
 {
     public partial class FrmCobroActividad : Form
     {
-        private string periodo = "";
-        private string medio = "";
-        private int idActividad;
-        private string nombreCliente = "";
-        private string dniCliente = "";
+        Cobros servicio = new Cobros();
+        public string medio = "";
+        public DateTime fecha = DateTime.Now;
+        public double monto = 0;
+        private readonly int idNoSocio;
 
-        public FrmCobroActividad(int idActividad)
+        public FrmCobroActividad(int idNoSocio)
         {
             InitializeComponent();
-            this.idActividad = idActividad;
-            CargarActividad();
+            this.idNoSocio = idNoSocio;
+            CargarMediosPago();
         }
 
-        private void CargarActividad()
+        private void CargarMediosPago()
         {
-            // Cargar información de la actividad para mostrar en el form
-            // (nombre, precio, etc.)
+            try
+            {
+                DataTable medios = servicio.ListarMediosPago();
+                cmbBoxMedio.DataSource = medios;
+                cmbBoxMedio.DisplayMember = "medio";
+                cmbBoxMedio.ValueMember = "medio";
+                cmbBoxMedio.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar medios de pago: " + ex.Message);
+            }
         }
 
         private void btnCobrar_Click(object sender, EventArgs e)
         {
-            if (!ValidarDatos())
-                return;
+            // Validar ANTES de convertir
+            if (!ValidarDatos()) return;
 
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
-                cn.Open();
-                using var cmd = new MySqlCommand("sp_pago_actividad_no_socio", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                // Obtener valores
+                monto = Convert.ToDouble(txtBoxMonto.Text);
+                fecha = dateTimePicker1.Value.Date;
+                medio = cmbBoxMedio.Text;
 
-                cmd.Parameters.Add("p_id_actividad", MySqlDbType.Int32).Value = idActividad;
-                cmd.Parameters.Add("p_nombre_cliente", MySqlDbType.VarChar).Value = nombreCliente;
-                cmd.Parameters.Add("p_dni_cliente", MySqlDbType.VarChar).Value = dniCliente;
-                cmd.Parameters.Add("p_periodo", MySqlDbType.VarChar).Value = periodo;
-                cmd.Parameters.Add("p_medio", MySqlDbType.VarChar).Value = medio;
-                cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = "Sistema";
+                // Registrar pago
+                servicio.RegistrarPagoActividad(idNoSocio, fecha, monto, medio);
 
-                cmd.ExecuteNonQuery();
-                MessageBox.Show("Pago de actividad registrado correctamente");
+                // TODO: COPIAR Y MODELO Y BORRAR
+                MessageBox.Show("Pago de actividad registrado correctamente",
+                               "Éxito",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Information);
 
+                // Cerrar formulario
                 this.Close();
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("El monto ingresado no es válido",
+                               "Error",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show($"Error al registrar el pago: {ex.Message}",
+                               "Error",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
             }
         }
 
         private bool ValidarDatos()
         {
-            if (string.IsNullOrEmpty(nombreCliente) || string.IsNullOrEmpty(dniCliente))
+            // Validar monto
+            if (string.IsNullOrWhiteSpace(txtBoxMonto.Text))
             {
-                MessageBox.Show("Debe ingresar los datos del cliente");
+                MessageBox.Show("Debe ingresar el monto de la actividad",
+                               "Validación",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Warning);
+                txtBoxMonto.Focus();
                 return false;
             }
 
-            if (string.IsNullOrEmpty(periodo) || string.IsNullOrEmpty(medio))
+            // Validar que el monto sea numérico
+            if (!double.TryParse(txtBoxMonto.Text, out double montoValidado) || montoValidado <= 0)
             {
-                MessageBox.Show("Debe seleccionar un período y un medio de pago");
+                MessageBox.Show("El monto debe ser un número mayor a cero",
+                               "Validación",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Warning);
+                txtBoxMonto.Focus();
+                return false;
+            }
+
+            // Validar medio de pago
+            if (cmbBoxMedio.SelectedIndex == -1)
+            {
+                MessageBox.Show("Debe seleccionar un medio de pago",
+                               "Validación",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Warning);
+                cmbBoxMedio.Focus();
+                return false;
+            }
+
+            // Validar fecha
+            if (dateTimePicker1.Value.Date < DateTime.Now.Date)
+            {
+                MessageBox.Show("No se puede pagar una actividad del pasado",
+                               "Validación",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Warning);
+                dateTimePicker1.Focus();
                 return false;
             }
 
             return true;
         }
 
-        private void cmbBoxPeriodo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //periodo = cmbBoxPeriodo.Text;
-        }
-
         private void cmbBoxMedio_SelectedIndexChanged(object sender, EventArgs e)
         {
-           // medio = cmbBoxMedio.Text;
+            if (cmbBoxMedio.SelectedIndex != -1)
+            {
+                medio = cmbBoxMedio.Text;
+            }
         }
 
-        private void txtNombre_TextChanged(object sender, EventArgs e)
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-           // nombreCliente = txtNombre.Text;
-        }
-
-        private void txtDni_TextChanged(object sender, EventArgs e)
-        {
-           // dniCliente = txtDni.Text;
+            fecha = dateTimePicker1.Value.Date;
         }
     }
 }

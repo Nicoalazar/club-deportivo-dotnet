@@ -15,6 +15,7 @@ namespace ClubDeportivo.Forms
         public string periodo = "";
         public string medio = "";
         private readonly int idSocio;
+        Cobros servicio = new Cobros();
 
         public FrmCobroCuota(int idSocio)
         {
@@ -28,7 +29,6 @@ namespace ClubDeportivo.Forms
         {
             try
             {
-                Cobros servicio = new Cobros();
                 DataTable vencimientos = servicio.ListarVencimientos();
 
                 DataView dv = vencimientos.DefaultView;
@@ -49,7 +49,6 @@ namespace ClubDeportivo.Forms
         {
             try
             {
-            Cobros servicio = new Cobros();
             DataTable medios = servicio.ListarMediosPago();
 
             cmbBoxMedio.DataSource = medios;
@@ -65,29 +64,14 @@ namespace ClubDeportivo.Forms
 
         private void btnCobrar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(periodo) || string.IsNullOrEmpty(medio))
+            if (cmbBoxMedio.SelectedIndex == -1 || cmbBoxPeriodo.SelectedIndex == -1)
             {
                 MessageBox.Show("Debe seleccionar un período y un medio de pago");
                 return;
             }
-            try {
-                using var cn = Conexion.getInstancia().CrearConcexion();
-                cn.Open();
 
-                using var cmd = new MySqlCommand("sp_pago_cuota", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.Add("p_id_socio", MySqlDbType.Int32).Value = idSocio;
-                cmd.Parameters.Add("p_periodo", MySqlDbType.VarChar).Value = periodo;
-                cmd.Parameters.Add("p_medio", MySqlDbType.VarChar).Value = medio;
-                cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = SesionUsuario.Usuario;
-                cmd.ExecuteNonQuery();
-
-                MessageBox.Show("Pago registrado correctamente");
-                this.Close();
-            }
-            catch (Exception ex) { 
-                MessageBox.Show("Error"+ ex);
-            }
+            servicio.RegistrarPagoCuota(idSocio,periodo,medio);
+            this.Close();
         }
 
         private void cmbBoxPeriodo_SelectedIndexChanged(object sender, EventArgs e)
@@ -100,7 +84,10 @@ namespace ClubDeportivo.Forms
 
         private void cmbBoxMedio_SelectedIndexChanged(object sender, EventArgs e)
         {
-            medio = cmbBoxMedio.Text;
+            if (cmbBoxMedio.SelectedIndex != -1)
+            {
+                medio = cmbBoxMedio.Text;
+            }
         }
     }
 }

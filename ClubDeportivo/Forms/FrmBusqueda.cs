@@ -18,7 +18,7 @@ namespace ClubDeportivo
 
             // Ítems del menú del listado
             menuSocio.Items.Add("Editar Socio", null, MenuEditar_Click);
-            menuSocio.Items.Add("Cobrar Cuota", null, MenuCobrar_Click);
+            menuSocio.Items.Add("Cobrar", null, MenuCobrar_Click);
             menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
             menuSocio.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
             menuSocio.Items.Add(new ToolStripSeparator());
@@ -118,7 +118,7 @@ namespace ClubDeportivo
                 else
                 {
                     int idNoSocio = Convert.ToInt32(row.Cells["id"].Value);
-                    FrmCobroCuota frmCobros = new FrmCobroCuota(idNoSocio);
+                    FrmCobroActividad frmCobros = new FrmCobroActividad(idNoSocio);
                     frmCobros.ShowDialog();
                 }
             }

@@ -55,5 +55,77 @@ namespace ClubDeportivo.Services
                 throw new Exception("Error al listar medios de pago: " + ex.Message);
             }
         }
+        public void RegistrarPagoCuota(int idSocio, string periodo, string medio)
+        {
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+
+                using var cmd = new MySqlCommand("sp_pago_cuota", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_id_socio", MySqlDbType.Int32).Value = idSocio;
+                cmd.Parameters.Add("p_periodo", MySqlDbType.VarChar).Value = periodo;
+                cmd.Parameters.Add("p_medio", MySqlDbType.VarChar).Value = medio;
+                cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = SesionUsuario.Usuario;
+                cmd.ExecuteNonQuery();
+
+                MessageBox.Show("Pago registrado correctamente");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error" + ex);
+            }
+        }
+
+        public void RegistrarPagoActividad(int idNoSocio, DateTime fecha, double monto, string medio)
+        {
+            if (YaPagoActividad(idNoSocio, fecha)) return;           
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+                using var cmd = new MySqlCommand("sp_pago_actividad", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_id_no_socio", MySqlDbType.Int32).Value = idNoSocio;
+                cmd.Parameters.Add("p_fecha", MySqlDbType.Date).Value = fecha;
+                cmd.Parameters.Add("p_monto", MySqlDbType.Double).Value = monto;
+                cmd.Parameters.Add("p_medio", MySqlDbType.VarChar).Value = medio;
+                cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = SesionUsuario.Usuario;
+                cmd.ExecuteNonQuery();
+
+                MessageBox.Show("Pago registrado correctamente");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error" + ex);
+            }
+        }
+        public bool YaPagoActividad(int idNoSocio, DateTime fecha)
+        {
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+                using var cmd = new MySqlCommand("sp_actividad_search", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_id_no_socio", MySqlDbType.Int32).Value = idNoSocio;
+                cmd.Parameters.Add("p_fecha", MySqlDbType.Date).Value = fecha.Date;
+
+                object resultado = cmd.ExecuteScalar();
+                int cantidad = Convert.ToInt32(resultado);
+
+                if (cantidad > 0) {
+                    MessageBox.Show("La persona ya tiene habilitada una actividad para este día");
+                    return true;
+                }
+                else return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar pago: " + ex.Message);
+            }
+        }
     }
 }
