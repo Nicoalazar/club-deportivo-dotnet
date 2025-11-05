@@ -42,7 +42,10 @@ namespace ClubDeportivo.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar vencimientos: " + ex.Message);
+                MessageBox.Show("Error al cargar vencimientos: " + ex.Message,
+                               "Error",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
             }
         }
         private void CargarMediosPago()
@@ -58,7 +61,10 @@ namespace ClubDeportivo.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar medios de pago: " + ex.Message);
+                MessageBox.Show("Error al cargar medios de pago: " + ex.Message,
+                               "Error",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
             }
         }
 
@@ -66,7 +72,10 @@ namespace ClubDeportivo.Forms
         {
             if (cmbBoxMedio.SelectedIndex == -1 || cmbBoxPeriodo.SelectedIndex == -1)
             {
-                MessageBox.Show("Debe seleccionar un período y un medio de pago");
+                MessageBox.Show("Debe seleccionar el periodo y un medio de pago",
+                               "Validación",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Warning);
                 return;
             }
 

@@ -54,16 +54,11 @@ namespace ClubDeportivo.Forms
                 medio = cmbBoxMedio.Text;
 
                 // Registrar pago
-                servicio.RegistrarPagoActividad(idNoSocio, fecha, monto, medio);
+                if (servicio.RegistrarPagoActividad(idNoSocio, fecha, monto, medio))
+                {
+                    this.Close();
+                }
 
-                // TODO: COPIAR Y MODELO Y BORRAR
-                MessageBox.Show("Pago de actividad registrado correctamente",
-                               "Éxito",
-                               MessageBoxButtons.OK,
-                               MessageBoxIcon.Information);
-
-                // Cerrar formulario
-                this.Close();
             }
             catch (FormatException)
             {
