@@ -56,8 +56,6 @@ namespace ClubDeportivo
             if (tabla.Rows.Count > 0)
             {
                 dataGridBusqueda.DataSource = tabla;
-
-                MessageBox.Show("La persona existe en la base de datos.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -112,7 +110,7 @@ namespace ClubDeportivo
                     }
                     else
                     {
-                        MessageBox.Show("Este socio no tiene cuotas pendientes");
+                        MessageBox.Show("Este socio no tiene cuotas pendientes", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else

@@ -70,17 +70,24 @@ namespace ClubDeportivo.Services
                 cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = SesionUsuario.Usuario;
                 cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Pago registrado correctamente");
+                MessageBox.Show("Pago registrado correctamente",
+                               "Éxito",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Information);
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error" + ex);
+                MessageBox.Show("Error al procesar pago: " + ex.Message,
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
             }
         }
 
-        public void RegistrarPagoActividad(int idNoSocio, DateTime fecha, double monto, string medio)
+        public bool RegistrarPagoActividad(int idNoSocio, DateTime fecha, double monto, string medio)
         {
-            if (YaPagoActividad(idNoSocio, fecha)) return;           
+            if (YaPagoActividad(idNoSocio, fecha)) return false;           
             try
             {
                 using var cn = Conexion.getInstancia().CrearConcexion();
@@ -94,11 +101,21 @@ namespace ClubDeportivo.Services
                 cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = SesionUsuario.Usuario;
                 cmd.ExecuteNonQuery();
 
-                MessageBox.Show("Pago registrado correctamente");
+                MessageBox.Show("Pago de actividad registrado correctamente",
+                               "Éxito",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Information);
+
+                return true;
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error" + ex);
+                MessageBox.Show("Error al procesar pago: " + ex.Message,
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                return false;
             }
         }
         public bool YaPagoActividad(int idNoSocio, DateTime fecha)
@@ -116,7 +133,10 @@ namespace ClubDeportivo.Services
                 int cantidad = Convert.ToInt32(resultado);
 
                 if (cantidad > 0) {
-                    MessageBox.Show("La persona ya tiene habilitada una actividad para este día");
+                    MessageBox.Show("La persona ya tiene habilitada una actividad para este día",
+                               "Validación",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Warning);
                     return true;
                 }
                 else return false;
