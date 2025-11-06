@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ClubDeportivo.Forms;
+using ClubDeportivo.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,12 +14,12 @@ namespace ClubDeportivo
 {
     public partial class FrmPrincipal : Form
     {
-        public FrmPrincipal(string user, string role)
+        public FrmPrincipal()
         {
             InitializeComponent();
-            toolStripUser.Text = "Usuario: " + user;
-            toolStripRol.Text = "Rol: " + role; 
-            toolStripDateTime.Text = "Fecha y Hora de Inicio: " + DateTime.Now.ToString("G");
+            toolStripUser.Text = "Usuario: " + SesionUsuario.Usuario;
+            toolStripRol.Text = "Rol: " +SesionUsuario.Rol; 
+            toolStripDateTime.Text = "Fecha y Hora de Inicio: " + SesionUsuario.FechaLogin;
         }
 
         private void btnRegistrarPersona_Click(object sender, EventArgs e)
@@ -35,12 +37,10 @@ namespace ClubDeportivo
                     MessageBoxIcon.Information);
         }
 
-        private void btnRevisarAsistencia_Click(object sender, EventArgs e)
+        private void btnGenerarCuotas_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad 'Revisar Asistencia' - ¡PRÓXIMAMENTE!",
-                "En Desarrollo",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            FrmGenerarCuotas frmGenerarCuotas = new FrmGenerarCuotas();
+            frmGenerarCuotas.ShowDialog();
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)

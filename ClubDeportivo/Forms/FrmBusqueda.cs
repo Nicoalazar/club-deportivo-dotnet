@@ -1,4 +1,5 @@
-﻿using ClubDeportivo.Models;
+﻿using ClubDeportivo.Forms;
+using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System.Data;
@@ -17,7 +18,7 @@ namespace ClubDeportivo
 
             // Ítems del menú del listado
             menuSocio.Items.Add("Editar Socio", null, MenuEditar_Click);
-            menuSocio.Items.Add("Cobrar Cuota", null, MenuCobrar_Click);
+            menuSocio.Items.Add("Cobrar", null, MenuCobrar_Click);
             menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
             menuSocio.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
             menuSocio.Items.Add(new ToolStripSeparator());
@@ -55,8 +56,6 @@ namespace ClubDeportivo
             if (tabla.Rows.Count > 0)
             {
                 dataGridBusqueda.DataSource = tabla;
-
-                MessageBox.Show("La persona existe en la base de datos.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -93,8 +92,33 @@ namespace ClubDeportivo
             var row = dataGridBusqueda.CurrentRow;
             if (row != null)
             {
-                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
-                MessageBox.Show($"Cobrar cuota a: {nombre}");
+                string categoria = row.Cells["Categoría"].Value.ToString()!;
+                if (categoria == "Socio")
+                {
+                    int idSocio = Convert.ToInt32(row.Cells["id"].Value);
+
+                    Cobros servicio = new Cobros();
+                    DataTable vencimientos = servicio.ListarCuotasPorPagar();
+
+                    DataView dv = vencimientos.DefaultView;
+                    dv.RowFilter = $"id = {idSocio}";
+
+                    if (dv.Count > 0)
+                    {
+                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                        frmCobros.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Este socio no tiene cuotas pendientes", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    int idNoSocio = Convert.ToInt32(row.Cells["id"].Value);
+                    FrmCobroActividad frmCobros = new FrmCobroActividad(idNoSocio);
+                    frmCobros.ShowDialog();
+                }
             }
         }
 

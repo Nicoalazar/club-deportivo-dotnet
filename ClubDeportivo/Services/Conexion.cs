@@ -1,49 +1,64 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace ClubDeportivo.Services
 {
     public class Conexion
     {
-        // Datos de conexión directos
-        private readonly string baseDatos = "ClubDeportivo"; // Cambiá si tu BD tiene otro nombre
-        private readonly string servidor = "localhost";
-        private readonly string puerto = "3306";
-        private readonly string usuario = "root";
-        private readonly string clave = ""; // Poné tu contraseña si tu MySQL tiene una
+        // declaramos las variables 
+        private readonly string baseDatos;
+        private readonly string servidor;
+        private readonly string puerto;
+        private readonly string usuario;
+        private readonly string clave;
 
         private static Conexion? con = null;
+        private readonly Env env;
 
-        private Conexion() { }
-
+        private Conexion()
+        {
+            env = new Env();
+            baseDatos = env.BaseDatos;
+            servidor = env.Servidor;
+            puerto = env.Puerto;
+            usuario = env.Usuario;
+            clave = env.Clave;
+        }
+        // proceso de interacción
         public MySqlConnection CrearConcexion()
         {
+            // instanciamos una conexion
             MySqlConnection? cadena = new MySqlConnection();
-
+            // el bloque try permite controlar errores
             try
             {
-                cadena.ConnectionString =
-                    "datasource=" + servidor +
-                    ";port=" + puerto +
-                    ";username=" + usuario +
-                    ";password=" + clave +
-                    ";database=" + baseDatos;
+                cadena.ConnectionString = "datasource=" + servidor +
+                ";port=" + puerto +
+                ";username=" + usuario +
+                ";password=" + clave +
+                ";Database=" + baseDatos;
             }
             catch (Exception)
             {
                 cadena = null;
                 throw;
             }
-
             return cadena;
         }
-
+        // para evaluar la instancia de la conectividad
         public static Conexion getInstancia()
         {
-            if (con == null)
+            if (con == null) // quiere decir que la conexion esta cerrada
             {
-                con = new Conexion();
+                con = new Conexion(); // se crea una nueva
             }
             return con;
+
+
         }
     }
 }
