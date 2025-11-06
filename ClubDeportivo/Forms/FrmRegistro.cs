@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
+
 
 namespace ClubDeportivo
 {
@@ -92,8 +92,8 @@ namespace ClubDeportivo
                     : "La persona fue registrada";
 
                 var detalleAptoFisico = aptoFlag
-                    ? "\n\nEntregó apto físico y vence dentro de un año"
-                    : "\n\nNo entregó apto físico";
+                    ? "\n\nEntregó apto fisico y vence dentro de un año"
+                    : "\n\nNo entregó apto fisico";
 
                 MessageBox.Show(
                     socioFlag ?
@@ -113,6 +113,7 @@ namespace ClubDeportivo
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
@@ -146,25 +147,27 @@ namespace ClubDeportivo
 
             txtNombre.Focus();
         }
-        //esta parte no estoy segura porque deberia conectar con la bbdd
         private int GuardarPersonaEnDb(Persona p, MySqlConnection cn, MySqlTransaction tx)
         {
+            // 1) Llamar al SP de UNA SOLA SENTENCIA (sin DELIMITER)
             using var cmd = new MySqlCommand("sp_persona_insert", cn, tx);
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = p.Nombres;
             cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = p.Apellidos;
             cmd.Parameters.Add("p_sexo", MySqlDbType.VarString).Value = p.Sexo;
-            cmd.Parameters.Add("p_tipo_documento", MySqlDbType.VarChar).Value = p.TipoDocumento;
+            cmd.Parameters.Add("p_tipo_documento", MySqlDbType.VarChar).Value = p.TipoDocumento;        // 'DNI' | 'Pasaporte' | 'Extranjero'
             cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value = p.NumeroDocumento;
             cmd.Parameters.Add("p_fecha_nacimiento", MySqlDbType.Date).Value = p.FechaNacimiento;
             cmd.Parameters.Add("p_email", MySqlDbType.VarChar).Value = p.Email;
             cmd.Parameters.Add("p_telefono", MySqlDbType.VarChar).Value = p.Telefono;
             cmd.Parameters.Add("p_domicilio", MySqlDbType.VarChar).Value = p.Domicilio;
 
+
+            // 2) Retorna el id nuevo
+
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
-
         private bool PersonaExiste(string nombres, string apellidos, string documento)
         {
             using var cn = Conexion.getInstancia().CrearConcexion();
@@ -181,24 +184,15 @@ namespace ClubDeportivo
             return count > 0;
         }
 
-        // VALIDACIONES
         private bool VerificarCampos()
         {
-            // Nombre
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
                 MessageBox.Show("Ingrese el Nombre.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNombre.Focus();
                 return false;
             }
-            if (txtNombre.Text.Length < 3)
-            {
-                MessageBox.Show("El nombre debe tener al menos 3 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtNombre.Focus();
-                return false;
-            }
 
-            // Apellido
             if (string.IsNullOrWhiteSpace(txtApellido.Text))
             {
                 MessageBox.Show("Ingrese el Apellido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -206,30 +200,20 @@ namespace ClubDeportivo
                 return false;
             }
 
-            // Sexo
-            if (cmbSexo.SelectedItem is null || cmbSexo.Text == "Seleccione")
+            if (cmbSexo.SelectedItem is null)
             {
                 MessageBox.Show("Seleccione el Sexo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmbSexo.DroppedDown = true;
                 return false;
             }
 
-            // Fecha de nacimiento
-            var edad = DateTime.Now.Year - dateTimePickerNacim.Value.Year;
-            if (dateTimePickerNacim.Value.Date >= DateTime.Now.Date)
+            if (dateTimePickerNacim.Value.Date == DateTime.Now.Date)
             {
-                MessageBox.Show("Ingrese una fecha de nacimiento válida.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                dateTimePickerNacim.Focus();
-                return false;
-            }
-            if (edad < 18)
-            {
-                MessageBox.Show("Debe ser mayor de edad para registrarse.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese Fecha de Nacimiento Valida", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dateTimePickerNacim.Focus();
                 return false;
             }
 
-            // Tipo de documento
             if (cmbTipo.SelectedItem is null)
             {
                 MessageBox.Show("Seleccione el Tipo de documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -237,56 +221,33 @@ namespace ClubDeportivo
                 return false;
             }
 
-            // Documento
             if (string.IsNullOrWhiteSpace(txtDocumento.Text))
             {
                 MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDocumento.Focus();
                 return false;
             }
-            if (!long.TryParse(txtDocumento.Text, out _))
-            {
-                MessageBox.Show("El número de documento debe contener solo números.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDocumento.Focus();
-                return false;
-            }
 
-            // Teléfono
             if (string.IsNullOrWhiteSpace(txtTelefono.Text))
             {
                 MessageBox.Show("Ingrese el Teléfono", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtTelefono.Focus();
                 return false;
             }
-            if (!long.TryParse(txtTelefono.Text, out _))
-            {
-                MessageBox.Show("El teléfono debe contener solo números.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtTelefono.Focus();
-                return false;
-            }
 
-            // Email
             if (string.IsNullOrWhiteSpace(txtEmail.Text))
             {
                 MessageBox.Show("Ingrese el Email", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmail.Focus();
                 return false;
             }
-            if (!Regex.IsMatch(txtEmail.Text, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                MessageBox.Show("Ingrese un formato de email válido (ej: holaProfe@apruebenos.com).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtEmail.Focus();
-                return false;
-            }
 
-            // Domicilio
             if (string.IsNullOrWhiteSpace(txtDomicilio.Text))
             {
-                MessageBox.Show("Ingrese el Domicilio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese el Domicilio", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDomicilio.Focus();
                 return false;
             }
-
             return true;
         }
 
@@ -296,16 +257,19 @@ namespace ClubDeportivo
 
             if (socioFlag)
             {
+                // Guardo Socio
                 using var cmd = new MySqlCommand("sp_socio_insert", cn, tx);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.Add("p_id_persona", MySqlDbType.Int32).Value = personaId;
                 cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
 
+                // Retorno el id nuevo
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
             else
             {
+                //Guardo No Socio
                 using var cmd = new MySqlCommand("sp_no_socio_insert", cn, tx);
                 cmd.CommandType = CommandType.StoredProcedure;
 
@@ -314,8 +278,10 @@ namespace ClubDeportivo
                 cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
                 cmd.Parameters.Add("p_motivo", MySqlDbType.VarChar).Value = "Inscripción";
 
+                // Retorno el id nuevo
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+
     }
 }
