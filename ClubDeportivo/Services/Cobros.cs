@@ -57,6 +57,37 @@ namespace ClubDeportivo.Services
                 throw new Exception("Error al listar vencimientos: " + ex.Message);
             }
         }
+
+
+        public DataTable ListarVencimientosPorFecha(DateTime fecha)
+        {
+            DataTable tablaVencimientos = new DataTable();
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+
+                using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                
+                // Usamos la 'fecha' recibida como parámetro en lugar de DateTime.Now
+                cmd.Parameters.Add("p_fecha", MySqlDbType.DateTime).Value = fecha;
+
+                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = true;
+
+                MySqlDataReader resultado = cmd.ExecuteReader();
+                tablaVencimientos.Load(resultado);
+
+                return tablaVencimientos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar vencimientos por fecha: " + ex.Message);
+            }
+        }
+
+
         public DataTable ListarMediosPago()
         {
             DataTable tabla = new DataTable();
