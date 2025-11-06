@@ -38,6 +38,8 @@ namespace ClubDeportivo
             //MessageBoxButtons.OK,
             //MessageBoxIcon.Information);
 
+            //
+
             FrmVencimientos frmVencimientos = new FrmVencimientos();
             frmVencimientos.ShowDialog();
         }
