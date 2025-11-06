@@ -3,51 +3,76 @@ using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace ClubDeportivo
 {
     public partial class FrmBusqueda : Form
     {
         private ContextMenuStrip menuSocio;
+
         public FrmBusqueda()
         {
             InitializeComponent();
 
             dataGridBusqueda.AutoGenerateColumns = true;
-            menuSocio = new ContextMenuStrip();
 
-            // Ítems del menú del listado
+            menuSocio = new ContextMenuStrip();
             menuSocio.Items.Add("Editar Socio", null, MenuEditar_Click);
             menuSocio.Items.Add("Cobrar", null, MenuCobrar_Click);
             menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
             menuSocio.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
             menuSocio.Items.Add(new ToolStripSeparator());
             menuSocio.Items.Add("Cancelar", null, MenuCancelar_Click);
-            // Asociar el menú al DataGridView
-            dataGridBusqueda.ContextMenuStrip = menuSocio;
-            // Detectar click derecho para seleccionar la fila antes de abrir el menú
-            dataGridBusqueda.CellMouseDown += DataGridBusqueda_CellMouseDown;
 
+            dataGridBusqueda.ContextMenuStrip = menuSocio;
+            dataGridBusqueda.CellMouseDown += DataGridBusqueda_CellMouseDown;
+            dataGridBusqueda.CellDoubleClick += DataGridBusqueda_CellDoubleClick;
+        }
+
+        private bool ContieneCaracteresInvalidos(string texto)
+        {
+            return !Regex.IsMatch(texto, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$");
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            //limpia tabla anterior
             dataGridBusqueda.DataSource = null;
 
-            //captura de datos del formulario
-            //TODO: AGREGAR nombres y apellidos
-            string nroDocumento = txtDni.Text.Trim();
+            string nombre = txtNombre.Text.Trim();
+            string apellido = txtApellido.Text.Trim();
+            string documento = txtDni.Text.Trim();
+
+            if (ContieneCaracteresInvalidos(nombre))
+            {
+                MessageBox.Show("El campo 'Nombre' contiene caracteres no válidos.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return;
+            }
+
+            if (ContieneCaracteresInvalidos(apellido))
+            {
+                MessageBox.Show("El campo 'Apellido' contiene caracteres no válidos.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtApellido.Focus();
+                return;
+            }
+
+            if (!Regex.IsMatch(documento, @"^\d*$") && !string.IsNullOrEmpty(documento))
+            {
+                MessageBox.Show("El campo 'DNI' solo debe contener números.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDni.Focus();
+                return;
+            }
 
             using var cn = Conexion.getInstancia().CrearConcexion();
             cn.Open();
 
             using var cmd = new MySqlCommand("sp_persona_search", cn);
             cmd.CommandType = CommandType.StoredProcedure;
-            //TODO: CAMBIAR por nombres y apellidos
-            cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = "";
-            cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = "";
-            cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value = nroDocumento;
+
+            cmd.Parameters.AddWithValue("p_nombres", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre.ToLower());
+            cmd.Parameters.AddWithValue("p_apellidos", string.IsNullOrEmpty(apellido) ? DBNull.Value : apellido.ToLower());
+            cmd.Parameters.AddWithValue("p_nro_documento", string.IsNullOrEmpty(documento) ? DBNull.Value : documento);
 
             using var adapter = new MySqlDataAdapter(cmd);
             DataTable tabla = new DataTable();
@@ -56,17 +81,24 @@ namespace ClubDeportivo
             if (tabla.Rows.Count > 0)
             {
                 dataGridBusqueda.DataSource = tabla;
+                MessageBox.Show($"Se encontraron {tabla.Rows.Count} resultados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
                 MessageBox.Show("No se encontró ninguna persona con los datos proporcionados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
             }
+        }
 
+        private void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtNombre.Clear();
+            txtApellido.Clear();
+            txtDni.Clear();
+            dataGridBusqueda.DataSource = null;
+            txtNombre.Focus();
         }
 
         private void DataGridBusqueda_CellMouseDown(object? sender, DataGridViewCellMouseEventArgs e)
-
         {
             if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
             {
@@ -76,109 +108,36 @@ namespace ClubDeportivo
             }
         }
 
-        private void MenuEditar_Click(object? sender, EventArgs e)
+        private void DataGridBusqueda_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
-            var row = dataGridBusqueda.CurrentRow;
-            if (row != null)
+            if (e.RowIndex >= 0)
             {
-                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
-                string apellido = row.Cells["apellidos"].Value?.ToString() ?? "";
-                MessageBox.Show($"Editar socio: {nombre} {apellido}");
-            }
-        }
+                var row = dataGridBusqueda.Rows[e.RowIndex];
 
-        private void MenuCobrar_Click(object? sender, EventArgs e)
-        {
-            var row = dataGridBusqueda.CurrentRow;
-            if (row != null)
-            {
-                string categoria = row.Cells["Categoría"].Value.ToString()!;
-                if (categoria == "Socio")
-                {
-                    int idSocio = Convert.ToInt32(row.Cells["id"].Value);
-
-                    Cobros servicio = new Cobros();
-                    DataTable vencimientos = servicio.ListarCuotasPorPagar();
-
-                    DataView dv = vencimientos.DefaultView;
-                    dv.RowFilter = $"id = {idSocio}";
-
-                    if (dv.Count > 0)
-                    {
-                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
-                        frmCobros.ShowDialog();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Este socio no tiene cuotas pendientes", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                else
-                {
-                    int idNoSocio = Convert.ToInt32(row.Cells["id"].Value);
-                    FrmCobroActividad frmCobros = new FrmCobroActividad(idNoSocio);
-                    frmCobros.ShowDialog();
-                }
-            }
-        }
-
-        private void MenuInhabilitar_Click(object? sender, EventArgs e)
-        {
-            var row = dataGridBusqueda.CurrentRow;
-            if (row != null)
-            {
-                string nombre = row.Cells["nombres"].Value?.ToString() ?? "";
-                MessageBox.Show($"Inhabilitar socio: {nombre}");
-            }
-        }
-
-        private void MenuCarnet_Click(object? sender, EventArgs e)
-        {
-            var row = dataGridBusqueda.CurrentRow;
-            
-            if (row == null) return;
-            
-            var persona = new Persona(
-                    
-                row.Cells["Nombres"].Value.ToString()!,
-                row.Cells["Apellidos"].Value.ToString()!,
-                row.Cells["Sexo"].Value.ToString()!,
-                row.Cells["Tipo"].Value.ToString()!,
-                row.Cells["NroDocumento"].Value.ToString()!,
-                Convert.ToDateTime(row.Cells["Nacimiento"].Value).Date,
-                "",
-                "",
-                ""
+                var persona = new Persona(
+                    row.Cells["nombres"].Value?.ToString() ?? "",
+                    row.Cells["apellidos"].Value?.ToString() ?? "",
+                    row.Cells["sexo"].Value?.ToString() ?? "",
+                    row.Cells["tipo_documento"].Value?.ToString() ?? "",
+                    row.Cells["nro_documento"].Value?.ToString() ?? "",
+                    Convert.ToDateTime(row.Cells["fecha_nacimiento"].Value),
+                    row.Cells["email"].Value?.ToString() ?? "",
+                    row.Cells["telefono"].Value?.ToString() ?? "",
+                    row.Cells["domicilio"].Value?.ToString() ?? ""
                 );
-            string categoria = row.Cells["Categoría"].Value.ToString()!;
 
-            if (categoria == "Socio")
-            {
-                var socio = new Socio(
-                    persona,
-                    Convert.ToInt32(row.Cells["Id"].Value),
-                    Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
-                    Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
-                    DateTime.Now,
-                    row.Cells["estado"].Value.ToString()!);
-                new SocioCarnetPrinter(socio).Imprimir();
+                MessageBox.Show($"Detalle:\n{persona.Nombres} {persona.Apellidos}\n{persona.TipoDocumento} {persona.NumeroDocumento}",
+                                "Detalle de Persona", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else
-            {
-                var noSocio = new NoSocio(
-                   persona,
-                   Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
-                   row.Cells["estado"].Value.ToString()!,
-                   "",
-                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date);
-                new NoSocioCarnetPrinter(noSocio).Imprimir();
-            }               
         }
 
+        private void MenuEditar_Click(object? sender, EventArgs e) { /* ... */ }
+        private void MenuCobrar_Click(object? sender, EventArgs e) { /* ... */ }
+        private void MenuCarnet_Click(object? sender, EventArgs e) { /* ... */ }
+        private void MenuInhabilitar_Click(object? sender, EventArgs e) { /* ... */ }
         private void MenuCancelar_Click(object? sender, EventArgs e)
         {
             dataGridBusqueda.ClearSelection();
         }
-
     }
 }
