@@ -13,7 +13,7 @@ namespace ClubDeportivo.Services
     {
         DataTable tabla = new DataTable();
 
-        public DataTable ListarVencimientos()
+        public DataTable ListarCuotasPorPagar()
         {
             try
             {
@@ -23,6 +23,29 @@ namespace ClubDeportivo.Services
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add("p_fecha", MySqlDbType.DateTime).Value = DateTime.Now;
+                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = true;
+
+                MySqlDataReader resultado = cmd.ExecuteReader();
+                tabla.Load(resultado);
+
+                return tabla;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar vencimientos: " + ex.Message);
+            }
+        }
+        public DataTable ListarCuotasVencidas()
+        {
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+
+                using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_fecha", MySqlDbType.DateTime).Value = DateTime.Now;
+                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = false;
 
                 MySqlDataReader resultado = cmd.ExecuteReader();
                 tabla.Load(resultado);
@@ -145,6 +168,35 @@ namespace ClubDeportivo.Services
             catch (Exception ex)
             {
                 throw new Exception("Error al verificar pago: " + ex.Message);
+            }
+        }
+        public int GenerarCuotas(string periodo, double monto)
+        {
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+
+                using var cmd = new MySqlCommand("sp_generar_cuotas", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("p_periodo", MySqlDbType.VarChar).Value = periodo;
+                cmd.Parameters.Add("p_dia_vencimiento", MySqlDbType.Int32).Value = 10;
+                cmd.Parameters.Add("p_monto", MySqlDbType.Double).Value = monto;
+                cmd.Parameters.Add("p_usuario", MySqlDbType.VarChar).Value = SesionUsuario.Usuario;
+
+                object? result = cmd.ExecuteScalar(); // obtiene la primera celda del primer SELECT
+                int cuotasGeneradas = Convert.ToInt32(result);
+
+                if (cuotasGeneradas > 0) return cuotasGeneradas; else return 0; 
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al generar cuota: " + ex.Message,
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                return -1;
             }
         }
     }
