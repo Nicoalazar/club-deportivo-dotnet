@@ -98,7 +98,7 @@ namespace ClubDeportivo
                     int idSocio = Convert.ToInt32(row.Cells["id"].Value);
 
                     Cobros servicio = new Cobros();
-                    DataTable vencimientos = servicio.ListarVencimientos();
+                    DataTable vencimientos = servicio.ListarCuotasPorPagar();
 
                     DataView dv = vencimientos.DefaultView;
                     dv.RowFilter = $"id = {idSocio}";

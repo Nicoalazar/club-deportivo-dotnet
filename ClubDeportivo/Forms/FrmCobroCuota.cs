@@ -29,7 +29,7 @@ namespace ClubDeportivo.Forms
         {
             try
             {
-                DataTable vencimientos = servicio.ListarVencimientos();
+                DataTable vencimientos = servicio.ListarCuotasPorPagar();
 
                 DataView dv = vencimientos.DefaultView;
                 dv.RowFilter = $"id = {idSocio}";
