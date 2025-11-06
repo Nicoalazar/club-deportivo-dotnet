@@ -32,7 +32,7 @@
             tituloVentanaPrincipal = new Label();
             btnRegistrarPersona = new Button();
             btnListarVencimientos = new Button();
-            btnRevisarAsistencia = new Button();
+            btnGenerarCuotas = new Button();
             btnBuscar = new Button();
             statusStrip1 = new StatusStrip();
             toolStripUser = new ToolStripStatusLabel();
@@ -75,16 +75,16 @@
             btnListarVencimientos.UseVisualStyleBackColor = true;
             btnListarVencimientos.Click += btnListarVencimientos_Click;
             // 
-            // btnRevisarAsistencia
+            // btnGenerarCuotas
             // 
-            btnRevisarAsistencia.Location = new Point(410, 199);
-            btnRevisarAsistencia.Margin = new Padding(3, 2, 3, 2);
-            btnRevisarAsistencia.Name = "btnRevisarAsistencia";
-            btnRevisarAsistencia.Size = new Size(138, 31);
-            btnRevisarAsistencia.TabIndex = 4;
-            btnRevisarAsistencia.Text = "Revisar Asistencia";
-            btnRevisarAsistencia.UseVisualStyleBackColor = true;
-            btnRevisarAsistencia.Click += btnRevisarAsistencia_Click;
+            btnGenerarCuotas.Location = new Point(410, 199);
+            btnGenerarCuotas.Margin = new Padding(3, 2, 3, 2);
+            btnGenerarCuotas.Name = "btnGenerarCuotas";
+            btnGenerarCuotas.Size = new Size(138, 31);
+            btnGenerarCuotas.TabIndex = 4;
+            btnGenerarCuotas.Text = "Generar Cuotas";
+            btnGenerarCuotas.UseVisualStyleBackColor = true;
+            btnGenerarCuotas.Click += btnGenerarCuotas_Click;
             // 
             // btnBuscar
             // 
@@ -142,7 +142,7 @@
             ClientSize = new Size(700, 338);
             Controls.Add(statusStrip1);
             Controls.Add(btnBuscar);
-            Controls.Add(btnRevisarAsistencia);
+            Controls.Add(btnGenerarCuotas);
             Controls.Add(btnListarVencimientos);
             Controls.Add(btnRegistrarPersona);
             Controls.Add(tituloVentanaPrincipal);
@@ -162,7 +162,7 @@
         private Label tituloVentanaPrincipal;
         private Button btnRegistrarPersona;
         private Button btnListarVencimientos;
-        private Button btnRevisarAsistencia;
+        private Button btnGenerarCuotas;
         private Button btnBuscar;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripUser;
