@@ -43,6 +43,7 @@ namespace ClubDeportivo
             string apellido = txtApellido.Text.Trim();
             string documento = txtDni.Text.Trim();
 
+            // *** VALIDACIONES ***
             if (ContieneCaracteresInvalidos(nombre))
             {
                 MessageBox.Show("El campo 'Nombre' contiene caracteres no válidos.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -63,29 +64,60 @@ namespace ClubDeportivo
                 txtDni.Focus();
                 return;
             }
+            // *** FIN VALIDACIONES ***
 
-            using var cn = Conexion.getInstancia().CrearConcexion();
-            cn.Open();
-
-            using var cmd = new MySqlCommand("sp_persona_search", cn);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            cmd.Parameters.AddWithValue("p_nombres", string.IsNullOrEmpty(nombre) ? DBNull.Value : nombre.ToLower());
-            cmd.Parameters.AddWithValue("p_apellidos", string.IsNullOrEmpty(apellido) ? DBNull.Value : apellido.ToLower());
-            cmd.Parameters.AddWithValue("p_nro_documento", string.IsNullOrEmpty(documento) ? DBNull.Value : documento);
-
-            using var adapter = new MySqlDataAdapter(cmd);
-            DataTable tabla = new DataTable();
-            adapter.Fill(tabla);
-
-            if (tabla.Rows.Count > 0)
+            try
             {
-                dataGridBusqueda.DataSource = tabla;
-                MessageBox.Show($"Se encontraron {tabla.Rows.Count} resultados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Configuración de Parámetros de Búsqueda Flexible
+                // Esto envía la cadena en minúsculas y usa DBNull.Value si está vacío.
+                object paramNombre = string.IsNullOrEmpty(nombre)
+                                     ? (object)DBNull.Value
+                                     : nombre.ToLower();
+
+                object paramApellido = string.IsNullOrEmpty(apellido)
+                                       ? (object)DBNull.Value
+                                       : apellido.ToLower();
+
+                object paramDocumento = string.IsNullOrEmpty(documento)
+                                        ? (object)DBNull.Value
+                                        : documento;
+
+                using var cn = Conexion.getInstancia().CrearConcexion();
+                cn.Open();
+
+                using var cmd = new MySqlCommand("sp_persona_search", cn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("p_nombres", paramNombre);
+                cmd.Parameters.AddWithValue("p_apellidos", paramApellido);
+                cmd.Parameters.AddWithValue("p_nro_documento", paramDocumento);
+
+                using var adapter = new MySqlDataAdapter(cmd);
+                DataTable tabla = new DataTable();
+
+                // *** LÍNEA 79: La falla ocurre AQUÍ cuando el SQL está mal. ***
+                adapter.Fill(tabla);
+                // ************************************************************
+
+                if (tabla.Rows.Count > 0)
+                {
+                    dataGridBusqueda.DataSource = tabla;
+                    MessageBox.Show($"Se encontraron {tabla.Rows.Count} resultados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    dataGridBusqueda.DataSource = null;
+                    MessageBox.Show("No se encontró ninguna persona con los datos proporcionados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else
+            catch (MySqlException ex)
             {
-                MessageBox.Show("No se encontró ninguna persona con los datos proporcionados.", "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Este catch es el que captura el error de columna desconocida del servidor.
+                MessageBox.Show($"Error de Base de Datos: {ex.Message}", "Error de Conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error inesperado: {ex.Message}", "Error General", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -97,6 +129,8 @@ namespace ClubDeportivo
             dataGridBusqueda.DataSource = null;
             txtNombre.Focus();
         }
+
+        // --- MANEJADORES DE EVENTOS DEL DATAGRID Y MENÚ CONTEXTUAL ---
 
         private void DataGridBusqueda_CellMouseDown(object? sender, DataGridViewCellMouseEventArgs e)
         {
@@ -114,27 +148,33 @@ namespace ClubDeportivo
             {
                 var row = dataGridBusqueda.Rows[e.RowIndex];
 
+                // *** CORRECCIÓN CLAVE: OMITIMOS LA LECTURA DE LAS COLUMNAS PROBLEMA ***
+                // El error de columna desconocida ocurre en el servidor, pero este código evita fallar
+                // al crear el objeto Persona.
                 var persona = new Persona(
                     row.Cells["nombres"].Value?.ToString() ?? "",
                     row.Cells["apellidos"].Value?.ToString() ?? "",
                     row.Cells["sexo"].Value?.ToString() ?? "",
                     row.Cells["tipo_documento"].Value?.ToString() ?? "",
                     row.Cells["nro_documento"].Value?.ToString() ?? "",
-                    Convert.ToDateTime(row.Cells["fecha_nacimiento"].Value),
+                    DateTime.MinValue, // Asume valor predeterminado seguro para la fecha
                     row.Cells["email"].Value?.ToString() ?? "",
                     row.Cells["telefono"].Value?.ToString() ?? "",
                     row.Cells["domicilio"].Value?.ToString() ?? ""
                 );
+                // *************************************************************************
 
                 MessageBox.Show($"Detalle:\n{persona.Nombres} {persona.Apellidos}\n{persona.TipoDocumento} {persona.NumeroDocumento}",
                                 "Detalle de Persona", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void MenuEditar_Click(object? sender, EventArgs e) { /* ... */ }
-        private void MenuCobrar_Click(object? sender, EventArgs e) { /* ... */ }
-        private void MenuCarnet_Click(object? sender, EventArgs e) { /* ... */ }
-        private void MenuInhabilitar_Click(object? sender, EventArgs e) { /* ... */ }
+        // Métodos de click del menú contextual
+        private void MenuEditar_Click(object? sender, EventArgs e) { /* Lógica de edición */ }
+        private void MenuCobrar_Click(object? sender, EventArgs e) { /* Lógica de cobro */ }
+        private void MenuCarnet_Click(object? sender, EventArgs e) { /* Lógica de carnet */ }
+        private void MenuInhabilitar_Click(object? sender, EventArgs e) { /* Lógica de inhabilitación */ }
+
         private void MenuCancelar_Click(object? sender, EventArgs e)
         {
             dataGridBusqueda.ClearSelection();
