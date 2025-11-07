@@ -36,8 +36,11 @@ namespace ClubDeportivo.Services
             // el bloque try permite controlar errores
             try
             {
-                cadena.ConnectionString = $"Server={servidor};Port={puerto};Uid={usuario};Pwd={clave};Database={baseDatos};CharSet=utf8mb4;";
-
+                cadena.ConnectionString = "datasource=" + servidor +
+                ";port=" + puerto +
+                ";username=" + usuario +
+                ";password=" + clave +
+                ";Database=" + baseDatos;
             }
             catch (Exception)
             {
