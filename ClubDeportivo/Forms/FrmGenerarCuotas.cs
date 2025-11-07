@@ -1,4 +1,5 @@
-﻿using ClubDeportivo.Models;
+﻿using ClubDeportivo.Config;
+using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System;
@@ -51,7 +52,7 @@ namespace ClubDeportivo.Forms
 
                 if (cuotasGeneradas > 0)
                 {
-                    MessageBox.Show("Cuota Generada Correctamente",
+                    MessageBox.Show("Cuotas Generadas Correctamente",
                                    "Éxito",
                                    MessageBoxButtons.OK,
                                    MessageBoxIcon.Information);
@@ -120,6 +121,13 @@ namespace ClubDeportivo.Forms
             return true;
         }
 
+        private void FrmGenerarCuotas_Load(object sender, EventArgs e)
+        {
+            txtBoxMonto.Text = ValoresCuotas.MontoCuota.ToString("N2");
+
+            if (cmbBoxPeriodo.Items.Count > 0)
+                cmbBoxPeriodo.SelectedIndex = 0;
+        }
     }
 }
 
