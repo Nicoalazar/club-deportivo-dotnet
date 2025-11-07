@@ -37,7 +37,7 @@
             // 
             // btnCobrar
             // 
-            btnCobrar.Location = new Point(363, 83);
+            btnCobrar.Location = new Point(371, 62);
             btnCobrar.Name = "btnCobrar";
             btnCobrar.Size = new Size(75, 23);
             btnCobrar.TabIndex = 0;
@@ -66,7 +66,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(59, 103);
+            label2.Location = new Point(218, 26);
             label2.Name = "label2";
             label2.Size = new Size(87, 15);
             label2.TabIndex = 3;
@@ -75,7 +75,7 @@
             // cmbBoxMedio
             // 
             cmbBoxMedio.FormattingEnabled = true;
-            cmbBoxMedio.Location = new Point(61, 138);
+            cmbBoxMedio.Location = new Point(218, 62);
             cmbBoxMedio.Name = "cmbBoxMedio";
             cmbBoxMedio.Size = new Size(121, 23);
             cmbBoxMedio.TabIndex = 4;
@@ -85,7 +85,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(471, 120);
             Controls.Add(cmbBoxMedio);
             Controls.Add(label2);
             Controls.Add(cmbBoxPeriodo);
@@ -93,6 +93,7 @@
             Controls.Add(btnCobrar);
             Name = "FrmCobroCuota";
             Text = "FrmCobroCuota";
+            Load += FrmCobroCuota_Load;
             ResumeLayout(false);
             PerformLayout();
         }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace ClubDeportivo.Services
+namespace ClubDeportivo.Config
 {
     public class Conexion
     {

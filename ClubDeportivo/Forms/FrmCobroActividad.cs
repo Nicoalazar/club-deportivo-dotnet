@@ -1,4 +1,5 @@
-﻿using ClubDeportivo.Models;
+﻿using ClubDeportivo.Config;
+using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System;
@@ -136,6 +137,12 @@ namespace ClubDeportivo.Forms
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             fecha = dateTimePicker1.Value.Date;
+        }
+
+        private void FrmCobroActividad_Load(object sender, EventArgs e)
+        {
+            txtBoxMonto.Text = ValoresCuotas.MontoActividad.ToString("N2");
+
         }
     }
 }

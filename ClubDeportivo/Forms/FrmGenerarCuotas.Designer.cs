@@ -37,7 +37,7 @@
             // 
             // btnGenerar
             // 
-            btnGenerar.Location = new Point(363, 83);
+            btnGenerar.Location = new Point(345, 62);
             btnGenerar.Name = "btnGenerar";
             btnGenerar.Size = new Size(75, 23);
             btnGenerar.TabIndex = 0;
@@ -48,7 +48,7 @@
             // lblPeriodo
             // 
             lblPeriodo.AutoSize = true;
-            lblPeriodo.Location = new Point(58, 26);
+            lblPeriodo.Location = new Point(35, 29);
             lblPeriodo.Name = "lblPeriodo";
             lblPeriodo.Size = new Size(48, 15);
             lblPeriodo.TabIndex = 1;
@@ -57,7 +57,7 @@
             // cmbBoxPeriodo
             // 
             cmbBoxPeriodo.FormattingEnabled = true;
-            cmbBoxPeriodo.Location = new Point(59, 62);
+            cmbBoxPeriodo.Location = new Point(32, 62);
             cmbBoxPeriodo.Name = "cmbBoxPeriodo";
             cmbBoxPeriodo.Size = new Size(121, 23);
             cmbBoxPeriodo.TabIndex = 2;
@@ -66,7 +66,7 @@
             // lblMonto
             // 
             lblMonto.AutoSize = true;
-            lblMonto.Location = new Point(59, 103);
+            lblMonto.Location = new Point(196, 29);
             lblMonto.Name = "lblMonto";
             lblMonto.Size = new Size(94, 15);
             lblMonto.TabIndex = 3;
@@ -74,16 +74,17 @@
             // 
             // txtBoxMonto
             // 
-            txtBoxMonto.Location = new Point(63, 130);
+            txtBoxMonto.Location = new Point(196, 62);
             txtBoxMonto.Name = "txtBoxMonto";
             txtBoxMonto.Size = new Size(100, 23);
             txtBoxMonto.TabIndex = 4;
+            txtBoxMonto.Text = "\r\n";
             // 
             // FrmGenerarCuotas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(449, 133);
             Controls.Add(txtBoxMonto);
             Controls.Add(lblMonto);
             Controls.Add(cmbBoxPeriodo);
@@ -91,6 +92,7 @@
             Controls.Add(btnGenerar);
             Name = "FrmGenerarCuotas";
             Text = "FrmGenerarCuotas";
+            Load += FrmGenerarCuotas_Load;
             ResumeLayout(false);
             PerformLayout();
         }
