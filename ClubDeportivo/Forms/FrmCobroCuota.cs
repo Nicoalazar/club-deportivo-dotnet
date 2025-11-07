@@ -1,4 +1,5 @@
-﻿using ClubDeportivo.Models;
+﻿using ClubDeportivo.Config;
+using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
 using System;
@@ -52,12 +53,12 @@ namespace ClubDeportivo.Forms
         {
             try
             {
-            DataTable medios = servicio.ListarMediosPago();
+                DataTable medios = servicio.ListarMediosPago();
 
-            cmbBoxMedio.DataSource = medios;
-            cmbBoxMedio.DisplayMember = "medio";
-            cmbBoxMedio.ValueMember = "medio";
-            cmbBoxMedio.SelectedIndex = -1; // Iniciar sin selección
+                cmbBoxMedio.DataSource = medios;
+                cmbBoxMedio.DisplayMember = "medio";
+                cmbBoxMedio.ValueMember = "medio";
+                cmbBoxMedio.SelectedIndex = -1; // Iniciar sin selección
             }
             catch (Exception ex)
             {
@@ -79,7 +80,7 @@ namespace ClubDeportivo.Forms
                 return;
             }
 
-            servicio.RegistrarPagoCuota(idSocio,periodo,medio);
+            servicio.RegistrarPagoCuota(idSocio, periodo, medio);
             this.Close();
         }
 
@@ -97,6 +98,12 @@ namespace ClubDeportivo.Forms
             {
                 medio = cmbBoxMedio.Text;
             }
+        }
+
+        private void FrmCobroCuota_Load(object sender, EventArgs e)
+        {
+            if (cmbBoxPeriodo.Items.Count > 0)
+                cmbBoxPeriodo.SelectedIndex = 0;
         }
     }
 }
