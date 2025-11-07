@@ -28,17 +28,8 @@ namespace ClubDeportivo
             frmAltas.ShowDialog();
         }
 
-        // dejo los botones q todavia no pidieron sin funcionalidad. 
         private void btnListarVencimientos_Click(object sender, EventArgs e)
         {
-            //el cartel de proximamente lo dejo comentado por las dudas, y lo reemplazo con la nueva funcionalidad
-
-            //MessageBox.Show("Funcionalidad 'Listar Vencimientos' - ¡PRÓXIMAMENTE!",
-            //"En Desarrollo",
-            //MessageBoxButtons.OK,
-            //MessageBoxIcon.Information);
-
-            //
 
             FrmVencimientos frmVencimientos = new FrmVencimientos();
             frmVencimientos.ShowDialog();
