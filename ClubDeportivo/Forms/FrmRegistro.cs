@@ -1,3 +1,5 @@
+using ClubDeportivo.Config;
+using ClubDeportivo.Forms;
 using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
@@ -88,15 +90,23 @@ namespace ClubDeportivo
                 _persona.Add(persona);
 
                 var detalleRelacion = socioFlag
-                    ? "Socio registrado con ID: "
-                    : "La persona fue registrada";
+                    ? "Socio registrado correctamente con ID: "
+                    : "La persona fue registrada correctamente";
 
                 var detalleAptoFisico = aptoFlag
                     ? "\n\nEntregó apto fisico y vence dentro de un año"
                     : "\n\nNo entregó apto fisico";
 
+                if (socioFlag)
+                {
+                    Cobros servicios = new Cobros();
+                    string periodo = DateTime.Now.ToString("yyyyMM");
+                    int cuotas = servicios.GenerarCuotas(periodo,ValoresCuotas.MontoCuota);
+
+                }
+
                 MessageBox.Show(
-                    socioFlag ? 
+                    socioFlag ?
                     detalleRelacion + relacionId + detalleAptoFisico
                     : detalleRelacion + detalleAptoFisico,
                     "Información",

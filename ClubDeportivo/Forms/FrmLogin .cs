@@ -32,7 +32,7 @@ namespace ClubDeportivo
             }
             else
             {
-                MessageBox.Show("Usuario y/o password incorrecto");
+                MessageBox.Show("Usuario y/o password incorrecto", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using ClubDeportivo.Forms;
+﻿using ClubDeportivo.Config;
+using ClubDeportivo.Forms;
 using ClubDeportivo.Models;
 using ClubDeportivo.Services;
 using MySql.Data.MySqlClient;
@@ -101,9 +102,7 @@ namespace ClubDeportivo
                 using var adapter = new MySqlDataAdapter(cmd);
                 DataTable tabla = new DataTable();
 
-                // *** LÍNEA 79: La falla ocurre AQUÍ cuando el SQL está mal. ***
                 adapter.Fill(tabla);
-                // ************************************************************
 
                 if (tabla.Rows.Count > 0)
                 {
