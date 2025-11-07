@@ -36,7 +36,7 @@ namespace ClubDeportivo.Forms
                 dv.RowFilter = $"id = {idSocio}";
                 DataTable vencimientosFiltrados = dv.ToTable();
 
-                cmbBoxPeriodo.DataSource = vencimientos;
+                cmbBoxPeriodo.DataSource = vencimientosFiltrados;
                 cmbBoxPeriodo.DisplayMember = "periodo";
                 cmbBoxPeriodo.ValueMember = "periodo";
                 cmbBoxPeriodo.SelectedIndex = -1; // Iniciar sin selección
