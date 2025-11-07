@@ -40,7 +40,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(59, 91);
+            label1.Location = new Point(37, 46);
             label1.Name = "label1";
             label1.Size = new Size(109, 15);
             label1.TabIndex = 0;
@@ -48,7 +48,7 @@
             // 
             // dateTimePicker1
             // 
-            dateTimePicker1.Location = new Point(174, 85);
+            dateTimePicker1.Location = new Point(164, 40);
             dateTimePicker1.Name = "dateTimePicker1";
             dateTimePicker1.Size = new Size(213, 23);
             dateTimePicker1.TabIndex = 1;
@@ -57,7 +57,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(63, 125);
+            label2.Location = new Point(108, 86);
             label2.Name = "label2";
             label2.Size = new Size(38, 15);
             label2.TabIndex = 2;
@@ -65,17 +65,17 @@
             // 
             // btnCobrar
             // 
-            btnCobrar.Location = new Point(174, 193);
+            btnCobrar.Location = new Point(164, 161);
             btnCobrar.Name = "btnCobrar";
             btnCobrar.Size = new Size(75, 23);
             btnCobrar.TabIndex = 3;
             btnCobrar.Text = "Cobrar";
             btnCobrar.UseVisualStyleBackColor = true;
-            btnCobrar.Click += new System.EventHandler(this.btnCobrar_Click);
+            btnCobrar.Click += btnCobrar_Click;
             // 
             // txtBoxMonto
             // 
-            txtBoxMonto.Location = new Point(174, 122);
+            txtBoxMonto.Location = new Point(164, 78);
             txtBoxMonto.Name = "txtBoxMonto";
             txtBoxMonto.Size = new Size(100, 23);
             txtBoxMonto.TabIndex = 4;
@@ -83,7 +83,7 @@
             // cmbBoxMedio
             // 
             cmbBoxMedio.FormattingEnabled = true;
-            cmbBoxMedio.Location = new Point(174, 164);
+            cmbBoxMedio.Location = new Point(164, 117);
             cmbBoxMedio.Name = "cmbBoxMedio";
             cmbBoxMedio.Size = new Size(121, 23);
             cmbBoxMedio.TabIndex = 5;
@@ -92,7 +92,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(59, 172);
+            label3.Location = new Point(59, 125);
             label3.Name = "label3";
             label3.Size = new Size(87, 15);
             label3.TabIndex = 6;
@@ -102,7 +102,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(396, 207);
             Controls.Add(label3);
             Controls.Add(cmbBoxMedio);
             Controls.Add(txtBoxMonto);
@@ -112,6 +112,7 @@
             Controls.Add(label1);
             Name = "FrmCobroActividad";
             Text = "CobroActividad";
+            Load += FrmCobroActividad_Load;
             ResumeLayout(false);
             PerformLayout();
         }
