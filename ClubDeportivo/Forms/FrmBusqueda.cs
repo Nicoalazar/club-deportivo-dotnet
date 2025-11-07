@@ -18,7 +18,7 @@ namespace ClubDeportivo
             dataGridBusqueda.AutoGenerateColumns = true;
 
             menuSocio = new ContextMenuStrip();
-            menuSocio.Items.Add("Editar Socio", null, MenuEditar_Click);
+            menuSocio.Items.Add("Editar Persona", null, MenuEditar_Click);
             menuSocio.Items.Add("Cobrar", null, MenuCobrar_Click);
             menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
             menuSocio.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
@@ -27,7 +27,6 @@ namespace ClubDeportivo
 
             dataGridBusqueda.ContextMenuStrip = menuSocio;
             dataGridBusqueda.CellMouseDown += DataGridBusqueda_CellMouseDown;
-            dataGridBusqueda.CellDoubleClick += DataGridBusqueda_CellDoubleClick;
         }
 
         private bool ContieneCaracteresInvalidos(string texto)
@@ -61,6 +60,13 @@ namespace ClubDeportivo
             if (!Regex.IsMatch(documento, @"^\d*$") && !string.IsNullOrEmpty(documento))
             {
                 MessageBox.Show("El campo 'DNI' solo debe contener números.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDni.Focus();
+                return;
+            }
+
+            if (string.IsNullOrEmpty(nombre) && string.IsNullOrEmpty(apellido) && string.IsNullOrEmpty(documento))
+            {
+                MessageBox.Show("Debe ingresar los parametros de búsqueda", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDni.Focus();
                 return;
             }
@@ -142,38 +148,108 @@ namespace ClubDeportivo
             }
         }
 
-        private void DataGridBusqueda_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        // Métodos de click del menú contextual
+        private void MenuEditar_Click(object? sender, EventArgs e)
         {
-            if (e.RowIndex >= 0)
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
             {
-                var row = dataGridBusqueda.Rows[e.RowIndex];
-
-                // *** CORRECCIÓN CLAVE: OMITIMOS LA LECTURA DE LAS COLUMNAS PROBLEMA ***
-                // El error de columna desconocida ocurre en el servidor, pero este código evita fallar
-                // al crear el objeto Persona.
-                var persona = new Persona(
-                    row.Cells["nombres"].Value?.ToString() ?? "",
-                    row.Cells["apellidos"].Value?.ToString() ?? "",
-                    row.Cells["sexo"].Value?.ToString() ?? "",
-                    row.Cells["tipo_documento"].Value?.ToString() ?? "",
-                    row.Cells["nro_documento"].Value?.ToString() ?? "",
-                    DateTime.MinValue, // Asume valor predeterminado seguro para la fecha
-                    row.Cells["email"].Value?.ToString() ?? "",
-                    row.Cells["telefono"].Value?.ToString() ?? "",
-                    row.Cells["domicilio"].Value?.ToString() ?? ""
-                );
-                // *************************************************************************
-
-                MessageBox.Show($"Detalle:\n{persona.Nombres} {persona.Apellidos}\n{persona.TipoDocumento} {persona.NumeroDocumento}",
-                                "Detalle de Persona", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Funcionalidad 'Editar Persona' - ¡PRÓXIMAMENTE!",
+                                    "En Desarrollo",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
             }
         }
 
-        // Métodos de click del menú contextual
-        private void MenuEditar_Click(object? sender, EventArgs e) { /* Lógica de edición */ }
-        private void MenuCobrar_Click(object? sender, EventArgs e) { /* Lógica de cobro */ }
-        private void MenuCarnet_Click(object? sender, EventArgs e) { /* Lógica de carnet */ }
-        private void MenuInhabilitar_Click(object? sender, EventArgs e) { /* Lógica de inhabilitación */ }
+        private void MenuCobrar_Click(object? sender, EventArgs e)
+        {
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                string categoria = row.Cells["Categoría"].Value.ToString()!;
+                if (categoria == "Socio")
+                {
+                    int idSocio = Convert.ToInt32(row.Cells["id"].Value);
+
+                    Cobros servicio = new Cobros();
+                    DataTable vencimientos = servicio.ListarCuotasPorPagar();
+
+                    DataView dv = vencimientos.DefaultView;
+                    dv.RowFilter = $"id = {idSocio}";
+
+                    if (dv.Count > 0)
+                    {
+                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                        frmCobros.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Este socio no tiene cuotas pendientes", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else
+                {
+                    int idNoSocio = Convert.ToInt32(row.Cells["id"].Value);
+                    FrmCobroActividad frmCobros = new FrmCobroActividad(idNoSocio);
+                    frmCobros.ShowDialog();
+                }
+            }
+        }
+
+        private void MenuInhabilitar_Click(object? sender, EventArgs e)
+        {
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                MessageBox.Show("Funcionalidad 'Inhabilitar' - ¡PRÓXIMAMENTE!",
+                                    "En Desarrollo",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+            }
+        }
+
+        private void MenuCarnet_Click(object? sender, EventArgs e)
+        {
+            var row = dataGridBusqueda.CurrentRow;
+
+            if (row == null) return;
+
+            var persona = new Persona(
+
+                row.Cells["Nombres"].Value.ToString()!,
+                row.Cells["Apellidos"].Value.ToString()!,
+                row.Cells["Sexo"].Value.ToString()!,
+                row.Cells["Tipo"].Value.ToString()!,
+                row.Cells["NroDocumento"].Value.ToString()!,
+                Convert.ToDateTime(row.Cells["Nacimiento"].Value).Date,
+                "",
+                "",
+                ""
+                );
+            string categoria = row.Cells["Categoría"].Value.ToString()!;
+
+            if (categoria == "Socio")
+            {
+                var socio = new Socio(
+                    persona,
+                    Convert.ToInt32(row.Cells["Id"].Value),
+                    Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
+                    Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
+                    DateTime.Now,
+                    row.Cells["estado"].Value.ToString()!);
+                new SocioCarnetPrinter(socio).Imprimir();
+            }
+            else
+            {
+                var noSocio = new NoSocio(
+                   persona,
+                   Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
+                   row.Cells["estado"].Value.ToString()!,
+                   "",
+                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date);
+                new NoSocioCarnetPrinter(noSocio).Imprimir();
+            }
+        }
 
         private void MenuCancelar_Click(object? sender, EventArgs e)
         {
