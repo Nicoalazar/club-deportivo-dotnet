@@ -7,6 +7,7 @@ using System;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 
@@ -21,6 +22,64 @@ namespace ClubDeportivo
             InitializeComponent();
             dgvPersona.AutoGenerateColumns = true;
             dgvPersona.DataSource = _persona;
+
+            //Agregando validaciones
+            ConfigurarValidacionesEnTiempoReal();
+        }
+
+        private void ConfigurarValidacionesEnTiempoReal()
+        {
+            //Solo admite letras para el campo nombre
+            txtNombre.KeyPress += (s, e) => {
+                if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
+                {
+                    e.Handled = true;
+                }
+            };
+
+            //Solo admite letras para el campo apellido
+            txtApellido.KeyPress += (s, e) => {
+                if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
+                {
+                    e.Handled = true;
+                }
+            };
+
+            //Solo admite numeros para documento y letras para pasaporte
+            txtDocumento.KeyPress += (s, e) => {
+                bool esPasaporte = cmbTipo.SelectedItem?.ToString() == "Pasaporte";
+
+                if (esPasaporte)
+                {
+                    // Pasaporte: acepta letras, números y algunos caracteres especiales
+                    if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                    {
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    // DNI: solo números
+                    if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                    {
+                        e.Handled = true;
+                    }
+                }
+            };
+
+            cmbTipo.SelectedIndexChanged += (s, e) => {
+                // Limpiar el campo cuando cambia el tipo de documento
+                txtDocumento.Clear();
+                txtDocumento.Focus();
+            };
+
+            //Solo admite numeros para el telefono
+            txtTelefono.KeyPress += (s, e) => {
+                if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != '+' && e.KeyChar != '-' && e.KeyChar != ' ')
+                {
+                    e.Handled = true;
+                }
+            };
         }
 
         private void FrmPrimerProyecto_Load(object sender, EventArgs e)
@@ -48,7 +107,7 @@ namespace ClubDeportivo
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            if (VerificarCampos() == false) return;
+            if (!VerificarCampos()) return;
 
             var socioFlag = checkSocio.Checked;
             var aptoFlag = checkApto.Checked;
@@ -78,12 +137,12 @@ namespace ClubDeportivo
                     return;
                 }
 
-                int personaId = GuardarPersonaEnDb(persona,cn,transaction);
+                int personaId = GuardarPersonaEnDb(persona, cn, transaction);
                 if (personaId <= 0) throw new Exception("No se pudo guardar persona.");
 
                 //Guardo Relación como socio o no socio;
-                int relacionId = GuardarRelacionSocio(personaId, socioFlag, aptoFlag,cn,transaction);
-                if(relacionId <= 0) throw new Exception("No se pudo guardar la relación.");
+                int relacionId = GuardarRelacionSocio(personaId, socioFlag, aptoFlag, cn, transaction);
+                if (relacionId <= 0) throw new Exception("No se pudo guardar la relación.");
 
                 transaction.Commit();
 
@@ -101,7 +160,7 @@ namespace ClubDeportivo
                 {
                     Cobros servicios = new Cobros();
                     string periodo = DateTime.Now.ToString("yyyyMM");
-                    int cuotas = servicios.GenerarCuotas(periodo,ValoresCuotas.MontoCuota);
+                    int cuotas = servicios.GenerarCuotas(periodo, ValoresCuotas.MontoCuota);
 
                 }
 
@@ -178,7 +237,7 @@ namespace ClubDeportivo
 
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
-        private bool PersonaExiste(string nombres,string apellidos, string documento)
+        private bool PersonaExiste(string nombres, string apellidos, string documento)
         {
             using var cn = Conexion.getInstancia().CrearConcexion();
             cn.Open();
@@ -187,7 +246,7 @@ namespace ClubDeportivo
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add("p_nombres", MySqlDbType.VarChar).Value = nombres;
             cmd.Parameters.Add("p_apellidos", MySqlDbType.VarChar).Value = apellidos;
-            cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value =documento;
+            cmd.Parameters.Add("p_nro_documento", MySqlDbType.VarChar).Value = documento;
 
             var result = cmd.ExecuteScalar();
             var count = Convert.ToInt32(result);
@@ -196,6 +255,7 @@ namespace ClubDeportivo
 
         private bool VerificarCampos()
         {
+            // Valida Nombre
             if (string.IsNullOrWhiteSpace(txtNombre.Text))
             {
                 MessageBox.Show("Ingrese el Nombre.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -203,6 +263,21 @@ namespace ClubDeportivo
                 return false;
             }
 
+            if (txtNombre.Text.Trim().Length < 3)
+            {
+                MessageBox.Show("El Nombre debe tener al menos 3 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return false;
+            }
+
+            if (!Regex.IsMatch(txtNombre.Text.Trim(), @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
+            {
+                MessageBox.Show("El Nombre solo puede contener letras.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return false;
+            }
+
+            // Valida Apellido
             if (string.IsNullOrWhiteSpace(txtApellido.Text))
             {
                 MessageBox.Show("Ingrese el Apellido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -210,6 +285,21 @@ namespace ClubDeportivo
                 return false;
             }
 
+            if (txtApellido.Text.Trim().Length < 3)
+            {
+                MessageBox.Show("El Apellido debe tener al menos 3 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtApellido.Focus();
+                return false;
+            }
+
+            if (!Regex.IsMatch(txtApellido.Text.Trim(), @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"))
+            {
+                MessageBox.Show("El Apellido solo puede contener letras.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtApellido.Focus();
+                return false;
+            }
+
+            // Valida Sexo
             if (cmbSexo.SelectedItem is null)
             {
                 MessageBox.Show("Seleccione el Sexo.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -217,6 +307,7 @@ namespace ClubDeportivo
                 return false;
             }
 
+            // Valida Fecha de Nacimiento
             if (dateTimePickerNacim.Value.Date == DateTime.Now.Date)
             {
                 MessageBox.Show("Ingrese Fecha de Nacimiento Valida", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -224,6 +315,25 @@ namespace ClubDeportivo
                 return false;
             }
 
+            // Edad minima necesaria, 18 años
+            int edad = DateTime.Now.Year - dateTimePickerNacim.Value.Year;
+            if (dateTimePickerNacim.Value.Date > DateTime.Now.AddYears(-edad)) edad--;
+
+            if (edad < 18)
+            {
+                MessageBox.Show("La persona debe tener al menos 18 años.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dateTimePickerNacim.Focus();
+                return false;
+            }
+
+            if (edad > 120)
+            {
+                MessageBox.Show("La fecha de nacimiento no es válida.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dateTimePickerNacim.Focus();
+                return false;
+            }
+
+            // Validar Tipo de Documento
             if (cmbTipo.SelectedItem is null)
             {
                 MessageBox.Show("Seleccione el Tipo de documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -231,6 +341,7 @@ namespace ClubDeportivo
                 return false;
             }
 
+            // Valida Documento
             if (string.IsNullOrWhiteSpace(txtDocumento.Text))
             {
                 MessageBox.Show("Ingrese el Documento.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -238,6 +349,34 @@ namespace ClubDeportivo
                 return false;
             }
 
+            string tipoDoc = cmbTipo.SelectedItem.ToString()!;
+            string documento = txtDocumento.Text.Trim().ToUpper();
+
+            // Valida según tipo de documento
+            if (tipoDoc == "DNI")
+            {
+                // DNI: solo números, 7 u 8 dígitos
+                if (!Regex.IsMatch(documento, @"^\d{7,8}$"))
+                {
+                    MessageBox.Show("El DNI debe contener solo números y tener 7 u 8 dígitos.",
+                                  "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtDocumento.Focus();
+                    return false;
+                }
+            }
+            else if (tipoDoc == "Pasaporte")
+            {
+                // Pasaporte: letras y números, 6 a 10 caracteres
+                if (!Regex.IsMatch(documento, @"^[A-Z0-9]{6,10}$"))
+                {
+                    MessageBox.Show("El Pasaporte debe contener solo letras y números, entre 6 y 10 caracteres.",
+                                  "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtDocumento.Focus();
+                    return false;
+                }
+            }
+
+            // Valida Telefono
             if (string.IsNullOrWhiteSpace(txtTelefono.Text))
             {
                 MessageBox.Show("Ingrese el Teléfono", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -245,6 +384,16 @@ namespace ClubDeportivo
                 return false;
             }
 
+            // Eliminar espacios y caracteres especiales para validar longitud
+            string telefonoLimpio = Regex.Replace(txtTelefono.Text, @"[^\d]", "");
+            if (telefonoLimpio.Length < 10)
+            {
+                MessageBox.Show("El Teléfono debe tener al menos 10 dígitos.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTelefono.Focus();
+                return false;
+            }
+
+            // Valida Email
             if (string.IsNullOrWhiteSpace(txtEmail.Text))
             {
                 MessageBox.Show("Ingrese el Email", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -252,12 +401,28 @@ namespace ClubDeportivo
                 return false;
             }
 
+            if (!Regex.IsMatch(txtEmail.Text.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                MessageBox.Show("Ingrese una dirección de correo valida del tipo: hola_profe@apruebenos.com).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtEmail.Focus();
+                return false;
+            }
+
+            // Valida Domicilio
             if (string.IsNullOrWhiteSpace(txtDomicilio.Text))
             {
                 MessageBox.Show("Ingrese el Domicilio", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtDomicilio.Focus();
                 return false;
             }
+
+            if (txtDomicilio.Text.Trim().Length < 5)
+            {
+                MessageBox.Show("El Domicilio debe tener al menos 5 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDomicilio.Focus();
+                return false;
+            }
+
             return true;
         }
 
