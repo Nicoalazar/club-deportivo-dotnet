@@ -81,6 +81,21 @@ namespace ClubDeportivo.Forms
             }
 
             servicio.RegistrarPagoCuota(idSocio, periodo, medio);
+
+            var recibo = new ReciboPrinter(idSocio,"Socio", periodo, medio, "CUOTA");
+
+            DialogResult resultado = MessageBox.Show(
+                "¿Desea imprimirlo el recibo?",
+                "Impresión de recibo",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+            );
+            if (resultado == DialogResult.Yes)
+            {
+                recibo.Imprimir();
+            }
+
             this.Close();
         }
 

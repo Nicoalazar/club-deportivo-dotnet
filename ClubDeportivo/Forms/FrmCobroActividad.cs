@@ -1,13 +1,6 @@
 ﻿using ClubDeportivo.Config;
-using ClubDeportivo.Models;
 using ClubDeportivo.Services;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 
 namespace ClubDeportivo.Forms
 {
@@ -57,6 +50,21 @@ namespace ClubDeportivo.Forms
                 // Registrar pago
                 if (servicio.RegistrarPagoActividad(idNoSocio, fecha, monto, medio))
                 {
+                    var recibo = new ReciboPrinter(idNoSocio, "No Socio", "", medio, "");
+
+                    DialogResult resultado = MessageBox.Show(
+                        "¿Desea imprimirlo el recibo?",
+                        "Impresión de recibo",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question,
+                        MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                        );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        recibo.Imprimir();
+                    }
+
                     this.Close();
                 }
 

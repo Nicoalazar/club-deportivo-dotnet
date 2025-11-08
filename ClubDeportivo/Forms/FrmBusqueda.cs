@@ -15,6 +15,7 @@ namespace ClubDeportivo
         public FrmBusqueda()
         {
             InitializeComponent();
+            ValidacionEnTiempoReal();
 
             dataGridBusqueda.AutoGenerateColumns = true;
 
@@ -30,11 +31,6 @@ namespace ClubDeportivo
             dataGridBusqueda.CellMouseDown += DataGridBusqueda_CellMouseDown;
         }
 
-        private bool ContieneCaracteresInvalidos(string texto)
-        {
-            return !Regex.IsMatch(texto, @"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$");
-        }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             dataGridBusqueda.DataSource = null;
@@ -42,27 +38,34 @@ namespace ClubDeportivo
             string nombre = txtNombre.Text.Trim();
             string apellido = txtApellido.Text.Trim();
             string documento = txtDni.Text.Trim();
+            string tipoDoc = cmbBoxTipo.SelectedItem!.ToString()!;
 
             // *** VALIDACIONES ***
-            if (ContieneCaracteresInvalidos(nombre))
+            // Valida según tipo de documento
+            if (!string.IsNullOrEmpty(documento))
             {
-                MessageBox.Show("El campo 'Nombre' contiene caracteres no válidos.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtNombre.Focus();
-                return;
-            }
-
-            if (ContieneCaracteresInvalidos(apellido))
-            {
-                MessageBox.Show("El campo 'Apellido' contiene caracteres no válidos.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtApellido.Focus();
-                return;
-            }
-
-            if (!Regex.IsMatch(documento, @"^\d*$") && !string.IsNullOrEmpty(documento))
-            {
-                MessageBox.Show("El campo 'DNI' solo debe contener números.", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDni.Focus();
-                return;
+                if (tipoDoc == "DNI")
+                {
+                    // DNI: solo números, 7 u 8 dígitos
+                    if (!Regex.IsMatch(documento, @"^\d{7,8}$"))
+                    {
+                        MessageBox.Show("El DNI debe contener solo números y tener 7 u 8 dígitos.",
+                                      "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtDni.Focus();
+                        return;
+                    }
+                }
+                else if (tipoDoc == "Pasaporte")
+                {
+                    // Pasaporte: letras y números, 6 a 10 caracteres
+                    if (!Regex.IsMatch(documento, @"^[A-Z0-9]{6,10}$"))
+                    {
+                        MessageBox.Show("El Pasaporte debe contener solo letras y números, entre 6 y 10 caracteres.",
+                                      "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        txtDni.Focus();
+                        return;
+                    }
+                }
             }
 
             if (string.IsNullOrEmpty(nombre) && string.IsNullOrEmpty(apellido) && string.IsNullOrEmpty(documento))
@@ -133,6 +136,8 @@ namespace ClubDeportivo
             txtDni.Clear();
             dataGridBusqueda.DataSource = null;
             txtNombre.Focus();
+            cmbBoxTipo.SelectedItem = "DNI";
+
         }
 
         // --- MANEJADORES DE EVENTOS DEL DATAGRID Y MENÚ CONTEXTUAL ---
@@ -253,6 +258,70 @@ namespace ClubDeportivo
         private void MenuCancelar_Click(object? sender, EventArgs e)
         {
             dataGridBusqueda.ClearSelection();
+        }
+
+        private void FrmBusqueda_Load(object sender, EventArgs e)
+        {
+            if (cmbBoxTipo.Items.Count == 0)
+            {
+                cmbBoxTipo.Items.AddRange(new object[] { "DNI", "Pasaporte" });
+            }
+
+            if (cmbBoxTipo.Items.Count > 0 && cmbBoxTipo.SelectedIndex < 0)
+            {
+                cmbBoxTipo.SelectedIndex = 0;
+            }
+        }
+
+        private void ValidacionEnTiempoReal()
+        {
+            //Solo admite numeros para documento y letras para pasaporte
+            txtDni.KeyPress += (s, e) =>
+            {
+                bool esPasaporte = cmbBoxTipo.SelectedItem?.ToString() == "Pasaporte";
+
+                if (esPasaporte)
+                {
+                    // Pasaporte: acepta letras, números y algunos caracteres especiales
+                    if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                    {
+                        e.Handled = true;
+                    }
+                }
+                else
+                {
+                    // DNI: solo números
+                    if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                    {
+                        e.Handled = true;
+                    }
+                }
+            };
+
+            cmbBoxTipo.SelectedIndexChanged += (s, e) =>
+            {
+                // Limpiar el campo cuando cambia el tipo de documento
+                txtDni.Clear();
+                txtDni.Focus();
+            };
+
+            //Solo admite letras para el campo nombre
+            txtNombre.KeyPress += (s, e) =>
+            {
+                if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
+                {
+                    e.Handled = true;
+                }
+            };
+
+            //Solo admite letras para el campo apellido
+            txtApellido.KeyPress += (s, e) =>
+            {
+                if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
+                {
+                    e.Handled = true;
+                }
+            };
         }
     }
 }
