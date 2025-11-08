@@ -85,7 +85,7 @@ namespace ClubDeportivo.Forms
             var recibo = new ReciboPrinter(idSocio,"Socio", periodo, medio, "CUOTA");
 
             DialogResult resultado = MessageBox.Show(
-                "El recibo se ha generado correctamente.\n\n¿Desea imprimirlo ahora?",
+                "¿Desea imprimirlo el recibo?",
                 "Impresión de recibo",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question,
