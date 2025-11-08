@@ -45,12 +45,32 @@ namespace ClubDeportivo
                 }
             };
 
-            //Solo admite numeros para documento
+            //Solo admite numeros para documento y letras para pasaporte
             txtDocumento.KeyPress += (s, e) => {
-                if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                bool esPasaporte = cmbTipo.SelectedItem?.ToString() == "Pasaporte";
+
+                if (esPasaporte)
                 {
-                    e.Handled = true;
+                    // Pasaporte: acepta letras, números y algunos caracteres especiales
+                    if (!char.IsLetterOrDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                    {
+                        e.Handled = true;
+                    }
                 }
+                else
+                {
+                    // DNI: solo números
+                    if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                    {
+                        e.Handled = true;
+                    }
+                }
+            };
+
+            cmbTipo.SelectedIndexChanged += (s, e) => {
+                // Limpiar el campo cuando cambia el tipo de documento
+                txtDocumento.Clear();
+                txtDocumento.Focus();
             };
 
             //Solo admite numeros para el telefono
@@ -87,7 +107,7 @@ namespace ClubDeportivo
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            if (VerificarCampos() == false) return;
+            if (!VerificarCampos()) return;
 
             var socioFlag = checkSocio.Checked;
             var aptoFlag = checkApto.Checked;
@@ -243,9 +263,9 @@ namespace ClubDeportivo
                 return false;
             }
 
-            if (txtNombre.Text.Trim().Length < 2)
+            if (txtNombre.Text.Trim().Length < 3)
             {
-                MessageBox.Show("El Nombre debe tener al menos 2 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El Nombre debe tener al menos 3 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNombre.Focus();
                 return false;
             }
@@ -265,9 +285,9 @@ namespace ClubDeportivo
                 return false;
             }
 
-            if (txtApellido.Text.Trim().Length < 2)
+            if (txtApellido.Text.Trim().Length < 3)
             {
-                MessageBox.Show("El Apellido debe tener al menos 2 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("El Apellido debe tener al menos 3 caracteres.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtApellido.Focus();
                 return false;
             }
@@ -329,19 +349,28 @@ namespace ClubDeportivo
                 return false;
             }
 
-            if (!Regex.IsMatch(txtDocumento.Text.Trim(), @"^\d+$"))
-            {
-                MessageBox.Show("El Documento solo puede contener números.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDocumento.Focus();
-                return false;
-            }
+            string tipoDoc = cmbTipo.SelectedItem.ToString()!;
+            string documento = txtDocumento.Text.Trim().ToUpper();
 
-            // Valida DNI argentino
-            if (cmbTipo.SelectedItem.ToString() == "DNI")
+            // Valida según tipo de documento
+            if (tipoDoc == "DNI")
             {
-                if (txtDocumento.Text.Trim().Length < 6 || txtDocumento.Text.Trim().Length > 7)
+                // DNI: solo números, 7 u 8 dígitos
+                if (!Regex.IsMatch(documento, @"^\d{7,8}$"))
                 {
-                    MessageBox.Show("El DNI debe tener entre 7 y 8 dígitos.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("El DNI debe contener solo números y tener 7 u 8 dígitos.",
+                                  "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtDocumento.Focus();
+                    return false;
+                }
+            }
+            else if (tipoDoc == "Pasaporte")
+            {
+                // Pasaporte: letras y números, 6 a 10 caracteres
+                if (!Regex.IsMatch(documento, @"^[A-Z0-9]{6,10}$"))
+                {
+                    MessageBox.Show("El Pasaporte debe contener solo letras y números, entre 6 y 10 caracteres.",
+                                  "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtDocumento.Focus();
                     return false;
                 }
@@ -374,7 +403,7 @@ namespace ClubDeportivo
 
             if (!Regex.IsMatch(txtEmail.Text.Trim(), @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
-                MessageBox.Show("Ingrese un Email real (ejemplo: hola_profe@apruebenos.com).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese una dirección de correo valida del tipo: hola_profe@apruebenos.com).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtEmail.Focus();
                 return false;
             }
