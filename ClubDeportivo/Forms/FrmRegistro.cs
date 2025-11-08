@@ -160,7 +160,7 @@ namespace ClubDeportivo
                 {
                     Cobros servicios = new Cobros();
                     string periodo = DateTime.Now.ToString("yyyyMM");
-                    int cuotas = servicios.GenerarCuotas(periodo, ValoresCuotas.MontoCuota);
+                    servicios.GenerarCuotas(periodo, ValoresCuotas.MontoCuota);
 
                 }
 
