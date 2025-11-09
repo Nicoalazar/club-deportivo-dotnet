@@ -110,7 +110,7 @@ namespace ClubDeportivo.Services
                 throw new Exception("Error al listar medios de pago: " + ex.Message);
             }
         }
-        public void RegistrarPagoCuota(int idSocio, string periodo, string medio)
+        public bool RegistrarPagoCuota(int idSocio, string periodo, string medio)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace ClubDeportivo.Services
                                "Éxito",
                                MessageBoxButtons.OK,
                                MessageBoxIcon.Information);
-
+                return true;
             }
             catch (Exception ex)
             {
@@ -137,6 +137,7 @@ namespace ClubDeportivo.Services
                                 "Error",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
+                return false;
             }
         }
 

@@ -38,7 +38,7 @@ namespace ClubDeportivo
 
             string nombre = txtNombre.Text.Trim();
             string apellido = txtApellido.Text.Trim();
-            string documento = txtDni.Text.Trim();
+            string documento = TextHelper.ToUpperCase(txtDni.Text);
             string tipoDoc = cmbBoxTipo.SelectedItem!.ToString()!;
 
             // *** VALIDACIONES ***
@@ -58,7 +58,6 @@ namespace ClubDeportivo
                 }
                 else if (tipoDoc == "Pasaporte")
                 {
-                    documento = documento.ToUpper();
 
                     // Pasaporte: letras y números, 6 a 10 caracteres
                     if (!Regex.IsMatch(documento, @"^[A-Z0-9]{6,10}$"))
