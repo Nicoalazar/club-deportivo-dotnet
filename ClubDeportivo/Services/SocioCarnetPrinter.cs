@@ -46,7 +46,14 @@ namespace ClubDeportivo.Services
             g.DrawString($"Nombre Completo: {socio.Persona.Nombres} {socio.Persona.Apellidos}", textFont, Brushes.Black, 120, 200);
             g.DrawString($"{socio.Persona.TipoDocumento} {socio.Persona.NumeroDocumento}", textFont, Brushes.Black, 120, 225);
             g.DrawString($"N° Socio: {socio.NumeroSocio} - Estado: {socio.Observaciones}", textFont, Brushes.Black, 120, 250);
-            g.DrawString($"Apto Fisico Válido Hasta: {socio.VtoAptoFisico:dd/MM/yyyy}", textFont, Brushes.Black, 120, 275);
+            if (socio.VtoAptoFisico > DateTime.Now)
+            {
+                g.DrawString($"Apto Físico Válido Hasta: {socio.VtoAptoFisico:dd/MM/yyyy}", textFont, Brushes.Black, 120, 275);
+            }
+            else
+            {
+                g.DrawString($"Apto Físico Vencido", textFont, Brushes.Black, 120, 275);
+            }
 
         }
     }

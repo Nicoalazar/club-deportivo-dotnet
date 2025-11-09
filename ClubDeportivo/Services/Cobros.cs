@@ -12,10 +12,9 @@ namespace ClubDeportivo.Services
 {
     public class Cobros
     {
-        DataTable tabla = new DataTable();
-
         public DataTable ListarCuotasPorPagar()
         {
+            DataTable tabla = new DataTable();
             try
             {
                 using var cn = Conexion.getInstancia().CrearConcexion();
@@ -38,6 +37,7 @@ namespace ClubDeportivo.Services
         }
         public DataTable ListarCuotasVencidas()
         {
+            DataTable tabla = new DataTable();
             try
             {
                 using var cn = Conexion.getInstancia().CrearConcexion();
