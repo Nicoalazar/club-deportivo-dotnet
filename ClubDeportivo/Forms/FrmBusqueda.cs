@@ -11,6 +11,7 @@ namespace ClubDeportivo
     public partial class FrmBusqueda : Form
     {
         private ContextMenuStrip menuSocio;
+        Cobros servicio = new Cobros();
 
         public FrmBusqueda()
         {
@@ -57,6 +58,8 @@ namespace ClubDeportivo
                 }
                 else if (tipoDoc == "Pasaporte")
                 {
+                    documento = documento.ToUpper();
+
                     // Pasaporte: letras y números, 6 a 10 caracteres
                     if (!Regex.IsMatch(documento, @"^[A-Z0-9]{6,10}$"))
                     {
@@ -175,7 +178,6 @@ namespace ClubDeportivo
                 {
                     int idSocio = Convert.ToInt32(row.Cells["id"].Value);
 
-                    Cobros servicio = new Cobros();
                     DataTable vencimientos = servicio.ListarCuotasPorPagar();
 
                     DataView dv = vencimientos.DefaultView;
@@ -234,14 +236,67 @@ namespace ClubDeportivo
 
             if (categoria == "Socio")
             {
+                int idSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
                 var socio = new Socio(
                     persona,
-                    Convert.ToInt32(row.Cells["Id"].Value),
+                    idSocio,
                     Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
                     Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
                     DateTime.Now,
-                    row.Cells["estado"].Value.ToString()!);
-                new SocioCarnetPrinter(socio).Imprimir();
+                    row.Cells["estado"].Value.ToString()!
+                    );
+
+                DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
+                DataView dv = cuotasVencidas.DefaultView;
+                dv.RowFilter = $"id = {idSocio}";
+
+                if (dv.Count > 0)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene cuotas vencidas \n\n ¿Cobrar ahora?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                        frmCobros.ShowDialog();
+
+                        cuotasVencidas = servicio.ListarCuotasVencidas();
+                        dv = cuotasVencidas.DefaultView;
+                        dv.RowFilter = $"id = {idSocio}";
+
+                        // Verificar nuevamente si ya no tiene cuotas vencidas
+                        if (dv.Count == 0)
+                        {
+                            // Ahora sí puede imprimir el carnet
+                            new SocioCarnetPrinter(socio).Imprimir();
+                        }
+                        else
+                        {
+                            DialogResult retry = MessageBox.Show(
+                                "Aún quedan cuotas vencidas pendientes.\n\n¿Desea realizar otro pago?",
+                                "Aviso",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question);
+
+                            if (retry == DialogResult.Yes)
+                            {
+                                // Llamar recursivamente o reabrir el formulario
+                                MenuCarnet_Click(sender, e);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    new SocioCarnetPrinter(socio).Imprimir();
+                }
+
             }
             else
             {

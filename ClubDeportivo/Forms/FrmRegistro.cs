@@ -30,7 +30,8 @@ namespace ClubDeportivo
         private void ConfigurarValidacionesEnTiempoReal()
         {
             //Solo admite letras para el campo nombre
-            txtNombre.KeyPress += (s, e) => {
+            txtNombre.KeyPress += (s, e) =>
+            {
                 if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
                 {
                     e.Handled = true;
@@ -38,7 +39,8 @@ namespace ClubDeportivo
             };
 
             //Solo admite letras para el campo apellido
-            txtApellido.KeyPress += (s, e) => {
+            txtApellido.KeyPress += (s, e) =>
+            {
                 if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
                 {
                     e.Handled = true;
@@ -46,7 +48,8 @@ namespace ClubDeportivo
             };
 
             //Solo admite numeros para documento y letras para pasaporte
-            txtDocumento.KeyPress += (s, e) => {
+            txtDocumento.KeyPress += (s, e) =>
+            {
                 bool esPasaporte = cmbTipo.SelectedItem?.ToString() == "Pasaporte";
 
                 if (esPasaporte)
@@ -67,14 +70,16 @@ namespace ClubDeportivo
                 }
             };
 
-            cmbTipo.SelectedIndexChanged += (s, e) => {
+            cmbTipo.SelectedIndexChanged += (s, e) =>
+            {
                 // Limpiar el campo cuando cambia el tipo de documento
                 txtDocumento.Clear();
                 txtDocumento.Focus();
             };
 
             //Solo admite numeros para el telefono
-            txtTelefono.KeyPress += (s, e) => {
+            txtTelefono.KeyPress += (s, e) =>
+            {
                 if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != '+' && e.KeyChar != '-' && e.KeyChar != ' ')
                 {
                     e.Handled = true;
@@ -113,13 +118,13 @@ namespace ClubDeportivo
             var aptoFlag = checkApto.Checked;
 
             var persona = new Persona(
-                txtNombre.Text.Trim(),
-                txtApellido.Text.Trim(),
+                TextHelper.ToTitleCase(txtNombre.Text),
+                TextHelper.ToTitleCase(txtApellido.Text),
                 cmbSexo.SelectedItem!.ToString()!,
                 cmbTipo.SelectedItem!.ToString()!,
-                txtDocumento.Text.Trim(),
+                TextHelper.ToUpperCase(txtDocumento.Text),
                 dateTimePickerNacim.Value,
-                txtEmail.Text.Trim(),
+                TextHelper.ToLowerCase(txtEmail.Text),
                 txtTelefono.Text.Trim(),
                 txtDomicilio.Text
             );
@@ -457,6 +462,5 @@ namespace ClubDeportivo
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
-
     }
 }
