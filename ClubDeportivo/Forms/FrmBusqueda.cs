@@ -10,7 +10,7 @@ namespace ClubDeportivo
 {
     public partial class FrmBusqueda : Form
     {
-        private ContextMenuStrip menuSocio;
+        private ContextMenuStrip menu;
         Cobros servicio = new Cobros();
 
         public FrmBusqueda()
@@ -20,15 +20,15 @@ namespace ClubDeportivo
 
             dataGridBusqueda.AutoGenerateColumns = true;
 
-            menuSocio = new ContextMenuStrip();
-            menuSocio.Items.Add("Editar Persona", null, MenuEditar_Click);
-            menuSocio.Items.Add("Cobrar", null, MenuCobrar_Click);
-            menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
-            menuSocio.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
-            menuSocio.Items.Add(new ToolStripSeparator());
-            menuSocio.Items.Add("Cancelar", null, MenuCancelar_Click);
+            menu = new ContextMenuStrip();
+            menu.Items.Add("Editar Persona", null, MenuEditar_Click);
+            menu.Items.Add("Cobrar", null, MenuCobrar_Click);
+            menu.Items.Add("Generar Carnet", null, MenuCarnet_Click);
+            menu.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
+            menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add("Cancelar", null, MenuCancelar_Click);
 
-            dataGridBusqueda.ContextMenuStrip = menuSocio;
+            dataGridBusqueda.ContextMenuStrip = menu;
             dataGridBusqueda.CellMouseDown += DataGridBusqueda_CellMouseDown;
         }
 
