@@ -60,7 +60,7 @@ namespace ClubDeportivo.Services
         }
 
 
-        public DataTable ListarVencimientosPorFecha(DateTime fecha)
+        public DataTable ListarVencimientosPorFecha(DateTime fecha, bool porVencer)
         {
             DataTable tablaVencimientos = new DataTable();
             try
@@ -75,7 +75,7 @@ namespace ClubDeportivo.Services
                 // Usamos la 'fecha' recibida como parámetro en lugar de DateTime.Now
                 cmd.Parameters.Add("p_fecha", MySqlDbType.DateTime).Value = fecha;
 
-                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = true;
+                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = porVencer;
 
                 MySqlDataReader resultado = cmd.ExecuteReader();
                 tablaVencimientos.Load(resultado);
