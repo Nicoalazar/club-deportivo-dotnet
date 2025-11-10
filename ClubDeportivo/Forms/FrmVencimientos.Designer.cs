@@ -31,23 +31,27 @@
             label1 = new Label();
             dtpFecha = new DateTimePicker();
             dgvVencimientos = new DataGridView();
+            lblContador = new Label();
+            btnImprimir = new Button();
+            chkPorVencer = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)dgvVencimientos).BeginInit();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(83, 86);
+            label1.Location = new Point(70, 16);
             label1.Name = "label1";
-            label1.Size = new Size(151, 20);
+            label1.Size = new Size(121, 15);
             label1.TabIndex = 0;
             label1.Text = "Seleccione una fecha:";
             // 
             // dtpFecha
             // 
-            dtpFecha.Location = new Point(256, 79);
+            dtpFecha.Location = new Point(221, 11);
+            dtpFecha.Margin = new Padding(3, 2, 3, 2);
             dtpFecha.Name = "dtpFecha";
-            dtpFecha.Size = new Size(291, 27);
+            dtpFecha.Size = new Size(255, 23);
             dtpFecha.TabIndex = 1;
             dtpFecha.ValueChanged += dtpFecha_ValueChanged;
             // 
@@ -56,21 +60,56 @@
             dgvVencimientos.AllowUserToAddRows = false;
             dgvVencimientos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvVencimientos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvVencimientos.Location = new Point(12, 213);
+            dgvVencimientos.Location = new Point(9, 65);
+            dgvVencimientos.Margin = new Padding(3, 2, 3, 2);
             dgvVencimientos.Name = "dgvVencimientos";
             dgvVencimientos.ReadOnly = true;
             dgvVencimientos.RowHeadersWidth = 51;
-            dgvVencimientos.Size = new Size(776, 188);
+            dgvVencimientos.Size = new Size(724, 216);
             dgvVencimientos.TabIndex = 2;
+            // 
+            // lblContador
+            // 
+            lblContador.AutoSize = true;
+            lblContador.Location = new Point(9, 303);
+            lblContador.Name = "lblContador";
+            lblContador.Size = new Size(111, 15);
+            lblContador.TabIndex = 3;
+            lblContador.Text = "Cantidad de Cuotas";
+            // 
+            // btnImprimir
+            // 
+            btnImprimir.Location = new Point(658, 303);
+            btnImprimir.Name = "btnImprimir";
+            btnImprimir.Size = new Size(75, 23);
+            btnImprimir.TabIndex = 5;
+            btnImprimir.Text = "Imprimir";
+            btnImprimir.UseVisualStyleBackColor = true;
+            btnImprimir.Click += btnImprimir_Click;
+            // 
+            // chkPorVencer
+            // 
+            chkPorVencer.AutoSize = true;
+            chkPorVencer.Location = new Point(504, 15);
+            chkPorVencer.Name = "chkPorVencer";
+            chkPorVencer.Size = new Size(156, 19);
+            chkPorVencer.TabIndex = 4;
+            chkPorVencer.Text = "Incluir cuotas por vencer";
+            chkPorVencer.UseVisualStyleBackColor = true;
+            chkPorVencer.CheckedChanged += chkPorVencer_CheckedChanged;
             // 
             // FrmVencimientos
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(745, 338);
+            Controls.Add(btnImprimir);
+            Controls.Add(chkPorVencer);
+            Controls.Add(lblContador);
             Controls.Add(dgvVencimientos);
             Controls.Add(dtpFecha);
             Controls.Add(label1);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "FrmVencimientos";
             Text = "Vencimientos";
             Load += FrmVencimientos_Load;
@@ -84,5 +123,8 @@
         private Label label1;
         private DateTimePicker dtpFecha;
         private DataGridView dgvVencimientos;
+        private Label lblContador;
+        private Button btnImprimir;
+        private CheckBox chkPorVencer;
     }
 }
