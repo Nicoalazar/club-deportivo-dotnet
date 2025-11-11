@@ -10,7 +10,8 @@ namespace ClubDeportivo
 {
     public partial class FrmBusqueda : Form
     {
-        private ContextMenuStrip menuSocio;
+        private ContextMenuStrip menu;
+        Cobros servicio = new Cobros();
 
         public FrmBusqueda()
         {
@@ -19,15 +20,16 @@ namespace ClubDeportivo
 
             dataGridBusqueda.AutoGenerateColumns = true;
 
-            menuSocio = new ContextMenuStrip();
-            menuSocio.Items.Add("Editar Persona", null, MenuEditar_Click);
-            menuSocio.Items.Add("Cobrar", null, MenuCobrar_Click);
-            menuSocio.Items.Add("Generar Carnet", null, MenuCarnet_Click);
-            menuSocio.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
-            menuSocio.Items.Add(new ToolStripSeparator());
-            menuSocio.Items.Add("Cancelar", null, MenuCancelar_Click);
+            menu = new ContextMenuStrip();
+            menu.Items.Add("Editar Persona", null, MenuEditar_Click);
+            menu.Items.Add("Actualizar Apto Físico", null, MenuApto_Click);
+            menu.Items.Add("Cobrar", null, MenuCobrar_Click);
+            menu.Items.Add("Generar Carnet", null, MenuCarnet_Click);
+            menu.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
+            menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add("Cancelar", null, MenuCancelar_Click);
 
-            dataGridBusqueda.ContextMenuStrip = menuSocio;
+            dataGridBusqueda.ContextMenuStrip = menu;
             dataGridBusqueda.CellMouseDown += DataGridBusqueda_CellMouseDown;
         }
 
@@ -37,7 +39,7 @@ namespace ClubDeportivo
 
             string nombre = txtNombre.Text.Trim();
             string apellido = txtApellido.Text.Trim();
-            string documento = txtDni.Text.Trim();
+            string documento = TextHelper.ToUpperCase(txtDni.Text);
             string tipoDoc = cmbBoxTipo.SelectedItem!.ToString()!;
 
             // *** VALIDACIONES ***
@@ -57,6 +59,7 @@ namespace ClubDeportivo
                 }
                 else if (tipoDoc == "Pasaporte")
                 {
+
                     // Pasaporte: letras y números, 6 a 10 caracteres
                     if (!Regex.IsMatch(documento, @"^[A-Z0-9]{6,10}$"))
                     {
@@ -92,7 +95,7 @@ namespace ClubDeportivo
                                         ? (object)DBNull.Value
                                         : documento;
 
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_persona_search", cn);
@@ -175,7 +178,6 @@ namespace ClubDeportivo
                 {
                     int idSocio = Convert.ToInt32(row.Cells["id"].Value);
 
-                    Cobros servicio = new Cobros();
                     DataTable vencimientos = servicio.ListarCuotasPorPagar();
 
                     DataView dv = vencimientos.DefaultView;
@@ -212,6 +214,29 @@ namespace ClubDeportivo
             }
         }
 
+        private void MenuApto_Click(object? sender, EventArgs e)
+        {
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                string categoria = row.Cells["Categoría"].Value.ToString()!;
+
+                if (categoria == "Socio")
+                {
+                    int idSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
+                    if (!servicio.RenovarAptoFisico(idSocio, true)) return;
+                }
+                else
+                {
+
+                    int idNoSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
+                    if (!servicio.RenovarAptoFisico(idNoSocio, false)) return;
+                }
+            }
+        }
+
         private void MenuCarnet_Click(object? sender, EventArgs e)
         {
             var row = dataGridBusqueda.CurrentRow;
@@ -234,24 +259,132 @@ namespace ClubDeportivo
 
             if (categoria == "Socio")
             {
+                int idSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
                 var socio = new Socio(
                     persona,
-                    Convert.ToInt32(row.Cells["Id"].Value),
+                    idSocio,
                     Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
                     Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
                     DateTime.Now,
-                    row.Cells["estado"].Value.ToString()!);
-                new SocioCarnetPrinter(socio).Imprimir();
+                    row.Cells["estado"].Value.ToString()!
+                    );
+
+                if (socio.VtoAptoFisico < DateTime.Now.Date)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if (servicio.RenovarAptoFisico(idSocio, true)) {
+                            socio = new Socio(
+                                persona,
+                                idSocio,
+                                DateTime.Now.AddYears(1),
+                                Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
+                                DateTime.Now,
+                                row.Cells["estado"].Value.ToString()!
+                            );
+                        }
+                        else return;
+                    }
+                }
+
+                DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
+                DataView dv = cuotasVencidas.DefaultView;
+                dv.RowFilter = $"id = {idSocio}";
+
+                if (dv.Count > 0)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene cuotas vencidas \n\n ¿Cobrar ahora?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                        frmCobros.ShowDialog();
+
+                        cuotasVencidas = servicio.ListarCuotasVencidas();
+                        dv = cuotasVencidas.DefaultView;
+                        dv.RowFilter = $"id = {idSocio}";
+
+                        // Verificar nuevamente si ya no tiene cuotas vencidas
+                        if (dv.Count == 0)
+                        {
+                            // Ahora sí puede imprimir el carnet
+                            new SocioCarnetPrinter(socio).Imprimir();
+                        }
+                        else
+                        {
+                            DialogResult retry = MessageBox.Show(
+                                "Aún quedan cuotas vencidas pendientes.\n\n¿Desea realizar otro pago?",
+                                "Aviso",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question);
+
+                            if (retry == DialogResult.Yes)
+                            {
+                                // Llamar recursivamente o reabrir el formulario
+                                MenuCarnet_Click(sender, e);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    new SocioCarnetPrinter(socio).Imprimir();
+                }
+
             }
             else
             {
+                int idNoSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
                 var noSocio = new NoSocio(
                    persona,
                    Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
                    row.Cells["estado"].Value.ToString()!,
                    "",
-                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date);
-                new NoSocioCarnetPrinter(noSocio).Imprimir();
+                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date
+                   );
+
+                if (noSocio.VtoAptoFisico < DateTime.Now.Date)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if(servicio.RenovarAptoFisico(idNoSocio, false))
+                        {
+                            noSocio = new NoSocio(
+                               persona,
+                               DateTime.Now.AddYears(1),
+                               row.Cells["estado"].Value.ToString()!,
+                               "",
+                               Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date
+                               );
+                            new NoSocioCarnetPrinter(noSocio).Imprimir();
+                        }
+                        else return ; 
+                    }
+                }
             }
         }
 

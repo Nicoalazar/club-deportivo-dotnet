@@ -95,7 +95,7 @@ namespace ClubDeportivo.Services
 
         private Persona search()
         {
-            using var cn = Conexion.getInstancia().CrearConcexion();
+            using var cn = Conexion.getInstancia().CrearConexion();
             cn.Open();
             using var cmd = new MySqlCommand("SELECT " +
                 "Id,Categoría,Nombres,Apellidos,Sexo,Tipo,NroDocumento,Nacimiento,Email" +

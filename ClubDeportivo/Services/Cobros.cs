@@ -12,13 +12,12 @@ namespace ClubDeportivo.Services
 {
     public class Cobros
     {
-        DataTable tabla = new DataTable();
-
         public DataTable ListarCuotasPorPagar()
         {
+            DataTable tabla = new DataTable();
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
@@ -38,9 +37,10 @@ namespace ClubDeportivo.Services
         }
         public DataTable ListarCuotasVencidas()
         {
+            DataTable tabla = new DataTable();
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
@@ -60,12 +60,12 @@ namespace ClubDeportivo.Services
         }
 
 
-        public DataTable ListarVencimientosPorFecha(DateTime fecha)
+        public DataTable ListarVencimientosPorFecha(DateTime fecha, bool porVencer)
         {
             DataTable tablaVencimientos = new DataTable();
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
@@ -75,7 +75,7 @@ namespace ClubDeportivo.Services
                 // Usamos la 'fecha' recibida como parámetro en lugar de DateTime.Now
                 cmd.Parameters.Add("p_fecha", MySqlDbType.DateTime).Value = fecha;
 
-                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = true;
+                cmd.Parameters.Add("p_incluir_por_vencer", MySqlDbType.Bit).Value = porVencer;
 
                 MySqlDataReader resultado = cmd.ExecuteReader();
                 tablaVencimientos.Load(resultado);
@@ -110,11 +110,11 @@ namespace ClubDeportivo.Services
                 throw new Exception("Error al listar medios de pago: " + ex.Message);
             }
         }
-        public void RegistrarPagoCuota(int idSocio, string periodo, string medio)
+        public bool RegistrarPagoCuota(int idSocio, string periodo, string medio)
         {
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_pago_cuota", cn);
@@ -129,7 +129,7 @@ namespace ClubDeportivo.Services
                                "Éxito",
                                MessageBoxButtons.OK,
                                MessageBoxIcon.Information);
-
+                return true;
             }
             catch (Exception ex)
             {
@@ -137,6 +137,7 @@ namespace ClubDeportivo.Services
                                 "Error",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
+                return false;
             }
         }
 
@@ -145,7 +146,7 @@ namespace ClubDeportivo.Services
             if (YaPagoActividad(idNoSocio, fecha)) return false;           
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
                 using var cmd = new MySqlCommand("sp_pago_actividad", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -177,7 +178,7 @@ namespace ClubDeportivo.Services
         {
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
                 using var cmd = new MySqlCommand("sp_actividad_search", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -206,7 +207,7 @@ namespace ClubDeportivo.Services
         {
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_generar_cuotas", cn);
@@ -219,7 +220,7 @@ namespace ClubDeportivo.Services
                 object? result = cmd.ExecuteScalar(); // obtiene la primera celda del primer SELECT
                 int cuotasGeneradas = Convert.ToInt32(result);
 
-                return cuotasGeneradas; 
+                return cuotasGeneradas;
 
             }
             catch (Exception ex)
@@ -229,6 +230,54 @@ namespace ClubDeportivo.Services
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                 return -1;
+            }
+        }
+
+        public bool RenovarAptoFisico(int id, bool socio)
+        {
+            var VtoAptoFisico = DateTime.Now.AddYears(1);
+            string tabla;
+            string idParam;
+
+            if (socio)
+            {
+                tabla = "socios";
+                idParam = "id_socio";
+            }
+            else
+            {
+                tabla = "no_socios";
+                idParam = "id_no_socio";
+            }
+
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConexion();
+                cn.Open();
+                using var cmd = new MySqlCommand(
+                    $@"UPDATE grupo20_clubdeportivo.{tabla} 
+                                  SET apto_fisico_vencimiento = @VtoAptoFisico 
+                                  WHERE {idParam} = @id", cn);
+
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@VtoAptoFisico", VtoAptoFisico);
+                cmd.ExecuteNonQuery();
+
+                MessageBox.Show($"Apto físico renovado. Vence el {VtoAptoFisico:dd/MM/yyyy}",
+                    "Éxito",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar apto físico" + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
             }
         }
     }

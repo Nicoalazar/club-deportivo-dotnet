@@ -15,22 +15,40 @@ namespace ClubDeportivo
 {
     public partial class FrmRegistro : Form
     {
+        private ContextMenuStrip menu;
+        private Persona? persona;
+        private Socio? socio;
+        private NoSocio? noSocio;
         private readonly BindingList<Persona> _persona = new();
+        private Cobros servicio = new Cobros();
+        bool socioFlag = false;
+        bool aptoFlag = false;
+        int relacionId = 0;
 
         public FrmRegistro()
         {
             InitializeComponent();
+            ConfigurarValidacionesEnTiempoReal();
+
             dgvPersona.AutoGenerateColumns = true;
             dgvPersona.DataSource = _persona;
 
-            //Agregando validaciones
-            ConfigurarValidacionesEnTiempoReal();
+            menu = new ContextMenuStrip();
+            menu.Items.Add("Cobrar", null, MenuCobrar_Click);
+            menu.Items.Add("Generar Carnet", null, MenuCarnet_Click);
+            menu.Items.Add(new ToolStripSeparator());
+            menu.Items.Add("Cancelar", null, MenuCancelar_Click);
+
+            dgvPersona.ContextMenuStrip = menu;
+            dgvPersona.CellMouseDown += DgvPersona_CellMouseDown;
+
         }
 
         private void ConfigurarValidacionesEnTiempoReal()
         {
             //Solo admite letras para el campo nombre
-            txtNombre.KeyPress += (s, e) => {
+            txtNombre.KeyPress += (s, e) =>
+            {
                 if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
                 {
                     e.Handled = true;
@@ -38,7 +56,8 @@ namespace ClubDeportivo
             };
 
             //Solo admite letras para el campo apellido
-            txtApellido.KeyPress += (s, e) => {
+            txtApellido.KeyPress += (s, e) =>
+            {
                 if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != ' ')
                 {
                     e.Handled = true;
@@ -46,7 +65,8 @@ namespace ClubDeportivo
             };
 
             //Solo admite numeros para documento y letras para pasaporte
-            txtDocumento.KeyPress += (s, e) => {
+            txtDocumento.KeyPress += (s, e) =>
+            {
                 bool esPasaporte = cmbTipo.SelectedItem?.ToString() == "Pasaporte";
 
                 if (esPasaporte)
@@ -67,14 +87,16 @@ namespace ClubDeportivo
                 }
             };
 
-            cmbTipo.SelectedIndexChanged += (s, e) => {
+            cmbTipo.SelectedIndexChanged += (s, e) =>
+            {
                 // Limpiar el campo cuando cambia el tipo de documento
                 txtDocumento.Clear();
                 txtDocumento.Focus();
             };
 
             //Solo admite numeros para el telefono
-            txtTelefono.KeyPress += (s, e) => {
+            txtTelefono.KeyPress += (s, e) =>
+            {
                 if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && e.KeyChar != '+' && e.KeyChar != '-' && e.KeyChar != ' ')
                 {
                     e.Handled = true;
@@ -109,22 +131,22 @@ namespace ClubDeportivo
         {
             if (!VerificarCampos()) return;
 
-            var socioFlag = checkSocio.Checked;
-            var aptoFlag = checkApto.Checked;
+            socioFlag = checkSocio.Checked;
+            aptoFlag = checkApto.Checked;
 
-            var persona = new Persona(
-                txtNombre.Text.Trim(),
-                txtApellido.Text.Trim(),
+            persona = new Persona(
+                TextHelper.ToTitleCase(txtNombre.Text),
+                TextHelper.ToTitleCase(txtApellido.Text),
                 cmbSexo.SelectedItem!.ToString()!,
                 cmbTipo.SelectedItem!.ToString()!,
-                txtDocumento.Text.Trim(),
+                TextHelper.ToUpperCase(txtDocumento.Text),
                 dateTimePickerNacim.Value,
-                txtEmail.Text.Trim(),
+                TextHelper.ToLowerCase(txtEmail.Text),
                 txtTelefono.Text.Trim(),
                 txtDomicilio.Text
             );
 
-            using var cn = Conexion.getInstancia().CrearConcexion();
+            using var cn = Conexion.getInstancia().CrearConexion();
             cn.Open();
             using var transaction = cn.BeginTransaction();
 
@@ -141,7 +163,7 @@ namespace ClubDeportivo
                 if (personaId <= 0) throw new Exception("No se pudo guardar persona.");
 
                 //Guardo Relación como socio o no socio;
-                int relacionId = GuardarRelacionSocio(personaId, socioFlag, aptoFlag, cn, transaction);
+                relacionId = GuardarRelacionSocio(personaId, socioFlag, aptoFlag, cn, transaction);
                 if (relacionId <= 0) throw new Exception("No se pudo guardar la relación.");
 
                 transaction.Commit();
@@ -239,7 +261,7 @@ namespace ClubDeportivo
         }
         private bool PersonaExiste(string nombres, string apellidos, string documento)
         {
-            using var cn = Conexion.getInstancia().CrearConcexion();
+            using var cn = Conexion.getInstancia().CrearConexion();
             cn.Open();
 
             using var cmd = new MySqlCommand("sp_persona_search", cn);
@@ -439,8 +461,18 @@ namespace ClubDeportivo
                 cmd.Parameters.Add("p_id_persona", MySqlDbType.Int32).Value = personaId;
                 cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
 
+                var idSocio = Convert.ToInt32(cmd.ExecuteScalar());
+
+                socio = new Socio(
+                    persona!,
+                    idSocio,
+                    vencimientoApto,
+                    DateTime.Now.Date,
+                    DateTime.Now,
+                    "Activo"
+                    );
                 // Retorno el id nuevo
-                return Convert.ToInt32(cmd.ExecuteScalar());
+                return idSocio;
             }
             else
             {
@@ -453,10 +485,163 @@ namespace ClubDeportivo
                 cmd.Parameters.Add("p_apto_vencimiento", MySqlDbType.DateTime).Value = vencimientoApto;
                 cmd.Parameters.Add("p_motivo", MySqlDbType.VarChar).Value = "Inscripción";
 
+                noSocio = new NoSocio(
+                   persona!,
+                   vencimientoApto,
+                   "Adherente",
+                   "Inscripción",
+                   DateTime.Now.Date);
+
                 // Retorno el id nuevo
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
 
+        private void DgvPersona_CellMouseDown(object? sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0)
+            {
+                dgvPersona.ClearSelection();
+                dgvPersona.Rows[e.RowIndex].Selected = true;
+                dgvPersona.CurrentCell = dgvPersona.Rows[e.RowIndex].Cells[0];
+            }
+        }
+
+        private void MenuCobrar_Click(object? sender, EventArgs e)
+        {
+            if (socioFlag)
+            {
+                DataTable vencimientos = servicio.ListarCuotasPorPagar();
+
+                DataView dv = vencimientos.DefaultView;
+                dv.RowFilter = $"id = {relacionId}";
+
+                if (dv.Count > 0)
+                {
+                    FrmCobroCuota frmCobros = new FrmCobroCuota(relacionId);
+                    frmCobros.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("Este socio no tiene cuotas pendientes", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                FrmCobroActividad frmCobros = new FrmCobroActividad(relacionId);
+                frmCobros.ShowDialog();
+            }
+        }
+
+        private void MenuCarnet_Click(object? sender, EventArgs e)
+        {
+            var NewVtoAptoFisico = DateTime.Now.AddYears(1);
+
+            if (socioFlag)
+            {
+                int idSocio = relacionId;
+
+                if (!aptoFlag)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if (servicio.RenovarAptoFisico(idSocio, true))
+                        {
+                            socio.VtoAptoFisico = NewVtoAptoFisico;
+                        }
+                        else return;
+                    }
+                }
+
+                DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
+                DataView dv = cuotasVencidas.DefaultView;
+                dv.RowFilter = $"id = {idSocio}";
+
+                if (dv.Count > 0)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene cuotas vencidas \n\n ¿Cobrar ahora?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        FrmCobroCuota frmCobros = new FrmCobroCuota(idSocio);
+                        frmCobros.ShowDialog();
+
+                        cuotasVencidas = servicio.ListarCuotasVencidas();
+                        dv = cuotasVencidas.DefaultView;
+                        dv.RowFilter = $"id = {idSocio}";
+
+                        // Verificar nuevamente si ya no tiene cuotas vencidas
+                        if (dv.Count == 0)
+                        {
+                            // Ahora sí puede imprimir el carnet
+                            new SocioCarnetPrinter(socio!).Imprimir();
+                        }
+                        else
+                        {
+                            DialogResult retry = MessageBox.Show(
+                                "Aún quedan cuotas vencidas pendientes.\n\n¿Desea realizar otro pago?",
+                                "Aviso",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question);
+
+                            if (retry == DialogResult.Yes)
+                            {
+                                // Llamar recursivamente o reabrir el formulario
+                                MenuCarnet_Click(sender, e);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    new SocioCarnetPrinter(socio!).Imprimir();
+                }
+
+            }
+            else
+            {
+                int idNoSocio = relacionId;
+
+                if (!aptoFlag)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if (servicio.RenovarAptoFisico(idNoSocio, false))
+                        {
+                            noSocio!.VtoAptoFisico = NewVtoAptoFisico;
+                            new NoSocioCarnetPrinter(noSocio!).Imprimir();
+                        }
+                        else return;
+                    }
+                }
+            }
+        }
+
+        private void MenuCancelar_Click(object? sender, EventArgs e)
+        {
+            dgvPersona.ClearSelection();
+        }
     }
 }
