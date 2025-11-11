@@ -535,10 +535,31 @@ namespace ClubDeportivo
 
         private void MenuCarnet_Click(object? sender, EventArgs e)
         {
+            var NewVtoAptoFisico = DateTime.Now.AddYears(1);
 
             if (socioFlag)
             {
                 int idSocio = relacionId;
+
+                if (!aptoFlag)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if (servicio.RenovarAptoFisico(idSocio, true))
+                        {
+                            socio.VtoAptoFisico = NewVtoAptoFisico;
+                        }
+                        else return;
+                    }
+                }
 
                 DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
                 DataView dv = cuotasVencidas.DefaultView;
@@ -593,7 +614,28 @@ namespace ClubDeportivo
             }
             else
             {
-                new NoSocioCarnetPrinter(noSocio!).Imprimir();
+                int idNoSocio = relacionId;
+
+                if (!aptoFlag)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if (servicio.RenovarAptoFisico(idNoSocio, false))
+                        {
+                            noSocio!.VtoAptoFisico = NewVtoAptoFisico;
+                            new NoSocioCarnetPrinter(noSocio!).Imprimir();
+                        }
+                        else return;
+                    }
+                }
             }
         }
 
