@@ -559,6 +559,7 @@ namespace ClubDeportivo
                         }
                         else return;
                     }
+                    else return;
                 }
 
                 DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
@@ -635,6 +636,7 @@ namespace ClubDeportivo
                         }
                         else return;
                     }
+                    else return;
                 }
             }
         }
