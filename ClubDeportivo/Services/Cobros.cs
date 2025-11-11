@@ -220,7 +220,7 @@ namespace ClubDeportivo.Services
                 object? result = cmd.ExecuteScalar(); // obtiene la primera celda del primer SELECT
                 int cuotasGeneradas = Convert.ToInt32(result);
 
-                return cuotasGeneradas; 
+                return cuotasGeneradas;
 
             }
             catch (Exception ex)
@@ -230,6 +230,54 @@ namespace ClubDeportivo.Services
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                 return -1;
+            }
+        }
+
+        public bool RenovarAptoFisico(int id, bool socio)
+        {
+            var VtoAptoFisico = DateTime.Now.AddYears(1);
+            string tabla;
+            string idParam;
+
+            if (socio)
+            {
+                tabla = "socios";
+                idParam = "id_socio";
+            }
+            else
+            {
+                tabla = "no_socios";
+                idParam = "id_no_socio";
+            }
+
+            try
+            {
+                using var cn = Conexion.getInstancia().CrearConexion();
+                cn.Open();
+                using var cmd = new MySqlCommand(
+                    $@"UPDATE grupo20_clubdeportivo.{tabla} 
+                                  SET apto_fisico_vencimiento = @VtoAptoFisico 
+                                  WHERE {idParam} = @id", cn);
+
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@VtoAptoFisico", VtoAptoFisico);
+                cmd.ExecuteNonQuery();
+
+                MessageBox.Show($"Apto físico renovado. Vence el {VtoAptoFisico:dd/MM/yyyy}",
+                    "Éxito",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar apto físico" + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
             }
         }
     }

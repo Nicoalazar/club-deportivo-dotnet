@@ -22,6 +22,7 @@ namespace ClubDeportivo
 
             menu = new ContextMenuStrip();
             menu.Items.Add("Editar Persona", null, MenuEditar_Click);
+            menu.Items.Add("Actualizar Apto Físico", null, MenuApto_Click);
             menu.Items.Add("Cobrar", null, MenuCobrar_Click);
             menu.Items.Add("Generar Carnet", null, MenuCarnet_Click);
             menu.Items.Add("Inhabilitar", null, MenuInhabilitar_Click);
@@ -213,6 +214,29 @@ namespace ClubDeportivo
             }
         }
 
+        private void MenuApto_Click(object? sender, EventArgs e)
+        {
+            var row = dataGridBusqueda.CurrentRow;
+            if (row != null)
+            {
+                string categoria = row.Cells["Categoría"].Value.ToString()!;
+
+                if (categoria == "Socio")
+                {
+                    int idSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
+                    if (!servicio.RenovarAptoFisico(idSocio, true)) return;
+                }
+                else
+                {
+
+                    int idNoSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
+                    if (!servicio.RenovarAptoFisico(idNoSocio, false)) return;
+                }
+            }
+        }
+
         private void MenuCarnet_Click(object? sender, EventArgs e)
         {
             var row = dataGridBusqueda.CurrentRow;
@@ -245,6 +269,32 @@ namespace ClubDeportivo
                     DateTime.Now,
                     row.Cells["estado"].Value.ToString()!
                     );
+
+                if (socio.VtoAptoFisico < DateTime.Now.Date)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if (servicio.RenovarAptoFisico(idSocio, true)) {
+                            socio = new Socio(
+                                persona,
+                                idSocio,
+                                DateTime.Now.AddYears(1),
+                                Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date,
+                                DateTime.Now,
+                                row.Cells["estado"].Value.ToString()!
+                            );
+                        }
+                        else return;
+                    }
+                }
 
                 DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
                 DataView dv = cuotasVencidas.DefaultView;
@@ -299,13 +349,42 @@ namespace ClubDeportivo
             }
             else
             {
+                int idNoSocio = Convert.ToInt32(row.Cells["Id"].Value);
+
                 var noSocio = new NoSocio(
                    persona,
                    Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
                    row.Cells["estado"].Value.ToString()!,
                    "",
-                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date);
-                new NoSocioCarnetPrinter(noSocio).Imprimir();
+                   Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date
+                   );
+
+                if (noSocio.VtoAptoFisico < DateTime.Now.Date)
+                {
+                    DialogResult resultado = MessageBox.Show(
+                       "No se puede generar Carnet si tiene apto Fisico Vencido \n\n ¿Renovar?",
+                       "Aviso",
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question,
+                       MessageBoxDefaultButton.Button1 // Botón "Sí" seleccionado por defecto
+                       );
+
+                    if (resultado == DialogResult.Yes)
+                    {
+                        if(servicio.RenovarAptoFisico(idNoSocio, false))
+                        {
+                            noSocio = new NoSocio(
+                               persona,
+                               DateTime.Now.AddYears(1),
+                               row.Cells["estado"].Value.ToString()!,
+                               "",
+                               Convert.ToDateTime(row.Cells["FechaAlta"].Value).Date
+                               );
+                            new NoSocioCarnetPrinter(noSocio).Imprimir();
+                        }
+                        else return ; 
+                    }
+                }
             }
         }
 
