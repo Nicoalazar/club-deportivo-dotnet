@@ -19,7 +19,7 @@ namespace S4_Interface_De_Usuario
             MySqlConnection sqlCon = new MySqlConnection();
             try
             {
-                sqlCon = Conexion.getInstancia().CrearConcexion();
+                sqlCon = Conexion.getInstancia().CrearConexion();
                 // el comando es un elemento que almacena en este caso el nombre
                 // del procedimiento almacenado y la referencia a la  conexion
                 MySqlCommand comando = new MySqlCommand("IngresoLogin", sqlCon);
@@ -35,7 +35,7 @@ namespace S4_Interface_De_Usuario
                 //  de esta forma esta asociado el metodo con el procedure que esta  almacenado en MySQ
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

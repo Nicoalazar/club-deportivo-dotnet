@@ -25,7 +25,7 @@ namespace S4_Interface_De_Usuario
             this.clave = "AppP4ss!";
         }
         // proceso de interacción
-        public MySqlConnection CrearConcexion()
+        public MySqlConnection CrearConexion()
         {
             // instanciamos una conexion
             MySqlConnection? cadena = new MySqlConnection();

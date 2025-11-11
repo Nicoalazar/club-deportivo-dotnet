@@ -1,46 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Windows.Forms;
 
 namespace ClubDeportivo.Config
 {
     public class Conexion
     {
-        // declaramos las variables 
-        private readonly string baseDatos;
-        private readonly string servidor;
-        private readonly string puerto;
-        private readonly string usuario;
-        private readonly string clave;
-
+        private string? baseDatos;
+        private string? servidor;
+        private string? puerto;
+        private string? usuario;
+        private string? clave;
         private static Conexion? con = null;
-        private readonly Env env;
 
         private Conexion()
         {
-            env = new Env();
-            baseDatos = env.BaseDatos;
-            servidor = env.Servidor;
-            puerto = env.Puerto;
-            usuario = env.Usuario;
-            clave = env.Clave;
+            // Mostrar el formulario de configuración
+            using (FormConfiguracionDB formConfig = new FormConfiguracionDB())
+            {
+                DialogResult resultado = formConfig.ShowDialog();
+
+                if (resultado == DialogResult.OK && formConfig.ConexionConfigurada)
+                {
+                    // Guardar los datos de conexión
+                    this.baseDatos = "grupo20_clubdeportivo";
+                    this.servidor = formConfig.Servidor;
+                    this.puerto = formConfig.Puerto;
+                    this.usuario = formConfig.Usuario;
+                    this.clave = formConfig.Clave;
+
+                }
+                else
+                {
+                    // El usuario canceló la configuración
+                    throw new ConfiguracionCanceladaException();
+                }
+            }
         }
-        // proceso de interacción
-        public MySqlConnection CrearConcexion()
+
+        // Excepción personalizada para cancelación de configuración
+        public class ConfiguracionCanceladaException : Exception
         {
-            // instanciamos una conexion
-            MySqlConnection? cadena = new MySqlConnection();
-            // el bloque try permite controlar errores
+            public ConfiguracionCanceladaException() : base("El usuario canceló la configuración") { }
+        }
+
+        // Creación de la conexión
+        public MySqlConnection CrearConexion()
+        {
+            MySqlConnection cadena = new MySqlConnection();
             try
             {
-                cadena.ConnectionString = "datasource=" + servidor +
-                ";port=" + puerto +
-                ";username=" + usuario +
-                ";password=" + clave +
-                ";Database=" + baseDatos;
+                cadena.ConnectionString = $"datasource={this.servidor};" +
+                                        $"port={this.puerto};" +
+                                        $"username={this.usuario};" +
+                                        $"password={this.clave};" +
+                                        $"Database={this.baseDatos}";
             }
             catch (Exception)
             {
@@ -49,16 +63,15 @@ namespace ClubDeportivo.Config
             }
             return cadena;
         }
-        // para evaluar la instancia de la conectividad
+
+        // Evalúa la instancia de la conectividad (Patrón Singleton)
         public static Conexion getInstancia()
         {
-            if (con == null) // quiere decir que la conexion esta cerrada
+            if (con == null)
             {
-                con = new Conexion(); // se crea una nueva
+                con = new Conexion();
             }
             return con;
-
-
         }
     }
-    }
+}
