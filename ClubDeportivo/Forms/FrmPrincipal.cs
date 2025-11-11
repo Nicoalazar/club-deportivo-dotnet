@@ -17,9 +17,18 @@ namespace ClubDeportivo
         public FrmPrincipal()
         {
             InitializeComponent();
-            toolStripUser.Text = "Usuario: " + SesionUsuario.Usuario;
-            toolStripRol.Text = "Rol: " +SesionUsuario.Rol; 
+            toolStripUser.Text = "Usuario: " + TextHelper.ToUpperCase(SesionUsuario.Usuario!);
+            toolStripRol.Text = "Rol: " + TextHelper.ToUpperCase(SesionUsuario.Rol!); 
             toolStripDateTime.Text = "Fecha y Hora de Inicio: " + SesionUsuario.FechaLogin;
+
+            // Control de permisos
+            if (!SesionUsuario.Rol!.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+            {
+                btnGenerarCuotas.Enabled = false;
+                btnGenerarCuotas.AutoSize = true;
+                btnGenerarCuotas.Text = "Generar Cuotas\n(Solo Administradores)";
+
+            }
         }
 
         private void btnRegistrarPersona_Click(object sender, EventArgs e)
