@@ -5,12 +5,13 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Windows.Forms;
 
 namespace ClubDeportivo.Services
 {
     public class ReciboPrinter
     {
-        private Persona persona;
+        private Persona? persona;
         private readonly int paramId;
         private readonly string Categoria;
         private readonly string periodo;
@@ -34,6 +35,15 @@ namespace ClubDeportivo.Services
 
             printDoc = new PrintDocument();
             printDoc.PrintPage += PrintDoc_PrintPage;
+
+            if (persona == null)
+            {
+                MessageBox.Show("Error al imprimir el recibo",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
         }
 
         public void Imprimir()
@@ -61,7 +71,7 @@ namespace ClubDeportivo.Services
 
             g.DrawString($"CLUB DEPORTIVO GRUPO20 - {titulo}", fontBold, Brushes.Black, 50, y); y += salto;
             g.DrawString($"Fecha: {fecha:dd/MM/yyyy HH:mm}", fontNormal, Brushes.Black, 50, y); y += salto;
-            g.DrawString($"Persona: {persona.Apellidos}, {persona.Nombres}", fontNormal, Brushes.Black, 50, y); y += salto;
+            g.DrawString($"Persona: {persona!.Apellidos}, {persona.Nombres}", fontNormal, Brushes.Black, 50, y); y += salto;
             g.DrawString($"Documento: {persona.TipoDocumento} {persona.NumeroDocumento}", fontNormal, Brushes.Black, 50, y); y += salto;
             if (tipoRecibo.ToUpper() == "CUOTA")
             {
@@ -93,7 +103,7 @@ namespace ClubDeportivo.Services
             e.HasMorePages = false;
         }
 
-        private Persona search()
+        private Persona? search()
         {
             using var cn = Conexion.getInstancia().CrearConexion();
             cn.Open();
@@ -121,8 +131,7 @@ namespace ClubDeportivo.Services
                 return persona;
             }else
             {
-                Persona persona = null!;
-                return persona;
+                return null;
             }
         }
     }
