@@ -1,90 +1,187 @@
-﻿// Referencia a MySQL (se agrega como libreria)
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
+
 namespace ClubDeportivo.Config
 {
-    public class Conexion   //  la clase debe ser PUBLICA
+    public class Conexion
     {
-        // declaramos las variables 
-        private string baseDatos;
-        private string servidor;
-        private string puerto;
-        private string usuario;
-        private string clave;
+        private string? baseDatos;
+        private string? servidor;
+        private string? puerto;
+        private string? usuario;
+        private string? clave;
         private static Conexion? con = null;
-        private Conexion()  // asignamos valores a las variables de la conexion
+
+        private Conexion()
         {
-            // variables usadas para larepetición de líneas de código
-            bool correcto = false;
-            int mensaje;
-            // creamos las variables para recibir los datos desde el teclado
-            // ==============================================================
-            string T_servidor = "Servidor";
-            string T_puerto = "Puerto";
-            string T_usuario = "Usuario";
-            string T_clave = "Clave";    // se antepuso la T para indicar que vienen desde TECLADO
-            /* 
-           ____________________________________________________________
-            _
-            * ciclo while para volver a repetir el ingreso de datos
-            *  la variable correcto la inicializamos para ingresar al 
-           ciclo
-            *  
-           ___________________________________________________________
-            ____ */
-            while (correcto != true)
+            bool datosValidos = false;
+            string T_servidor, T_puerto, T_usuario, T_clave;
+
+            // Ciclo hasta que los datos sean correctos o el usuario cancele
+            while (!datosValidos)
             {
-                // Armamos los cuadros de dialogo para el ingreso de datos
-                T_servidor = Microsoft.VisualBasic.Interaction.InputBox
-                ("ingrese servidor", "DATOS DE INSTALACIÓN MySQL");
-                T_puerto = Microsoft.VisualBasic.Interaction.InputBox
-                ("ingrese puerto", "DATOS DE INSTALACIÓN MySQL");
-                T_usuario = Microsoft.VisualBasic.Interaction.InputBox
-                ("ingrese usuario", "DATOS DE INSTALACIÓN MySQL");
-                T_clave = Microsoft.VisualBasic.Interaction.InputBox
-                ("ingrese clave", "DATOS DE INSTALACIÓN MySQL");
-                /* 
-               ________________________________________________________
-                ________________
-                * controlamos que los datos ingresados para acceder a 
-               MySQL sean correctos
-                * 
-               ________________________________________________________
-                __________________ */
-                mensaje = (int)MessageBox.Show("su ingreso: SERVIDOR = " +
-                T_servidor + " PUERTO= " + T_puerto + " USUARIO: " +
-                T_usuario + " CLAVE: " + T_clave,
-                "AVISO DEL SISTEMA", MessageBoxButtons.YesNo,
-               MessageBoxIcon.Question);
-                if (mensaje != 6)  // el valor 6 corresponde al SI
+                // Solicitar Servidor
+                T_servidor = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Ingrese el servidor:",
+                    "Configuración MySQL - Servidor",
+                    "localhost");
+
+                if (string.IsNullOrWhiteSpace(T_servidor))
                 {
-                    MessageBox.Show("INGRESE NUEVAMENTE LOS DATOS");
-                    correcto = false;
+                    if (ConfirmarSalida())
+                        throw new ConfiguracionCanceladaException();
+                    continue;
                 }
-                else
+
+                // Solicitar Puerto
+                T_puerto = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Ingrese el puerto:",
+                    "Configuración MySQL - Puerto",
+                    "3306");
+
+                if (string.IsNullOrWhiteSpace(T_puerto))
                 {
-                    correcto = true;
+                    if (ConfirmarSalida())
+                        throw new ConfiguracionCanceladaException();
+                    continue;
                 }
+
+                // Validar que el puerto sea un número válido
+                if (!int.TryParse(T_puerto, out int puertoNum) || puertoNum < 1 || puertoNum > 65535)
+                {
+                    MessageBox.Show("El puerto debe ser un número entre 1 y 65535.",
+                        "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    continue;
+                }
+
+                // Solicitar Usuario
+                T_usuario = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Ingrese el usuario:",
+                    "Configuración MySQL - Usuario",
+                    "root");
+
+                if (string.IsNullOrWhiteSpace(T_usuario))
+                {
+                    if (ConfirmarSalida())
+                        throw new ConfiguracionCanceladaException();
+                    continue;
+                }
+
+                // Solicitar Contraseña
+                T_clave = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Ingrese la contraseña:",
+                    "Configuración MySQL - Contraseña",
+                    "");
+
+                // La contraseña puede estar vacía, validamos solo si es null (canceló)
+                if (T_clave == null)
+                {
+                    if (ConfirmarSalida())
+                        throw new ConfiguracionCanceladaException();
+                    continue;
+                }
+
+                // Confirmar datos ingresados (SIN mostrar la contraseña)
+                DialogResult confirmacion = MessageBox.Show(
+                    $"SERVIDOR: {T_servidor}\n" +
+                    $"PUERTO: {T_puerto}\n" +
+                    $"USUARIO: {T_usuario}\n" +
+                    $"CONTRASEÑA: {(T_clave == "" ? "Sin Contraseña" : T_clave)}\n\n" +
+                    "¿Los datos son correctos?",
+                    "Confirmar configuración MySQL",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmacion == DialogResult.Yes)
+                {
+                    // Intentar probar la conexión antes de guardar
+                    if (ProbarConexion(T_servidor, T_puerto, T_usuario, T_clave))
+                    {
+                        // Guardar configuración
+                        this.baseDatos = "grupo20_clubdeportivo";
+                        this.servidor = T_servidor;
+                        this.puerto = T_puerto;
+                        this.usuario = T_usuario;
+                        this.clave = T_clave;
+                        datosValidos = true;
+
+                        MessageBox.Show("Conexión configurada correctamente.",
+                            "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        DialogResult reintentar = MessageBox.Show(
+                            "No se pudo conectar con los datos ingresados.\n\n¿Desea reintentar?",
+                            "Error de conexión",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Error);
+
+                        if (reintentar == DialogResult.No)
+                        {
+                            throw new ConfiguracionCanceladaException();
+                        }
+                    }
+                }
+                // Si dijo "No", el ciclo se repite automáticamente
             }
-            // reemplazamos los datos concretos que teniamos por las variables
-            this.baseDatos = "grupo20_clubdeportivo";
-            this.servidor = T_servidor;    // "localhost";
-            this.puerto = T_puerto;       //"3306";
-            this.usuario = T_usuario;    // "root";
-            this.clave = T_clave;       //  "";
         }
-        // proceso de interacción
-        public MySqlConnection CrearConcexion()
+
+        // Método para confirmar si el usuario quiere salir
+        private bool ConfirmarSalida()
         {
-            // instanciamos una conexion
-            MySqlConnection? cadena = new MySqlConnection();
-            // el bloque try permite controlar errores
+            DialogResult resultado = MessageBox.Show(
+                "Operación cancelada.\n\n¿Desea salir de la aplicación?",
+                "Configuración MySQL",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            return resultado == DialogResult.Yes;
+        }
+
+        // Excepción personalizada para cancelación de configuración
+        public class ConfiguracionCanceladaException : Exception
+        {
+            public ConfiguracionCanceladaException() : base("El usuario canceló la configuración") { }
+        }
+
+        // Método para probar la conexión antes de guardarla
+        private bool ProbarConexion(string servidor, string puerto, string usuario, string clave)
+        {
             try
             {
-                cadena.ConnectionString = "datasource=" + this.servidor +
-                ";port=" + this.puerto +
-                ";username=" + this.usuario +
-                ";password=" + this.clave +
-                ";Database=" + this.baseDatos;
+                string cadenaConexion = $"datasource={servidor};" +
+                                      $"port={puerto};" +
+                                      $"username={usuario};" +
+                                      $"password={clave};" +
+                                      $"Database=grupo20_clubdeportivo";
+
+                using (MySqlConnection conexionPrueba = new MySqlConnection(cadenaConexion))
+                {
+                    conexionPrueba.Open();
+                    conexionPrueba.Close();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al conectar:\n{ex.Message}",
+                    "Error de conexión",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        // Creación de la conexión
+        public MySqlConnection CrearConexion()
+        {
+            MySqlConnection cadena = new MySqlConnection();
+            try
+            {
+                cadena.ConnectionString = $"datasource={this.servidor};" +
+                                        $"port={this.puerto};" +
+                                        $"username={this.usuario};" +
+                                        $"password={this.clave};" +
+                                        $"Database={this.baseDatos}";
             }
             catch (Exception)
             {
@@ -93,16 +190,15 @@ namespace ClubDeportivo.Config
             }
             return cadena;
         }
-        // para evaluar la instancia de la conectividad
+
+        // Evalúa la instancia de la conectividad (Patrón Singleton)
         public static Conexion getInstancia()
         {
-            if (con == null) // quiere decir que la conexion esta cerrada
+            if (con == null)
             {
-                con = new Conexion(); // se crea una nueva
+                con = new Conexion();
             }
             return con;
         }
     }
 }
-
-

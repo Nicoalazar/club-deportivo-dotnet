@@ -17,7 +17,7 @@ namespace ClubDeportivo.Services
             DataTable tabla = new DataTable();
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
@@ -40,7 +40,7 @@ namespace ClubDeportivo.Services
             DataTable tabla = new DataTable();
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
@@ -65,7 +65,7 @@ namespace ClubDeportivo.Services
             DataTable tablaVencimientos = new DataTable();
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_cuotas_pendientes", cn);
@@ -114,7 +114,7 @@ namespace ClubDeportivo.Services
         {
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_pago_cuota", cn);
@@ -146,7 +146,7 @@ namespace ClubDeportivo.Services
             if (YaPagoActividad(idNoSocio, fecha)) return false;           
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
                 using var cmd = new MySqlCommand("sp_pago_actividad", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -178,7 +178,7 @@ namespace ClubDeportivo.Services
         {
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
                 using var cmd = new MySqlCommand("sp_actividad_search", cn);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -207,7 +207,7 @@ namespace ClubDeportivo.Services
         {
             try
             {
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_generar_cuotas", cn);

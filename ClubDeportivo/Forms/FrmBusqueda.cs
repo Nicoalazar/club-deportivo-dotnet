@@ -94,7 +94,7 @@ namespace ClubDeportivo
                                         ? (object)DBNull.Value
                                         : documento;
 
-                using var cn = Conexion.getInstancia().CrearConcexion();
+                using var cn = Conexion.getInstancia().CrearConexion();
                 cn.Open();
 
                 using var cmd = new MySqlCommand("sp_persona_search", cn);
