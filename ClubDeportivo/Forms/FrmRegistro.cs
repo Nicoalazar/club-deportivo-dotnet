@@ -637,7 +637,7 @@ namespace ClubDeportivo
                         else return;
                     }
                     else return;
-                }
+                }else new NoSocioCarnetPrinter(noSocio!).Imprimir();
             }
         }
 

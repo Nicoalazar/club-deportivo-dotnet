@@ -400,6 +400,7 @@ namespace ClubDeportivo
                     }
                     else return;
                 }
+                else new NoSocioCarnetPrinter(noSocio).Imprimir();
             }
         }
 
