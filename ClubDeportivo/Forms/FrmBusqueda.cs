@@ -12,6 +12,8 @@ namespace ClubDeportivo
     {
         private ContextMenuStrip menu;
         Cobros servicio = new Cobros();
+        Socio socio = new Socio();
+        NoSocio noSocio = new NoSocio();
 
         public FrmBusqueda()
         {
@@ -225,14 +227,24 @@ namespace ClubDeportivo
                 {
                     int idSocio = Convert.ToInt32(row.Cells["Id"].Value);
 
-                    if (!servicio.RenovarAptoFisico(idSocio, true)) return;
+                    if (servicio.RenovarAptoFisico(idSocio, true))
+                    {
+                        row.Cells["VtoAptoFisico"].Value = DateTime.Now.AddYears(1).Date;
+                        socio.VtoAptoFisico = DateTime.Now.AddYears(1);
+                    }
+                    else return;
                 }
                 else
                 {
 
                     int idNoSocio = Convert.ToInt32(row.Cells["Id"].Value);
 
-                    if (!servicio.RenovarAptoFisico(idNoSocio, false)) return;
+                    if (servicio.RenovarAptoFisico(idNoSocio, false))
+                    {
+                        row.Cells["VtoAptoFisico"].Value = DateTime.Now.AddYears(1).Date;
+                        noSocio.VtoAptoFisico = DateTime.Now.AddYears(1);
+                    }
+                    else return;
                 }
             }
         }
@@ -261,7 +273,7 @@ namespace ClubDeportivo
             {
                 int idSocio = Convert.ToInt32(row.Cells["Id"].Value);
 
-                var socio = new Socio(
+                socio = new Socio(
                     persona,
                     idSocio,
                     Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
@@ -282,7 +294,8 @@ namespace ClubDeportivo
 
                     if (resultado == DialogResult.Yes)
                     {
-                        if (servicio.RenovarAptoFisico(idSocio, true)) {
+                        if (servicio.RenovarAptoFisico(idSocio, true))
+                        {
                             socio = new Socio(
                                 persona,
                                 idSocio,
@@ -294,6 +307,7 @@ namespace ClubDeportivo
                         }
                         else return;
                     }
+                    else return;
                 }
 
                 DataTable cuotasVencidas = servicio.ListarCuotasVencidas();
@@ -351,7 +365,7 @@ namespace ClubDeportivo
             {
                 int idNoSocio = Convert.ToInt32(row.Cells["Id"].Value);
 
-                var noSocio = new NoSocio(
+                noSocio = new NoSocio(
                    persona,
                    Convert.ToDateTime(row.Cells["VtoAptoFisico"].Value).Date,
                    row.Cells["estado"].Value.ToString()!,
@@ -371,7 +385,7 @@ namespace ClubDeportivo
 
                     if (resultado == DialogResult.Yes)
                     {
-                        if(servicio.RenovarAptoFisico(idNoSocio, false))
+                        if (servicio.RenovarAptoFisico(idNoSocio, false))
                         {
                             noSocio = new NoSocio(
                                persona,
@@ -382,8 +396,9 @@ namespace ClubDeportivo
                                );
                             new NoSocioCarnetPrinter(noSocio).Imprimir();
                         }
-                        else return ; 
+                        else return;
                     }
+                    else return;
                 }
             }
         }
