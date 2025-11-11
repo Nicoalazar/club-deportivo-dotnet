@@ -19,7 +19,7 @@ namespace ClubDeportivo.Services
         private readonly DateTime fecha;
         private readonly string tipoRecibo;
 
-        private PrintDocument printDoc;
+        private PrintDocument? printDoc;
 
         public ReciboPrinter(int Id, string Categoria, string periodo, string medioPago, string tipoRecibo)
         {
@@ -32,22 +32,24 @@ namespace ClubDeportivo.Services
 
             this.persona = search();
 
-
-            printDoc = new PrintDocument();
-            printDoc.PrintPage += PrintDoc_PrintPage;
-
-            if (persona == null)
+            if (persona != null)
             {
-                MessageBox.Show("Error al imprimir el recibo",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return;
+                printDoc = new PrintDocument();
+                printDoc.PrintPage += PrintDoc_PrintPage;
             }
         }
 
         public void Imprimir()
         {
+            if (persona == null || printDoc == null)
+            {
+                MessageBox.Show("No se encontraron datos de la persona para emitir el recibo.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
             PrintPreviewDialog preview = new PrintPreviewDialog
             {
                 Document = printDoc,
@@ -71,7 +73,7 @@ namespace ClubDeportivo.Services
 
             g.DrawString($"CLUB DEPORTIVO GRUPO20 - {titulo}", fontBold, Brushes.Black, 50, y); y += salto;
             g.DrawString($"Fecha: {fecha:dd/MM/yyyy HH:mm}", fontNormal, Brushes.Black, 50, y); y += salto;
-            g.DrawString($"Persona: {persona!.Apellidos}, {persona.Nombres}", fontNormal, Brushes.Black, 50, y); y += salto;
+            g.DrawString($"Persona: {persona.Apellidos}, {persona.Nombres}", fontNormal, Brushes.Black, 50, y); y += salto;
             g.DrawString($"Documento: {persona.TipoDocumento} {persona.NumeroDocumento}", fontNormal, Brushes.Black, 50, y); y += salto;
             if (tipoRecibo.ToUpper() == "CUOTA")
             {
@@ -117,22 +119,20 @@ namespace ClubDeportivo.Services
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {
-                persona = new Persona(
+                return new Persona(
                     reader.GetString("nombres"),
                     reader.GetString("apellidos"),
                     reader.GetString("sexo"),
                     reader.GetString("Tipo"),
                     reader.GetString("NroDocumento"),
-                    reader.GetDateTime ("Nacimiento"),
+                    reader.GetDateTime("Nacimiento"),
                     reader.GetString("email"),
                     "",
                     ""
                     );
-                return persona;
-            }else
-            {
-                return null;
             }
+
+            return null;
         }
     }
 }
