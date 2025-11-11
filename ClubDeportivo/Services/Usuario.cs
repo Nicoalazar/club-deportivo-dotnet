@@ -20,7 +20,7 @@ namespace ClubDeportivo.Services
             MySqlConnection sqlCon = new MySqlConnection();
             try
             {
-                sqlCon = Conexion.getInstancia().CrearConcexion();
+                sqlCon = Conexion.getInstancia().CrearConexion();
                 // el comando es un elemento que almacena en este caso el nombre
                 // del procedimiento almacenado y la referencia a la  conexion
                 MySqlCommand comando = new MySqlCommand("sp_login", sqlCon);

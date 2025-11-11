@@ -146,7 +146,7 @@ namespace ClubDeportivo
                 txtDomicilio.Text
             );
 
-            using var cn = Conexion.getInstancia().CrearConcexion();
+            using var cn = Conexion.getInstancia().CrearConexion();
             cn.Open();
             using var transaction = cn.BeginTransaction();
 
@@ -261,7 +261,7 @@ namespace ClubDeportivo
         }
         private bool PersonaExiste(string nombres, string apellidos, string documento)
         {
-            using var cn = Conexion.getInstancia().CrearConcexion();
+            using var cn = Conexion.getInstancia().CrearConexion();
             cn.Open();
 
             using var cmd = new MySqlCommand("sp_persona_search", cn);
