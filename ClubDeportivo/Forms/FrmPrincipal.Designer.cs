@@ -35,8 +35,9 @@
             // tituloVentanaPrincipal
             // 
             tituloVentanaPrincipal.AutoSize = true;
+            tituloVentanaPrincipal.BackColor = SystemColors.ButtonHighlight;
             tituloVentanaPrincipal.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            tituloVentanaPrincipal.Location = new Point(246, 38);
+            tituloVentanaPrincipal.Location = new Point(257, 9);
             tituloVentanaPrincipal.Name = "tituloVentanaPrincipal";
             tituloVentanaPrincipal.Size = new Size(171, 30);
             tituloVentanaPrincipal.TabIndex = 0;
@@ -44,7 +45,7 @@
             // 
             // btnRegistrarPersona
             // 
-            btnRegistrarPersona.Location = new Point(124, 107);
+            btnRegistrarPersona.Location = new Point(66, 107);
             btnRegistrarPersona.Margin = new Padding(3, 2, 3, 2);
             btnRegistrarPersona.Name = "btnRegistrarPersona";
             btnRegistrarPersona.Size = new Size(138, 31);
@@ -55,7 +56,7 @@
             // 
             // btnListarVencimientos
             // 
-            btnListarVencimientos.Location = new Point(410, 107);
+            btnListarVencimientos.Location = new Point(496, 107);
             btnListarVencimientos.Margin = new Padding(3, 2, 3, 2);
             btnListarVencimientos.Name = "btnListarVencimientos";
             btnListarVencimientos.Size = new Size(138, 31);
@@ -66,7 +67,7 @@
             // 
             // btnGenerarCuotas
             // 
-            btnGenerarCuotas.Location = new Point(410, 199);
+            btnGenerarCuotas.Location = new Point(496, 167);
             btnGenerarCuotas.Margin = new Padding(3, 2, 3, 2);
             btnGenerarCuotas.Name = "btnGenerarCuotas";
             btnGenerarCuotas.Size = new Size(138, 31);
@@ -77,7 +78,7 @@
             // 
             // btnBuscar
             // 
-            btnBuscar.Location = new Point(124, 199);
+            btnBuscar.Location = new Point(66, 167);
             btnBuscar.Margin = new Padding(3, 2, 3, 2);
             btnBuscar.Name = "btnBuscar";
             btnBuscar.Size = new Size(138, 31);
