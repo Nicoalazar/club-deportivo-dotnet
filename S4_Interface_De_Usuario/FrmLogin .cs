@@ -1,10 +1,15 @@
+using Org.BouncyCastle.Pqc.Crypto.Lms;
 using System;
+using System.Data;
+using MySql.Data.MySqlClient;
 using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace S4_Interface_De_Usuario
 {
     public partial class FrmLogin : Form
     {
+        Usuario Usuario = new Usuario();
         public FrmLogin()
         {
             InitializeComponent();
@@ -12,8 +17,13 @@ namespace S4_Interface_De_Usuario
 
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            if (txtUsuario.Text == "Administrador" && txtClave.Text == "Admin1234")
+            DataTable tablaLogin = new DataTable(); // es la que recibe los  datos desde el formulario
+            Usuario dato = new Usuario(); // variable que contiene todas las caracteristicas de la clase
+            tablaLogin = dato.Log_Usu(txtUsuario.Text, txtClave.Text);
+            if (tablaLogin.Rows.Count > 0)
             {
+                // quiere decir que el resultado tiene 1 fila por lo que el usuario EXISTE
+                MessageBox.Show("Ingreso exitoso");
                 var frm = new FrmPrimerProyecto();
                 frm.Show();
                 this.Hide();
@@ -21,8 +31,7 @@ namespace S4_Interface_De_Usuario
             }
             else
             {
-                MessageBox.Show("Usuario inexistente.", "Acceso denegado",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Usuario y/o password incorrecto");
             }
         }
     }
