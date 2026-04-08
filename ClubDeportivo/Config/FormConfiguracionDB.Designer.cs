@@ -254,7 +254,7 @@ namespace ClubDeportivo.Config
             // 
             // btnCancelar
             // 
-            btnCancelar.DialogResult = DialogResult.Yes;
+            btnCancelar.DialogResult = DialogResult.None;
             btnCancelar.Font = new Font("Segoe UI", 9F);
             btnCancelar.Location = new Point(330, 390);
             btnCancelar.Name = "btnCancelar";
